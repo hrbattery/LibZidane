@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\hrbat\\.ohos\\config\\default_LibZidane_I1HC0I5369xhJ9qehaxRKDZFG-pe4y6J1qGEnS5t2kQ=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B88663220F66FB324DCC7F856FE5FF99ACB0D65B6B35A8FA25E78EEC8D1CEA7AB561CC85BBCFEDF",
+          "profile": "C:\\Users\\hrbat\\.ohos\\config\\default_LibZidane_I1HC0I5369xhJ9qehaxRKDZFG-pe4y6J1qGEnS5t2kQ=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\hrbat\\.ohos\\config\\default_LibZidane_I1HC0I5369xhJ9qehaxRKDZFG-pe4y6J1qGEnS5t2kQ=.p12",
+          "storePassword": "0000001BD1C75A0CC9399E5B5B6D80ED43B12083267870C699D784432AF9993F80F1A22DF97700BC0CAD60"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "6.0.0(20)",
+        "compatibleSdkVersion": "5.0.5(17)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
