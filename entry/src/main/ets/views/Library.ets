@@ -11,7 +11,6 @@ import { BookCoverWaterFlow } from "../components/BookCoverWaterFlow"
 
 @ComponentV2
 export struct Library {
-  // @Local searchText: string = ''
   @Local tabCurrentIndex: number = 0
 
   async loadMostPopularDataSource() {

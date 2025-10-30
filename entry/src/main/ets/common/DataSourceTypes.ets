@@ -20,7 +20,7 @@ export interface PaginationDataSource {
   total_pages: number
 }
 
-export interface BookInfoDataSource {
+export interface BookCommonDataSource {
   id: number,
   content_type: string,
   title: string,
@@ -54,12 +54,16 @@ export interface BookInfoDataSource {
   description: string
 }
 
-export interface DownloadedDataSource extends BookInfoDataSource {
+export interface DownloadedDataSource extends BookCommonDataSource {
   date_download: string
 }
 
-export interface FavoriteDataSource extends BookInfoDataSource {
+export interface FavoriteDataSource extends BookCommonDataSource {
   date_saved: string
+}
+
+export interface BookInfoDataSource extends BookCommonDataSource {
+  _isUserSavedBook: boolean
 }
 
 export interface DownloadedResponse {
@@ -77,6 +81,21 @@ export interface FavoriteResponse {
 export interface BookInfoResponse {
   success: number,
   book: BookInfoDataSource
+}
+
+export interface SearchInfoResponse {
+  success: number,
+  books: BookInfoDataSource[],
+  exactBooksCount: number,
+  pagination: PaginationDataSource
+}
+
+export interface SaveBookResponse {
+  success: number
+}
+
+export interface UnsaveBookResponse {
+  success: number
 }
 
 export type SimilarResponse = MostPopularResponse;

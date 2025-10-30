@@ -1,9 +1,12 @@
 import {
   CoverDataSource, DownloadedResponse,
   FavoriteResponse,
-  MostPopularResponse } from "../common/DataSourceTypes";
+  MostPopularResponse,
+  SaveBookResponse,
+  UnsaveBookResponse} from "../common/DataSourceTypes";
 import ReqInst from "../common/request/Request";
 import { LogUtil as logger } from "@pura/harmony-utils"
+import { DownloadedQueryType, FavoriteQueryType } from "../common/QueryTypes";
 
 /*
  * todo:
@@ -31,19 +34,8 @@ export async function getRecommended(): Promise<Array<CoverDataSource>> {
   return [];
 }
 
-export async function getDownloaded(order?: string, page?: number, limit?: number): Promise<DownloadedResponse | null> {
-  const config: Record<string, string | number> = {};
-  if (order !== undefined) {
-    config["order"] = order;
-  }
-  if (page !== undefined) {
-    config['page'] = page;
-  }
-  if (limit !== undefined) {
-    config["limit"] = limit;
-  }
-
-  let response = await ReqInst.get<DownloadedResponse>("/eapi/user/book/downloaded", { params: config });
+export async function getDownloaded(params?: DownloadedQueryType): Promise<DownloadedResponse | null> {
+  let response = await ReqInst.get<DownloadedResponse>("/eapi/user/book/downloaded", { params: params });
   logger.debug(response)
   if (response.success === 1) {
     return response
@@ -51,22 +43,29 @@ export async function getDownloaded(order?: string, page?: number, limit?: numbe
   return null
 }
 
-export async function getFavorite(order?: string, page?: number, limit?: number): Promise<FavoriteResponse | null> {
-  const config: Record<string, string | number> = {};
-  if (order !== undefined) {
-    config["order"] = order;
-  }
-  if (page !== undefined) {
-    config['page'] = page;
-  }
-  if (limit !== undefined) {
-    config["limit"] = limit;
-  }
-
-  let response = await ReqInst.get<FavoriteResponse>("/eapi/user/book/saved", { params: config });
+export async function getFavorite(params?: FavoriteQueryType): Promise<FavoriteResponse | null> {
+  let response = await ReqInst.get<FavoriteResponse>("/eapi/user/book/saved", { params: params });
   logger.debug(response)
   if (response.success === 1) {
     return response
   }
   return null
+}
+
+export async function saveBook(bookId: number): Promise<boolean> {
+  let response = await ReqInst.get<SaveBookResponse>(`/eapi/user/book/${bookId}/save`);
+  logger.debug(response)
+  if (response.success === 1) {
+    return true
+  }
+  return false
+}
+
+export async function unsaveBook(bookId: number): Promise<boolean> {
+  let response = await ReqInst.get<UnsaveBookResponse>(`/eapi/user/book/${bookId}/unsave`);
+  logger.debug(response)
+  if (response.success === 1) {
+    return true
+  }
+  return false
 }

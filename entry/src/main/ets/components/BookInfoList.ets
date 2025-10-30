@@ -16,22 +16,17 @@ const defaultSourceData: () => BookInfoListParam = () => {
 
 @ComponentV2
 export struct BookInfoList {
-  // @Local dataSource: BookInfoListParam = {
-  //   books: [],
-  //   pagination: undefined
-  // }
-  @Local bookDataSource: Array<BookData> = []
-  @Local pagination: PaginationDataSource | undefined;
+  @Param bookDataSource: Array<BookData> = []
+  @Param pagination: PaginationDataSource | undefined = undefined;
 
   @Local refreshing: boolean = false;
   @Local refreshOffset: number = 0;
   @Local refreshState: RefreshStatus = RefreshStatus.Inactive;
   @Local isLoading: boolean = false;
 
-  @Event onInitialData: (order?: string, page?: number, limit?: number) => Promise<BookInfoListParam> = async () => await defaultSourceData()
-  @Event onRefreshData: (order?: string, page?: number, limit?: number) => Promise<BookInfoListParam> = async () => await defaultSourceData()
-  @Event onLoadNewData: (order?: string, page?: number, limit?: number) => Promise<BookInfoListParam> = async () => await defaultSourceData()
-  @Event updateAmount: (amount: number | undefined) => void;
+  @Event onInitialData: () => Promise<void> = async () => {}
+  @Event onRefreshData: () => Promise<void> = async () => {}
+  @Event onLoadNewData: () => Promise<void> = async () => {}
 
   pathStack: NavPathStack | undefined = undefined;
 
@@ -59,7 +54,6 @@ export struct BookInfoList {
     }.width("100%")
     .height(64)
     .justifyContent(FlexAlign.Center)
-    // 当不处于加载中状态时隐藏组件。
     .visibility(this.isLoading ? Visibility.Visible : Visibility.Hidden)
   }
 
@@ -79,10 +73,7 @@ export struct BookInfoList {
 
   async aboutToAppear(): Promise<void> {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
-    const dataSource = await this.onInitialData()
-    this.bookDataSource = dataSource.books;
-    this.pagination = dataSource.pagination;
-    this.updateAmount(this.pagination?.total_items);
+    await this.onInitialData()
   }
 
   build() {
@@ -106,9 +97,7 @@ export struct BookInfoList {
         if (!this.isLoading && this.pagination && end >= this.bookDataSource.length - 1
           && this.pagination.current < this.pagination.total_pages) {
           this.isLoading = true;
-          const updateData = await this.onLoadNewData(undefined, this.pagination.current + 1);
-          this.bookDataSource.push(...updateData.books)
-          this.pagination = updateData.pagination;
+          await this.onLoadNewData();
           this.isLoading = false;
         }
       })
@@ -121,9 +110,7 @@ export struct BookInfoList {
       this.refreshState = state;
     })
     .onRefreshing(async () => {
-      const dataSource = await this.onRefreshData()
-      this.bookDataSource = dataSource.books;
-      this.pagination = dataSource.pagination;
+      await this.onRefreshData()
       this.refreshing = false;
     })
   }

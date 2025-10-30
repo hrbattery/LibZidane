@@ -33,6 +33,10 @@ export class CacheManager<T> {
     return item.data;
   }
 
+  clearCache(key: string) {
+    this.cacheMap.get().delete(key);
+  }
+
   // 清理过期缓存
   clearExpired() {
     const now = Date.now();

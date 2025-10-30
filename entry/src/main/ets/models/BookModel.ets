@@ -28,6 +28,7 @@ export class BookData {
   @Trace extension: string;
   @Trace filesizeString: string;
   @Trace date_download: string | undefined
+  @Trace _isFavorite: boolean | undefined
 
   constructor(bookData: BookDataType) {
     this.id = bookData.id;
@@ -47,7 +48,24 @@ export class BookData {
     this.extension = bookData.extension;
     this.filesizeString = bookData.filesizeString
     this.date_download = bookData.date_download
+    this._isFavorite = bookData.date_saved ? true: undefined
   }
+
+  toString(): string {
+		return JSON.stringify({
+      id: this.id,
+      hash: this.hash,
+      title: this.title,
+      author: this.author,
+      publisher: this.publisher,
+      year: this.year,
+      language: this.language,
+      extension: this.extension,
+      filesizeString: this.filesizeString,
+      date_download: this.date_download,
+      _isFavorite: this._isFavorite,
+    });
+	}
 }
 
 @ObservedV2
@@ -67,6 +85,7 @@ export interface BookDataType {
   extension: string;
   filesizeString: string;
   date_download?: string;
+  date_saved?: string
 }
 
 export interface FullBookDataType {

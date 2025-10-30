@@ -1,9 +1,11 @@
 import {
-  BookInfoDataSource,
+  BookCommonDataSource,
   BookInfoResponse, CoverDataSource, MostPopularResponse,
+  SearchInfoResponse,
   SimilarResponse } from "../common/DataSourceTypes";
 import ReqInst from "../common/request/Request";
-import { LogUtil as logger } from "@pura/harmony-utils"
+import { Any, LogUtil as logger } from "@pura/harmony-utils"
+import { SearchQueryType } from "../common/QueryTypes";
 
 /*
  * todo:
@@ -24,7 +26,7 @@ export async function getMostPopular(): Promise<CoverDataSource[]> {
   return [];
 }
 
-export async function getBookInfo(bookId: number, hash: string): Promise<BookInfoDataSource | undefined> {
+export async function getBookInfo(bookId: number, hash: string): Promise<BookCommonDataSource | undefined> {
   let response = await ReqInst.get<BookInfoResponse>(`/eapi/book/${bookId}/${hash}`);
   logger.debug(response)
   if (response.success) {
@@ -40,4 +42,13 @@ export async function getSimilar(bookId: number, hash: string): Promise<CoverDat
     return response.books;
   }
   return [];
+}
+
+export async function getSearch(param: SearchQueryType): Promise<SearchInfoResponse | null> {
+  let response = await ReqInst.post<SearchInfoResponse, SearchQueryType>("/eapi/book/search", param);
+  logger.debug(response)
+  if (response.success === 1) {
+    return response
+  }
+  return null
 }

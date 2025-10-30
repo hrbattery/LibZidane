@@ -1,5 +1,7 @@
+import { saveBook, unsaveBook } from '../api/UserApi';
 import { BookData } from '../models/BookModel';
 import { BookCover } from './BookCover';
+import { LogUtil as logger } from "@pura/harmony-utils"
 
 @ComponentV2
 export struct BookInfoListItem {
@@ -13,30 +15,53 @@ export struct BookInfoListItem {
           .alignSelf(ItemAlign.Center)
 
         Column() {
-          Column() {
-            Text(this.bookData.title)
-              .fontSize("16vp")
-              .fontWeight(FontWeight.Bold)
-              .textOverflow({ overflow: TextOverflow.Ellipsis})
-              .wordBreak(WordBreak.BREAK_ALL)
-              .margin({bottom: "4vp", top: "4vp"})
-              .maxLines(2)
-            Text(this.bookData.author)
-              .fontSize("14vp")
-              .fontColor("#a900bbff")
-              .wordBreak(WordBreak.BREAK_ALL)
-              .textOverflow({ overflow: TextOverflow.Ellipsis})
-              .maxLines(1)
-            if (this.bookData.publisher) {
-              Text(this.bookData.publisher)
-                .fontSize("12vp")
-                .fontColor(Color.Gray)
+          Flex({direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween}) {
+            Column() {
+              Text(this.bookData.title)
+                .fontSize("16vp")
+                .fontWeight(FontWeight.Bold)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .wordBreak(WordBreak.BREAK_ALL)
-                .textOverflow({ overflow: TextOverflow.Ellipsis})
+                .margin({ bottom: "4vp", top: "4vp" })
+                .maxLines(2)
+              Text(this.bookData.author)
+                .fontSize("14vp")
+                .fontColor("#a900bbff")
+                .wordBreak(WordBreak.BREAK_ALL)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .maxLines(1)
+              if (this.bookData.publisher) {
+                Text(this.bookData.publisher)
+                  .fontSize("12vp")
+                  .fontColor(Color.Gray)
+                  .wordBreak(WordBreak.BREAK_ALL)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  .maxLines(1)
+              }
+            }
+            .alignItems(HorizontalAlign.Start)
+
+            if (this.bookData._isFavorite !== undefined) {
+              if (this.bookData._isFavorite) {
+                Image($r("app.media.star_fill"))
+                  .height(24)
+                  .width(24)
+                  .alignSelf(ItemAlign.Start)
+                  .fillColor("#a900bbff")
+                  .margin({left: 20})
+                  .onClick(async () => await this.onClickStar())
+              } else {
+                Image($r("app.media.star"))
+                  .height(24)
+                  .width(24)
+                  .alignSelf(ItemAlign.Start)
+                  .fillColor("#a900bbff")
+                  .margin({left: 20})
+                  .onClick(async () => await this.onClickStar())
+              }
             }
           }
-          .alignItems(HorizontalAlign.Start)
+
           Row() {
             if (this.bookData.year !== 0) {
               Text(`${this.bookData.year}`).fontSize("14vp")
@@ -67,6 +92,18 @@ export struct BookInfoListItem {
           .fontColor(Color.Gray)
       }
       Divider()
+    }
+  }
+
+  async onClickStar(): Promise<void> {
+    try {
+      // todo: 总之改改这段
+      this.bookData._isFavorite = !this.bookData._isFavorite
+      !this.bookData._isFavorite ? await unsaveBook(this.bookData.id) : await saveBook(this.bookData.id);
+    } catch (e) {
+      logger.error(e)
+      this.bookData._isFavorite = !this.bookData._isFavorite
+      // todo: toast error or use a 404 page
     }
   }
 }
