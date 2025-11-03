@@ -1,11 +1,14 @@
-import { getBookInfo, getSimilar } from '../api/BookApi';
+import { getBookFormat, getBookInfo, getSimilar } from '../api/BookApi';
 import { BookCover } from '../components/BookCover'
-import { BookDetailParam, CoverData, FullBookDataType } from '../models/BookModel'
+import { BookDetailParam, BookFormatType, CoverData, FullBookDataType } from '../models/BookModel'
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { webview } from '@kit.ArkWeb';
 import { BookCoverWaterFlow } from '../components/BookCoverWaterFlow';
 import { bookDataCache } from '../common/cache/BookDataCache';
 import { saveBook, unsaveBook } from '../api/UserApi';
+import { fileDownload } from '../common/request/FileDownload';
+import { common } from '@kit.AbilityKit';
+import { BookFormatSheetBuilder } from '../components/BookFormatSheet';
 
 
 @Builder
@@ -19,6 +22,7 @@ struct BookDetailPage {
   @Local bookId: number = 0
   @Local hash: string = "";
   @Local bookData: FullBookDataType | undefined = undefined
+
   @Local isUserFavorite: boolean = false
   @Local navMenu: NavigationMenuItem[] = [
     {
@@ -32,6 +36,9 @@ struct BookDetailPage {
       'action': () => this.onClickStar()
     }
   ]
+
+  @Local bookFormats: BookFormatType[] = []
+  @Local isShowSelectFormatSheet: boolean = false
 
   webController: webview.WebviewController = new webview.WebviewController()
   richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
@@ -68,13 +75,8 @@ struct BookDetailPage {
     }
   }
 
-  // async aboutToAppear(): Promise<void> {
-  //   await this.loadBookData();
-  // }
-
   async onClickStar(): Promise<void> {
     try {
-      // todo: 总之改改这段
       this.isUserFavorite = !this.isUserFavorite
       !this.isUserFavorite ? await unsaveBook(this.bookId) : await saveBook(this.bookId);
       bookDataCache.clearCache(`${this.bookId}_${this.hash}`);
@@ -113,6 +115,18 @@ struct BookDetailPage {
         element.cover
       )
     })
+  }
+
+  showSelectFormatSheet(): void {
+    this.isShowSelectFormatSheet = true;
+  }
+
+  handleSelectFormatSheet(): void {
+    this.isShowSelectFormatSheet = false;
+  }
+
+  async loadDownloadFormats() {
+    this.bookFormats = await getBookFormat(this.bookId, this.hash) as BookFormatType[];
   }
 
   build() {
@@ -171,6 +185,16 @@ struct BookDetailPage {
 
               Button('下载')
                 .width("90%")
+                .onClick(() => this.showSelectFormatSheet())
+                .bindSheet(!!this.isShowSelectFormatSheet, BookFormatSheetBuilder(
+                  this.bookData,
+                  this.bookFormats,
+                  () => this.handleSelectFormatSheet()
+                ), {
+                  height: SheetSize.MEDIUM,
+                  preferType: SheetType.BOTTOM,
+                  title: { title: '选择格式' },
+                })
             }
             .height("60%")
             .width("100%")
@@ -259,7 +283,10 @@ struct BookDetailPage {
       let param = context.pathInfo.param as BookDetailParam;
       this.bookId = param.bookId;
       this.hash = param.hash;
-      await this.loadBookData()
+      await Promise.all([
+        this.loadBookData(),
+        this.loadDownloadFormats()
+      ])
     })
     .menus(this.navMenu)
   }

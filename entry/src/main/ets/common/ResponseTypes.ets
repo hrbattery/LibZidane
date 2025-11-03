@@ -99,3 +99,29 @@ export interface UnsaveBookResponse {
 }
 
 export type SimilarResponse = MostPopularResponse;
+
+export interface DownloadFileDataSource {
+  downloadLink: string,
+  description: string,
+  author: string,
+  extension: string,
+  allowDownload: boolean
+}
+
+export interface DownloadFileResponse {
+  success: number,
+  file: DownloadFileDataSource
+}
+
+export interface FormatsDataSource {
+  id: number,
+  hash: string,
+  extension: string,
+  filesize: number,
+  filesizeString: string,
+}
+
+export interface FormatsResponse {
+  success: number,
+  books: FormatsDataSource[]
+}

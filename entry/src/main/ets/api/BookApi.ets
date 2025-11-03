@@ -1,8 +1,13 @@
 import {
   BookCommonDataSource,
-  BookInfoResponse, CoverDataSource, MostPopularResponse,
+  BookInfoResponse, CoverDataSource,
+  DownloadFileDataSource,
+  DownloadFileResponse,
+  FormatsDataSource,
+  FormatsResponse,
+  MostPopularResponse,
   SearchInfoResponse,
-  SimilarResponse } from "../common/DataSourceTypes";
+  SimilarResponse } from "../common/ResponseTypes";
 import ReqInst from "../common/request/Request";
 import { Any, LogUtil as logger } from "@pura/harmony-utils"
 import { SearchQueryType } from "../common/QueryTypes";
@@ -11,10 +16,7 @@ import { SearchQueryType } from "../common/QueryTypes";
  * todo:
  * /eapi/book/recently (GET)
  * /eapi/book/{id}/{hash}/formats (GET)
- * /eapi/book/search (POST); body parameters: message, yearFrom, yearTo, languages, extensions, e, page, limit, order
  * /eapi/book/{id}/{hash}/send-to-{type} (GET)
- * /eapi/book/{id}/{hash} (GET); query: switchLanguage
- * /eapi/book/{id}/{hash}/similar (GET)
  */
 
 export async function getMostPopular(): Promise<CoverDataSource[]> {
@@ -49,6 +51,24 @@ export async function getSearch(param: SearchQueryType): Promise<SearchInfoRespo
   logger.debug(response)
   if (response.success === 1) {
     return response
+  }
+  return null
+}
+
+export async function getBookFormat(bookId: number, hash: string): Promise<FormatsDataSource[]> {
+  let response = await ReqInst.get<FormatsResponse>(`/eapi/book/${bookId}/${hash}/formats`);
+  logger.debug(response)
+  if (response.success === 1) {
+    return response.books
+  }
+  return []
+}
+
+export async function getBookDownloadUrl(bookId: number, hash: string): Promise<DownloadFileDataSource | null> {
+  let response = await ReqInst.get<DownloadFileResponse>(`/eapi/book/${bookId}/${hash}/file`);
+  logger.debug(response)
+  if (response.success === 1) {
+    return response.file
   }
   return null
 }

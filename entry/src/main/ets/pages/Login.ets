@@ -1,5 +1,6 @@
 import { prompt, promptAction, window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { ToastUtil } from '@pura/harmony-utils';
 import { login } from '../api/LoginApi';
 
 @Entry
@@ -11,8 +12,7 @@ struct Login {
   private async onLogin() {
     if (!this.username || !this.password) {
       hilog.info(0x000, 'libzidane', 'login_failed')
-      this.getUIContext().getPromptAction().showToast({
-        message: "请输入账号和密码",
+      ToastUtil.showToast("请输入账号和密码", {
         duration: 2000,
         showMode: promptAction.ToastShowMode.DEFAULT,
         bottom: 80

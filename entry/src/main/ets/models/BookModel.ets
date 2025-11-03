@@ -128,3 +128,11 @@ export interface BookDetailParam {
   bookId: number,
   hash: string
 }
+
+export interface BookFormatType {
+  id: number,
+  hash: string,
+  extension: string,
+  filesize: number,
+  filesizeString: string,
+}

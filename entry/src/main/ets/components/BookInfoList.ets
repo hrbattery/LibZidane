@@ -1,4 +1,5 @@
-import { PaginationDataSource } from "../common/DataSourceTypes";
+import { LogUtil } from "@pura/harmony-utils";
+import { PaginationDataSource } from "../common/ResponseTypes";
 import { BookData, BookDetailParam } from "../models/BookModel";
 import { BookInfoListItem } from "./BookInfoListItem";
 
@@ -88,7 +89,7 @@ export struct BookInfoList {
                 })
             }
           })
-          .key((item, index) => `${index}:${item.title}`)
+          .key((item, index) => `${index}:${item.title}:${item._isFavorite}`)
       }
       .width("100%")
       .height("100%")

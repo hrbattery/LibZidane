@@ -3,7 +3,7 @@ import {
   FavoriteResponse,
   MostPopularResponse,
   SaveBookResponse,
-  UnsaveBookResponse} from "../common/DataSourceTypes";
+  UnsaveBookResponse} from "../common/ResponseTypes";
 import ReqInst from "../common/request/Request";
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { DownloadedQueryType, FavoriteQueryType } from "../common/QueryTypes";
@@ -11,9 +11,7 @@ import { DownloadedQueryType, FavoriteQueryType } from "../common/QueryTypes";
 /*
  * todo:
  * /eapi/user/book/{id}/delete (GET)
- * /eapi/user/book/{bookId}/unsave (GET)
  * /eapi/user/donations (GET)
- * /eapi/user/book/{bookId}/save (GET)
  * /eapi/user/profile (GET)
  *
  * not going to do:
