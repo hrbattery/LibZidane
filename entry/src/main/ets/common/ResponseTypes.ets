@@ -125,3 +125,13 @@ export interface FormatsResponse {
   success: number,
   books: FormatsDataSource[]
 }
+
+export interface LanguagesResponse {
+  success: number,
+  languages: Record<string, string>
+}
+
+export interface ExtensionsResponse {
+  success: number,
+  extensions: string[]
+}

@@ -9,7 +9,7 @@ import {
   SearchInfoResponse,
   SimilarResponse } from "../common/ResponseTypes";
 import ReqInst from "../common/request/Request";
-import { Any, LogUtil as logger } from "@pura/harmony-utils"
+import { LogUtil as logger } from "@pura/harmony-utils"
 import { SearchQueryType } from "../common/QueryTypes";
 
 /*

@@ -1,7 +1,7 @@
 export interface SearchQueryType {
   message: string,
-  yearFrom?: number,
-  yearTo?: number,
+  yearFrom?: string,
+  yearTo?: string,
   languages?: string[],
   extensions?: string[],
   e: number, // exactly: 完全匹配
