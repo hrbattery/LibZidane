@@ -8,6 +8,8 @@ import ReqInst from "./Request";
 import { Any, DialogUtil, FileUtil, LogUtil, ToastUtil } from "@pura/harmony-utils";
 import { AxiosProgressEvent } from "@ohos/axios";
 import { notificationUtil } from "../system/NotificationUtil";
+import { BusinessError, request } from '@kit.BasicServicesKit';
+import { filesize } from "../../thirdparty/filesize/filesize"
 
 
 class FileDownload {
@@ -19,30 +21,38 @@ class FileDownload {
         DialogUtil.showConfirmDialog({ title:'提示', message:'文件已存在'})
         return;
       }
+      if (await FileUtil.access(cachePath)) {
+        await fs.unlink(cachePath)
+      }
       try {
         ToastUtil.showToast("开始下载：" + downloadData.fileName)
-        await ReqInst.get<Any>(downloadData.downloadLink, {
-          timeout: 0,
-          filePath: cachePath,
-          onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
-            // todo: 显示已下载和总大小的具体数值，显示在通知标题中
-            notificationUtil.download(bookData.id, '正在下载', downloadData.fileName, (progressEvent.loaded / progressEvent.total!) * 100)
-          }
+
+        const downloadTask: request.DownloadTask = await request.downloadFile(context, {
+          url: downloadData.downloadLink,
+          filePath: cachePath
         })
-        await fs.moveFile(cachePath, filesPath.path)
-        // todo: 通知回调，可以点击跳转到下载文件目录处
-        notificationUtil.publish(bookData.id, '下载完成', downloadData.fileName)
-        // relationStore.addPair(fileUri, bookData)
-        ToastUtil.showToast(`下载完成: ${downloadData.fileName}`)
+        downloadTask.on('complete', async () => {
+          await this.onComplete(cachePath, filesPath, bookData, downloadData);
+        })
+        downloadTask.on('progress', (receivedSize: number, totalSize: number) => {
+          const receiveSizeText: string = filesize(receivedSize)
+          const totalSizeText: string = filesize(totalSize)
+          notificationUtil.download(
+            bookData.id,
+            `正在下载 (${receiveSizeText} / ${totalSizeText})`,
+            downloadData.fileName,
+            (receivedSize / totalSize) * 100
+          )
+        })
+        downloadTask.on('fail', async () => {
+          await fs.unlink(cachePath)
+        })
       } catch (err) {
-        ToastUtil.showToast('下载时出错: ' + err.message)
-        notificationUtil.publish(bookData.id, '下载失败', downloadData.fileName)
-        LogUtil.error(`下载时出错: ${JSON.stringify(err)}`)
-      } finally {
-        await fs.unlink(cachePath)
+        this.onError(err, bookData, downloadData);
       }
     }
   }
+
 
   private async getDownloadPath(context: common.UIAbilityContext, fileName: string): Promise<fileUri.FileUri | null> {
     let uri: string = '';
@@ -61,19 +71,24 @@ class FileDownload {
     return null;
   }
 
-  private onProgress() {
-    // notification.update
+  private onProgress(id: number, fileName: string, progress: number) {
+    // todo: 显示已下载和总大小的具体数值，显示在通知标题中
+    notificationUtil.download(id, '正在下载', fileName, progress)
   }
 
-  private onComplete() {
-    // notification.update(FINISH)
-    // toast
-
+  private async onComplete(cachePath: string, filesPath: fileUri.FileUri, bookData: FullBookDataType,
+    downloadData: DownloadFileData) {
+    await fs.moveFile(cachePath, filesPath.path);
+    // todo: 通知回调，可以点击跳转到下载文件目录处
+    notificationUtil.publish(bookData.id, '下载完成', downloadData.fileName);
+    // relationStore.addPair(fileUri, bookData)
+    ToastUtil.showToast(`下载完成: ${downloadData.fileName}`);
   }
 
-  private onError() {
-    // notification.cancel
-    // toast
+  private onError(err: BusinessError, bookData: FullBookDataType, downloadData: DownloadFileData) {
+    ToastUtil.showToast('下载时出错: ' + err.message);
+    notificationUtil.publish(bookData.id, '下载失败', downloadData.fileName);
+    LogUtil.error(`下载时出错: ${JSON.stringify(err)}`);
   }
 }
 

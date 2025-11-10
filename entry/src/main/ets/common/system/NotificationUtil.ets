@@ -49,14 +49,12 @@ class NotificationUtil {
           text: fileName
         }
       },
-      // 构造进度条模板，name字段当前需要固定配置为downloadTemplate
       template: {
         name: 'downloadTemplate',
         data: { title: title, fileName: fileName, progressValue: progress }
       }
     }
 
-    // 发布通知
     notificationManager.publish(notificationRequest)
       .then(() => logger.debug(TAG, '发送通知成功：进度' + progress))
       .catch((err:Error) => {
