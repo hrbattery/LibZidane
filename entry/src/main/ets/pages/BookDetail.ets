@@ -6,9 +6,11 @@ import { webview } from '@kit.ArkWeb';
 import { BookCoverWaterFlow } from '../components/BookCoverWaterFlow';
 import { bookDataCache } from '../common/cache/BookDataCache';
 import { saveBook, unsaveBook } from '../api/UserApi';
-import { fileDownload } from '../common/request/FileDownload';
-import { common } from '@kit.AbilityKit';
 import { BookFormatSheetBuilder } from '../components/BookFormatSheet';
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor as utd } from '@kit.ArkData';
+import { common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 
 @Builder
@@ -28,7 +30,7 @@ struct BookDetailPage {
     {
       'value': "分享",
       'icon': $r("app.media.share"),
-      'action': () => {}
+      'action': () => this.shareBook()
     },
     {
       'value': "收藏",
@@ -72,6 +74,30 @@ struct BookDetailPage {
           'action': () => this.onClickStar()
         }
       ]
+    }
+  }
+
+  shareBook() {
+    const baseUrl = AppStorage.get("base_url") as string ?? "https://1lib.sk/"
+
+    if (this.bookData) {
+      let shareData: systemShare.SharedData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: baseUrl + this.bookData.href,
+        title: this.bookData.title,
+        description: baseUrl + this.bookData.href
+      });
+
+      let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      controller.show(context, {
+        selectionMode: systemShare.SelectionMode.SINGLE,
+        previewMode: systemShare.SharePreviewMode.DEFAULT,
+      }).then(() => {
+        logger.info('ShareController show success.');
+      }).catch((error: BusinessError) => {
+        logger.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+      });
     }
   }
 
@@ -161,6 +187,9 @@ struct BookDetailPage {
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .textAlign(TextAlign.Center)
                 .margin({"left": "10vp", "right": "10vp"})
+                .onClick(() => {
+                  this.pathStack?.pushPathByName("Search", this.bookData?.author)
+                })
               Row() {
                 if (this.bookData.year !== 0) {
                   Text(`${this.bookData.year}`)
