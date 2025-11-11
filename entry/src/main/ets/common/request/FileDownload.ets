@@ -9,7 +9,7 @@ import { Any, DialogUtil, FileUtil, LogUtil, ToastUtil } from "@pura/harmony-uti
 import { AxiosProgressEvent } from "@ohos/axios";
 import { notificationUtil } from "../system/NotificationUtil";
 import { BusinessError, request } from '@kit.BasicServicesKit';
-import { filesize } from "../../thirdparty/filesize/filesize"
+import { filesize } from "../thirdparty/filesize/filesize"
 
 
 class FileDownload {
@@ -69,11 +69,6 @@ class FileDownload {
       console.error(`Invoke documentViewPicker.save failed, code is ${err.code}, message is ${err.message}`);
     };
     return null;
-  }
-
-  private onProgress(id: number, fileName: string, progress: number) {
-    // todo: 显示已下载和总大小的具体数值，显示在通知标题中
-    notificationUtil.download(id, '正在下载', fileName, progress)
   }
 
   private async onComplete(cachePath: string, filesPath: fileUri.FileUri, bookData: FullBookDataType,

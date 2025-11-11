@@ -2,7 +2,7 @@ import { getDownloaded, getFavorite } from "../api/UserApi"
 import { BookData, BookDataType } from "../models/BookModel"
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { BookInfoList, BookInfoListParam } from "../components/BookInfoList"
-import { PaginationDataSource } from "../common/ResponseTypes"
+import { PaginationDataSource } from "../common/types/ResponseTypes"
 import { Constants } from "../common/const/Constants"
 
 @ComponentV2

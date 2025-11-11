@@ -19,14 +19,14 @@ import {
 	SPACE,
 	STRING,
 	STRINGS,
-} from "./constants.js";
+} from "./constants";
 import {
 	applyNumberFormatting,
 	applyPrecisionHandling,
 	calculateOptimizedValue,
 	getBaseConfiguration,
 	handleZeroValue
-} from "./helpers.js";
+} from "./helpers";
 
 /**
  * Converts a file size in bytes to a human-readable string with appropriate units

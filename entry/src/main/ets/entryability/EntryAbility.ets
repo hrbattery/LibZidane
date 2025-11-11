@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { appInit } from '../common/AppInit';
+import { appInit } from '../common/system/AppInit';
 
 const DOMAIN = 0x0000;
 

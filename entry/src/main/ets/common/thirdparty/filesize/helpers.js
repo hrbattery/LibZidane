@@ -16,7 +16,7 @@ import {
 	SI,
 	STRINGS,
 	ZERO
-} from "./constants.js";
+} from "./constants";
 
 // Cached configuration lookup for better performance
 const STANDARD_CONFIGS = {

@@ -4,7 +4,7 @@ import { getSearch } from "../api/BookApi"
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { BookInfoList, BookInfoListParam } from "../components/BookInfoList"
 import { BookData, BookDataType } from "../models/BookModel"
-import { PaginationDataSource } from "../common/ResponseTypes"
+import { PaginationDataSource } from "../common/types/ResponseTypes"
 import { DialogHelper } from "@pura/harmony-dialog"
 import { SearchOptionDialog } from "../components/SearchOptionDialog"
 import { SearchFilterOptions } from "../models/SearchFilterOptionModel"
@@ -129,7 +129,6 @@ struct SearchPage {
     }
   }
 
-
   build() {
     NavDestination() {
       Column() {
@@ -169,6 +168,12 @@ struct SearchPage {
         }
       }
     ])
+    .onReady((context: NavDestinationContext) => {
+      let param = context.pathInfo.param as string;
+      if (param && param !== "") {
+        this.searchKeyword = param;
+      }
+    })
   }
 
   @Builder

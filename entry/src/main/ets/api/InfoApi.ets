@@ -1,5 +1,5 @@
 import ReqInst from "../common/request/Request";
-import { ExtensionsResponse, LanguagesResponse } from "../common/ResponseTypes";
+import { ExtensionsResponse, LanguagesResponse } from "../common/types/ResponseTypes";
 import { LogUtil as logger } from "@pura/harmony-utils"
 /*
  * todo:

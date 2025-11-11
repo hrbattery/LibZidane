@@ -7,10 +7,10 @@ import {
   FormatsResponse,
   MostPopularResponse,
   SearchInfoResponse,
-  SimilarResponse } from "../common/ResponseTypes";
+  SimilarResponse } from "../common/types/ResponseTypes";
 import ReqInst from "../common/request/Request";
 import { LogUtil as logger } from "@pura/harmony-utils"
-import { SearchQueryType } from "../common/QueryTypes";
+import { SearchQueryType } from "../common/types/QueryTypes";
 
 /*
  * todo:

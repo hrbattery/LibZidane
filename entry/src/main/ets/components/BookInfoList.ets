@@ -1,5 +1,5 @@
 import { LogUtil } from "@pura/harmony-utils";
-import { PaginationDataSource } from "../common/ResponseTypes";
+import { PaginationDataSource } from "../common/types/ResponseTypes";
 import { BookData, BookDetailParam } from "../models/BookModel";
 import { BookInfoListItem } from "./BookInfoListItem";
 

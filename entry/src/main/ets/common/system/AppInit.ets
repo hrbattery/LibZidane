@@ -1,7 +1,7 @@
 import { common } from '@kit.AbilityKit';
 import { notificationManager } from '@kit.NotificationKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { getExtensions, getLanguages } from '../api/InfoApi';
+import { getExtensions, getLanguages } from '../../api/InfoApi';
 
 
 export function appInit(context: common.UIAbilityContext) {
