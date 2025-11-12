@@ -1,21 +1,20 @@
-import { getBookInfo, getMostPopular } from "../api/BookApi"
-import { BookDetailParam, CoverData, FullBookDataType } from "../models/BookModel"
+import { getMostPopular } from "../api/BookApi"
+import { CoverData } from "../models/BookModel"
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { getRecommended } from "../api/UserApi"
-import { BookCover } from "../components/BookCover"
 import { BookCoverWaterFlow } from "../components/BookCoverWaterFlow"
-
-/**
- *
- */
+import { ErrorStatePlaceholder } from "../components/ErrorStatePlaceholder"
 
 @ComponentV2
 export struct Library {
   @Local tabCurrentIndex: number = 0
+  @Local isShowMostPopularEmpty: boolean = false;
+  @Local isShowRecommendedEmpty: boolean = false
 
   async loadMostPopularDataSource() {
     try {
       let mostPopulars = await getMostPopular();
+      this.isShowMostPopularEmpty = false;
       return mostPopulars.map(element => {
         return new CoverData(
           element.id,
@@ -27,7 +26,7 @@ export struct Library {
       })
     } catch (e) {
       logger.error(e)
-      // todo: toast error or use a 404 page
+      this.isShowMostPopularEmpty = true;
     }
     return []
   }
@@ -35,6 +34,7 @@ export struct Library {
   async loadRecommendedDataSource() {
     try {
       let recommends = await getRecommended();
+      this.isShowRecommendedEmpty = false;
        return recommends.map(element => {
         return new CoverData(
           element.id,
@@ -46,35 +46,42 @@ export struct Library {
       })
     } catch (e) {
       logger.error(e)
-      // todo: toast error or use a 404 page
+      this.isShowRecommendedEmpty = true;
     }
     return []
   }
 
   build() {
     Column() {
-      // TextInput({ placeholder: 'Search for...' })
-      //   .width('90%')
-      //   .height(45)
-      //   .fontSize(16)
-      //   .backgroundColor('#F0F2F4')
-      //   .onChange(value => this.searchText = value)
-
       Tabs({index: this.tabCurrentIndex}) {
         TabContent() {
-          BookCoverWaterFlow({
-            onInitialData: this.loadRecommendedDataSource
-          })
+          if (this.isShowRecommendedEmpty) {
+            ErrorStatePlaceholder({
+              onRefreshClick: async () => await this.loadRecommendedDataSource()
+            })
+          } else {
+            BookCoverWaterFlow({
+              onInitialData: async () => await this.loadRecommendedDataSource(),
+              onRefreshData: async () => await this.loadRecommendedDataSource()
+            })
+          }
+
         }
         .tabBar('推荐的')
         TabContent() {
-          BookCoverWaterFlow({
-            onInitialData: this.loadMostPopularDataSource
-          })
+          if (this.isShowMostPopularEmpty) {
+            ErrorStatePlaceholder({
+              onRefreshClick: async () => await this.loadMostPopularDataSource()
+            })
+          } else {
+            BookCoverWaterFlow({
+              onInitialData: async () => await this.loadMostPopularDataSource(),
+              onRefreshData: async () => await this.loadMostPopularDataSource()
+            })
+          }
         }
         .tabBar('最受欢迎的')
       }.barMode(BarMode.Fixed)
-
     }
   }
 }

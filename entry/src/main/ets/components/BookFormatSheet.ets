@@ -5,17 +5,8 @@ import { getBookDownloadUrl } from "../api/BookApi"
 import { url } from "@kit.ArkTS"
 import { ToastUtil } from "@pura/harmony-utils"
 
-@Builder
-export function BookFormatSheetBuilder(mainBookData: FullBookDataType, formats: BookFormatType[], onClose: () => void) {
-  BookFormatSheet({
-    mainBookData: mainBookData,
-    formats: formats,
-    onClose: onClose
-  })
-}
-
 @ComponentV2
-struct BookFormatSheet {
+export struct BookFormatSheet {
   @Param @Require mainBookData: FullBookDataType
   @Param @Require formats: BookFormatType[]
   @Param @Require onClose: () => void;

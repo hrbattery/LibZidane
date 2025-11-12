@@ -3,6 +3,7 @@ import { MyBook } from '../views/MyBook';
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { DialogHelper } from "@pura/harmony-dialog"
 import { Constants } from '../common/const/Constants';
+import { Settings } from '../views/Settings';
 
 @Entry
 @ComponentV2
@@ -10,7 +11,7 @@ struct Home {
   @Local index: number = 0;
   @Local tabCurrentIndex: number = 0;
   @Local tabController: TabsController = new TabsController()
-  @Local titleMap: string[] = ["图书馆", "我的书籍"]
+  @Local titleMap: string[] = ["图书馆", "我的书籍", "设置"]
   @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems()
 
   @Local myBookTabIndex: number = 0;
@@ -18,9 +19,7 @@ struct Home {
   @Local favoriteSortOrder: number = 0; // 收藏排序：saved_date, saved_dateA
   @Local downloadedSortOrder: number = 0; // 下载排序：downloaded_date, downloaded_dateA, titleA, title, filesize, filesizeA, year
 
-
   @Provider("navPathStack") navPathStack: NavPathStack = new NavPathStack()
-
 
   build() {
     Navigation(this.navPathStack) {
@@ -45,6 +44,11 @@ struct Home {
           })
         }
         .tabBar("我的书籍")
+
+        TabContent() {
+          Settings()
+        }
+        .tabBar("设置")
       }
       .height('100%')
       .width('100%')
@@ -62,10 +66,6 @@ struct Home {
     .title(this.titleMap[this.index])
     .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
-    // .hideBackButton(true)
-    // .hideNavBar(true)
-    // .hideTitleBar(true)
-    // .hideToolBar(true)
   }
 
   @Builder ToolBar() {

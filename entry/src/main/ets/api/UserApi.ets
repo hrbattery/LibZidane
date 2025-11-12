@@ -15,7 +15,6 @@ import { DownloadedQueryType, FavoriteQueryType } from "../common/types/QueryTyp
  * /eapi/user/profile (GET)
  *
  * not going to do:
- * /eapi/user/donations (GET)
  * /eapi/user/hide-banner (GET)
  * /eapi/user/password-recovery (POST); body parameters: email
  * /eapi/user/registration (POST); body parameters: email, password, name

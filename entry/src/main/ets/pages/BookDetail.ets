@@ -6,7 +6,7 @@ import { webview } from '@kit.ArkWeb';
 import { BookCoverWaterFlow } from '../components/BookCoverWaterFlow';
 import { bookDataCache } from '../common/cache/BookDataCache';
 import { saveBook, unsaveBook } from '../api/UserApi';
-import { BookFormatSheetBuilder } from '../components/BookFormatSheet';
+import { BookFormatSheet } from '../components/BookFormatSheet';
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
@@ -215,7 +215,7 @@ struct BookDetailPage {
               Button('下载')
                 .width("90%")
                 .onClick(() => this.showSelectFormatSheet())
-                .bindSheet(!!this.isShowSelectFormatSheet, BookFormatSheetBuilder(
+                .bindSheet(!!this.isShowSelectFormatSheet, this.BookFormatSheetBuilder(
                   this.bookData,
                   this.bookFormats,
                   () => this.handleSelectFormatSheet()
@@ -342,5 +342,14 @@ struct BookDetailPage {
           top: 15
         })
     }.align(Alignment.Start)
+  }
+
+  @Builder
+  BookFormatSheetBuilder(mainBookData: FullBookDataType, formats: BookFormatType[], onClose: () => void) {
+    BookFormatSheet({
+      mainBookData: mainBookData,
+      formats: formats,
+      onClose: onClose
+    })
   }
 }

@@ -9,6 +9,21 @@
       "name": "Search",
       "pageSourceFile": "src/main/ets/pages/Search.ets",
       "buildFunction": "SearchPageBuilder"
+    },
+    {
+      "name": "Settings_About",
+      "pageSourceFile": "src/main/ets/pages/Search.ets",
+      "buildFunction": "SearchPageBuilder"
+    },
+    {
+      "name": "Settings_Donation",
+      "pageSourceFile": "src/main/ets/pages/Search.ets",
+      "buildFunction": "SearchPageBuilder"
+    },
+    {
+      "name": "Settings_Login",
+      "pageSourceFile": "src/main/ets/pages/settings/Login.ets",
+      "buildFunction": "SettingsLoginBuilder"
     }
   ]
 }

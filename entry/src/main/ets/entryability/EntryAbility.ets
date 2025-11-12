@@ -31,7 +31,7 @@ export default class EntryAbility extends UIAbility {
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
     });
 
-    appInit(this.context)
+    await appInit(this.context)
   }
 
   onWindowStageDestroy(): void {

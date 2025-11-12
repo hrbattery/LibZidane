@@ -1,9 +1,11 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "@ohos/axios"
 import { LogUtil as logger } from "@pura/harmony-utils"
+import { StorageConstants } from "../const/StorageConstants"
+import { preferencesUtils } from "../data/PreferencesUtils"
 import { qpsController } from "./RequestQueue"
 
 const TAG = '[Request]'
-const baseUrl = "https://1lib.sk/"
+const baseUrl = AppStorage.get("base_url") as string ?? "https://1lib.sk"
 
 let reqInst = axios.create({
   timeout: 15000
@@ -17,7 +19,7 @@ reqInst.interceptors.request.use(async (request: InternalAxiosRequestConfig) => 
   if (request.method === 'post' || request.method === 'POST') {
     request.headers.setContentType("application/x-www-form-urlencoded");
   }
-  const cookies = getCookie()
+  const cookies = await getCookie()
   if (cookies !== "") {
     request.headers['Cookie'] = cookies;
   }
@@ -67,9 +69,9 @@ const commonRequest = async<T>(config: AxiosRequestConfig): Promise<T> => {
 let ReqInst: Request = new Request()
 export default ReqInst
 
-export function getCookie() {
+export async function getCookie() {
   // todo: use cacheManager without expired time
-  let curCookie: Record<string, string> = AppStorage.get('cookie') || {}
+  let curCookie = await preferencesUtils.get<Record<string, string>>(StorageConstants.DEFAULT_PREF, 'cookie', {})
   let cookies: string[] = []
 
   for (const key of Object.keys(curCookie)) {
@@ -80,8 +82,8 @@ export function getCookie() {
   return cookies.join("; ");
 }
 
-export function setCookie(cookies: string[]) {
-  let curCookie: Record<string, string> = AppStorage.get('cookie') || {}
+export async function setCookie(cookies: string[]) {
+  let curCookie = await preferencesUtils.get<Record<string, string>>(StorageConstants.DEFAULT_PREF, 'cookie', {})
   cookies.forEach(cookie => {
     let GeneratedDestructArray_1 = cookie.split(';');
     let keyValue = GeneratedDestructArray_1[0]; // 提取键值部分（忽略过期时间等属性）
@@ -93,5 +95,5 @@ export function setCookie(cookies: string[]) {
     curCookie[key.trim()] = value.trim()
   });
 
-  AppStorage.setOrCreate('cookie', curCookie)
+  await preferencesUtils.put(StorageConstants.DEFAULT_PREF, 'cookie', curCookie)
 }

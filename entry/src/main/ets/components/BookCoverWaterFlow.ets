@@ -1,8 +1,5 @@
-import { getBookInfo } from '../api/BookApi';
-import { BookDetailParam, CoverData, FullBookDataType } from '../models/BookModel'
+import { BookDetailParam, CoverData } from '../models/BookModel'
 import { BookCover } from './BookCover'
-import { LogUtil as logger } from "@pura/harmony-utils"
-import { bookDataCache } from '../common/cache/BookDataCache';
 
 /**
  * WaterFlow component showing book covers.
@@ -13,7 +10,12 @@ import { bookDataCache } from '../common/cache/BookDataCache';
 export struct BookCoverWaterFlow {
   @Local coverDataSource: CoverData[] = []
 
+  @Local refreshing: boolean = false;
+  @Local refreshOffset: number = 0;
+  @Local refreshState: RefreshStatus = RefreshStatus.Inactive;
+
   @Event onInitialData: () => Promise<CoverData[]> = async () => []
+  @Event onRefreshData: () => Promise<CoverData[]> = async () => []
 
   pathStack: NavPathStack | undefined = undefined;
 
@@ -23,30 +25,11 @@ export struct BookCoverWaterFlow {
    * @param hash
    */
   gotoBookDetail(bookId: number, hash: string) {
-    if (this.pathStack) {
-      this.pathStack.pushPathByName("BookDetail", {
-        bookId: bookId,
-        hash: hash
-      } as BookDetailParam)
-    }
+    this.pathStack?.pushPathByName("BookDetail", {
+      bookId: bookId,
+      hash: hash
+    } as BookDetailParam)
   }
-
-  // /**
-  //  * Load book detail data, to accelerate loading procedure of book detail page.
-  //  * @param bookId
-  //  * @param hash
-  //  */
-  // async preloadBookDetail(bookId: number, hash: string) {
-  //   if (!bookDataCache.getCache(`${bookId}_${hash}`)) {
-  //     try {
-  //       let bookData = await getBookInfo(bookId, hash) as FullBookDataType;
-  //       bookDataCache.setCache(`${bookId}_${hash}`, bookData)
-  //     } catch (e) {
-  //       logger.error(e)
-  //       // todo: toast error or use a 404 page
-  //     }
-  //   }
-  // }
 
   async aboutToAppear(): Promise<void> {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
@@ -54,37 +37,49 @@ export struct BookCoverWaterFlow {
   }
 
   build() {
-    WaterFlow() {
-      Repeat(this.coverDataSource)
-        .each((ri) => {
-          BookCover({coverData: ri.item})
-            .border({
-              width: 5,
-              color: Color.Transparent
-            })
-            .onClick(() => {
-              this.gotoBookDetail(ri.item.id, ri.item.hash)
-            })
-            // .onVisibleAreaChange([0.0, 1.0], (isExpanding: boolean, currentRatio: number) => {
-            //   if (isExpanding && currentRatio >= 1.0) {
-            //     this.preloadBookDetail(ri.item.id, ri.item.hash)
-            //   }
-            // })
-        })
-        .key((item, index) => `${index}:${item.name}`)
+    Refresh({ refreshing: $$this.refreshing, builder: this.refreshBuilder() }) {
+      WaterFlow() {
+        Repeat(this.coverDataSource)
+          .each((ri) => {
+            BookCover({ coverData: ri.item })
+              .border({
+                width: 5,
+                color: Color.Transparent
+              })
+              .onClick(() => {
+                this.gotoBookDetail(ri.item.id, ri.item.hash)
+              })
+          })
+          .key((item, index) => `${index}:${item.name}`)
+      }
+      .columnsTemplate('1fr 1fr 1fr')
+      .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     }
-    .columnsTemplate('1fr 1fr 1fr')
-    // todo: 组件需要接收方法，描述在刷新或者请求新内容时调用的方法
-    // .onScrollIndex((start, end) => {
-    //   console.log('onScrollIndex', start, end);
-    //   // 数据懒加载
-    //   if (this.recommendedDataSource.length < 50) {
-    //     for (let i = 0; i < 10; i++) {
-    //       if (this.recommendedDataSource.length < 50) {
-    //         this.recommendedDataSource.push(new CoverData(`Cover_loaded_${i}`, ""));
-    //       }
-    //     }
-    //   }
-    // })
+    .onOffsetChange((offset: number) => {
+      this.refreshOffset = offset;
+    })
+    .onStateChange((state: RefreshStatus) => {
+      this.refreshState = state;
+    })
+    .onRefreshing(async () => {
+      this.coverDataSource = await this.onRefreshData()
+      this.refreshing = false;
+    })
+  }
+
+  @Builder
+  refreshBuilder() {
+    Stack({ alignContent: Alignment.Bottom }) {
+      // 可以通过刷新状态控制是否存在Progress组件。
+      // 当刷新状态处于下拉中或刷新中状态时Progress组件才存在。
+      if (this.refreshState != RefreshStatus.Inactive && this.refreshState != RefreshStatus.Done) {
+        LoadingProgress()
+          .width(32).height(32)
+          .margin(10)
+      }
+    }
+    .clip(true)
+    .height("100%")
+    .width("100%")
   }
 }

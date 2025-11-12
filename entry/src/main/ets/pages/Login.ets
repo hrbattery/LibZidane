@@ -1,7 +1,8 @@
-import { prompt, promptAction, window } from '@kit.ArkUI';
+import { AppStorageV2, prompt, promptAction, window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { ToastUtil } from '@pura/harmony-utils';
 import { login } from '../api/LoginApi';
+import { SettingsModel } from '../models/SettingsModel';
 
 @Entry
 @ComponentV2
@@ -22,6 +23,7 @@ struct Login {
     // 实际开发中应替换为真实接口调用
     hilog.info(0x000, 'libzidane', 'login_go')
     let res = await login(this.username, this.password)
+    AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!.hasCookie = res
     if (res) {
       this.getUIContext().getRouter().replaceUrl({ url: 'pages/Home' });
     }
