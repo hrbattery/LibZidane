@@ -23,14 +23,10 @@ interface LoginResponse {
 /*
  * todo:
  * /eapi/user/token-sign-in (POST); body parameters: name, id_token
- * */
+ */
 
 export async function login(email: string, password: string): Promise<boolean> {
   let response = await ReqInst.post<LoginResponse, LoginData>("/eapi/user/login", { email, password })
   logger.debug(response)
-  if (response.success === 1) {
-    // todo: 记录userkey和userid，是不是可以直接用cookie存着
-    return true;
-  }
-  return false;
+  return response.success === 1
 }

@@ -2,27 +2,27 @@
   "routerMap": [
     {
       "name": "BookDetail",
-      "pageSourceFile": "src/main/ets/pages/BookDetail.ets",
+      "pageSourceFile": "src/main/ets/view/pages/BookDetail.ets",
       "buildFunction": "BookDetailBuilder"
     },
     {
       "name": "Search",
-      "pageSourceFile": "src/main/ets/pages/Search.ets",
+      "pageSourceFile": "src/main/ets/view/pages/Search.ets",
       "buildFunction": "SearchPageBuilder"
     },
     {
       "name": "Settings_About",
-      "pageSourceFile": "src/main/ets/pages/Search.ets",
+      "pageSourceFile": "src/main/ets/view/pages/Search.ets",
       "buildFunction": "SearchPageBuilder"
     },
     {
       "name": "Settings_Donation",
-      "pageSourceFile": "src/main/ets/pages/Search.ets",
+      "pageSourceFile": "src/main/ets/view/pages/Search.ets",
       "buildFunction": "SearchPageBuilder"
     },
     {
       "name": "Settings_Login",
-      "pageSourceFile": "src/main/ets/pages/settings/Login.ets",
+      "pageSourceFile": "src/main/ets/view/pages/settings/Login.ets",
       "buildFunction": "SettingsLoginBuilder"
     }
   ]

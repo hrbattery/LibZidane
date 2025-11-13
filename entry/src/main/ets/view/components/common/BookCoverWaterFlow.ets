@@ -1,0 +1,53 @@
+import { BookDetailParam, CoverData } from '../../../models/BookModel'
+import { BookCover } from './BookCover'
+
+/**
+ * WaterFlow component showing book covers.
+ * Receive an array of CoverData.
+ */
+
+@ComponentV2
+export struct BookCoverWaterFlow {
+  @Param coverDataSource: CoverData[] = []
+
+  pathStack: NavPathStack | undefined = undefined;
+
+  /**
+   * Goto book detail page, according to the id and hash value of book.
+   * @param bookId
+   * @param hash
+   */
+  gotoBookDetail(bookId: number, hash: string) {
+    this.pathStack?.pushPathByName("BookDetail", {
+      bookId: bookId,
+      hash: hash
+    } as BookDetailParam)
+  }
+
+  aboutToAppear(): void {
+    this.pathStack = this.queryNavigationInfo()?.pathStack;
+  }
+
+  build() {
+    WaterFlow() {
+      Repeat(this.coverDataSource)
+        .each((ri) => {
+          BookCover({ coverData: ri.item })
+            .border({
+              width: 5,
+              color: Color.Transparent
+            })
+            .onClick(() => {
+              this.gotoBookDetail(ri.item.id, ri.item.hash)
+            })
+        })
+        .key((item, index) => `${index}:${item.name}`)
+    }
+    .columnsTemplate('1fr 1fr 1fr')
+    .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+    .nestedScroll({
+      scrollForward: NestedScrollMode.PARENT_FIRST,
+      scrollBackward: NestedScrollMode.PARENT_FIRST
+    })
+  }
+}
