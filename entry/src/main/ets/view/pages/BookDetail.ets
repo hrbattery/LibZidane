@@ -216,14 +216,15 @@ struct BookDetailPage {
               Button('下载')
                 .width("90%")
                 .onClick(() => this.showSelectFormatSheet())
-                .bindSheet(!!this.isShowSelectFormatSheet, this.BookFormatSheetBuilder(
+                .bindSheet(this.isShowSelectFormatSheet!!, this.BookFormatSheetBuilder(
                   this.bookData,
                   this.bookFormats,
                   () => this.handleSelectFormatSheet()
                 ), {
-                  height: SheetSize.MEDIUM,
+                  detents: [SheetSize.MEDIUM, SheetSize.LARGE, 600],
                   preferType: SheetType.BOTTOM,
                   title: { title: '选择格式' },
+                  scrollSizeMode: ScrollSizeMode.CONTINUOUS
                 })
             }
             .height("60%")

@@ -22,7 +22,7 @@ export struct BookFormatSheet {
         .fontWeight(FontWeight.Bold)
         .margin({left: 20, top: 10, bottom: 10})
         .alignSelf(ItemAlign.Start)
-      List({ space: '10vp' }) {
+      List({ space: 10 }) {
         Repeat(this.formats)
           .each((ri) => {
             ListItem() {
@@ -30,6 +30,11 @@ export struct BookFormatSheet {
             }
           })
       }
+      .edgeEffect(EdgeEffect.None) // 禁用默认边缘效果
+      .nestedScroll({
+        scrollForward: NestedScrollMode.PARENT_FIRST,
+        scrollBackward: NestedScrollMode.SELF_FIRST
+      })
       .alignListItem(ListItemAlign.Center)
       .width('100%')
       .height('100%')
@@ -40,12 +45,14 @@ export struct BookFormatSheet {
 
   @Builder
   BookFormatItem(item: FullBookDataType | BookFormatType) {
-    Row() {
-      Text(item.extension).fontSize(16)
-      Text(item.filesizeString).fontSize(16)
+    Button({type: ButtonType.Normal}) {
+      Row({ space: 10 }) {
+        Text(item.extension).fontSize(16).layoutWeight(1)
+        Text(item.filesizeString).fontSize(16)
+      }
+      .alignItems(VerticalAlign.Center)
     }
-    .justifyContent(FlexAlign.SpaceBetween)
-    .alignItems(VerticalAlign.Center)
+    .backgroundColor(Color.Transparent)
     .width("100%")
     .height('40vp')
     .padding({left: 20, right: 20})
