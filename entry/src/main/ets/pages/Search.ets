@@ -135,9 +135,7 @@ struct SearchPage {
         BookInfoList({
           bookDataSource: this.searchResultBooks,
           pagination: this.searchResultPagination,
-          onInitialData: (): Promise<void> => this.loadSearchDataSource(),
-          onLoadNewData: (): Promise<void> => this.loadNewSearchData(),
-          onRefreshData: (): Promise<void> => this.loadSearchDataSource()
+          onLoadNewData: (): Promise<void> => this.loadNewSearchData()
         })
       }
     }

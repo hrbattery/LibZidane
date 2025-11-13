@@ -19,11 +19,11 @@ struct Home {
   @Local favoriteSortOrder: number = 0; // 收藏排序：saved_date, saved_dateA
   @Local downloadedSortOrder: number = 0; // 下载排序：downloaded_date, downloaded_dateA, titleA, title, filesize, filesizeA, year
 
-  @Provider("navPathStack") navPathStack: NavPathStack = new NavPathStack()
+  navPathStack: NavPathStack = new NavPathStack()
 
   build() {
     Navigation(this.navPathStack) {
-      Tabs({ controller: this.tabController, index: this.tabCurrentIndex }) {
+      Tabs({ controller: this.tabController, index: this.tabCurrentIndex!! }) {
         TabContent() {
           Library()
         }
@@ -33,10 +33,7 @@ struct Home {
           MyBook({
             favoriteOrder: this.favoriteSortOrder,
             downloadedOrder: this.downloadedSortOrder,
-            onSortRequest: (orderBy: string) => {
-              // 这个事件可以用来从子组件向父组件传递排序相关的信息
-              logger.debug(`从MyBook组件接收排序请求: ${orderBy}`);
-            },
+
             onMyBookTabIndexChange: (index: number) => {
               this.myBookTabIndex = index;
               this.sortMenuItems = this.getSortMenuItems()
@@ -160,6 +157,6 @@ struct Home {
   }
 
   gotoSearchPage() {
-    this.navPathStack.pushPathByName("Search", undefined)
+    this.navPathStack.pushPathByName("Search", null)
   }
 }

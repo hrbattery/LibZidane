@@ -45,5 +45,9 @@ export struct BookCoverWaterFlow {
     }
     .columnsTemplate('1fr 1fr 1fr')
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+    .nestedScroll({
+      scrollForward: NestedScrollMode.PARENT_FIRST,
+      scrollBackward: NestedScrollMode.PARENT_FIRST
+    })
   }
 }
