@@ -1,4 +1,4 @@
-import ReqInst from "../common/request/Request"
+import ReqInst from "../../common/request/Request"
 import { LogUtil as logger } from "@pura/harmony-utils"
 
 interface LoginData {

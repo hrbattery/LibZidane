@@ -3,10 +3,10 @@ import {
   FavoriteResponse,
   MostPopularResponse,
   SaveBookResponse,
-  UnsaveBookResponse} from "../common/types/ResponseTypes";
-import ReqInst from "../common/request/Request";
+  UnsaveBookResponse} from "../../common/types/ResponseTypes";
+import ReqInst from "../../common/request/Request";
 import { LogUtil as logger } from "@pura/harmony-utils"
-import { DownloadedQueryType, FavoriteQueryType } from "../common/types/QueryTypes";
+import { DownloadedQueryType, FavoriteQueryType } from "../../common/types/QueryTypes";
 
 /*
  * todo:

@@ -1,4 +1,4 @@
-import { CoverData } from "../../../models/BookModel";
+import { CoverData } from "../../../model/entities/BookModel";
 
 @ComponentV2
 export struct BookCover {

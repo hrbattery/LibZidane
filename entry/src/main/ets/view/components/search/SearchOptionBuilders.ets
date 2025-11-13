@@ -44,7 +44,7 @@ export function generateYearRange(): string[] {
  * 多选组件
  */
 @Builder
-export function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: string, value: boolean) => void) {
+function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: string, value: boolean) => void) {
   List({
     initialIndex: 0,
     space: 4, // 增加列表项间距

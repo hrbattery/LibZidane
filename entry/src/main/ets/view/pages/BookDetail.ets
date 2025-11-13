@@ -1,11 +1,11 @@
-import { getBookFormat, getBookInfo, getSimilar } from '../../api/BookApi';
+import { getBookFormat, getBookInfo, getSimilar } from '../../model/api/BookApi';
 import { BookCover } from '../components/common/BookCover'
-import { BookDetailParam, BookFormatType, CoverData, FullBookDataType } from '../../models/BookModel'
+import { BookDetailParam, BookFormatType, CoverData, FullBookDataType } from '../../model/entities/BookModel'
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { webview } from '@kit.ArkWeb';
 import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
 import { bookDataCache } from '../../common/cache/BookDataCache';
-import { saveBook, unsaveBook } from '../../api/UserApi';
+import { saveBook, unsaveBook } from '../../model/api/UserApi';
 import { BookFormatSheet } from '../components/bookdetail/BookFormatSheet';
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';

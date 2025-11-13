@@ -1,12 +1,12 @@
 import { DialogHelper } from '@pura/harmony-dialog'
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils'
-import { getSearch } from '../../api/BookApi'
+import { getSearch } from '../../model/api/BookApi'
 import { Constants } from '../../common/const/Constants'
 import { PaginationDataSource } from '../../common/types/ResponseTypes'
 import { BookInfoList } from '../components/common/BookInfoList'
 import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
-import { BookData, BookDataType } from '../../models/BookModel'
-import { SearchFilterOptions } from '../../models/SearchFilterOptionModel'
+import { BookData, BookDataType } from '../../model/entities/BookModel'
+import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel'
 
 @Builder
 export function SearchPageBuilder() {
@@ -138,28 +138,14 @@ struct SearchPage {
     .title(this.SearchInput())
     .menus([
       {
-        'value': '排序',
-        'icon': $r("app.media.sort"),
-        'action': () => this.handleSortClick()
+        value: '排序',
+        icon: $r("app.media.sort"),
+        action: () => this.handleSortClick()
       },
       {
         value: "搜索选项",
         icon: $r("app.media.slider_vertical_3"),
-        action: () => {
-          DialogHelper.showCustomContentDialog({
-            contentBuilder: () => this.SearchOptionDialogBuilder(),
-            onAction: () => {
-              // 用命令模式来暂存更改，然后在onAction这里再决定是否要使用对应的更改
-              // 这样的话，传递过去的object也可以确定是只读的了
-              // 这样的话，不如将SearchOption设计成一个类，有对应的command和applyCommand方法
-              // 还可以抽象出类似的类，都可以用在这种需要暂存更改、但将apply更改的决定权交到另一个地方的场景了
-              this.searchFilterOption.apply()
-            },
-            uiContext: this.getUIContext(),
-            title: '搜索选项',
-            backgroundColor: '#FFFFFF'
-          })
-        }
+        action: () => this.handleSearchOptionsClick()
       }
     ])
     .onReady((context: NavDestinationContext) => {
@@ -167,6 +153,22 @@ struct SearchPage {
       if (param && param !== "") {
         this.searchKeyword = param;
       }
+    })
+  }
+
+  private handleSearchOptionsClick() {
+    DialogHelper.showCustomContentDialog({
+      contentBuilder: () => this.SearchOptionDialogBuilder(),
+      onAction: () => {
+        // 用命令模式来暂存更改，然后在onAction这里再决定是否要使用对应的更改
+        // 这样的话，传递过去的object也可以确定是只读的了
+        // 这样的话，不如将SearchOption设计成一个类，有对应的command和applyCommand方法
+        // 还可以抽象出类似的类，都可以用在这种需要暂存更改、但将apply更改的决定权交到另一个地方的场景了
+        this.searchFilterOption.apply()
+      },
+      uiContext: this.getUIContext(),
+      title: '搜索选项',
+      backgroundColor: '#FFFFFF'
     })
   }
 

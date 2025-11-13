@@ -1,5 +1,5 @@
 import { PaginationDataSource } from "../../common/types/ResponseTypes";
-import { BookData } from "../../models/BookModel";
+import { BookData } from "../../model/entities/BookModel";
 
 @ObservedV2
 export abstract class MyBookComponentViewModel {

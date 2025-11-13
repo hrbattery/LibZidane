@@ -3,10 +3,10 @@ import { notificationManager } from '@kit.NotificationKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { AppStorageV2 } from '@kit.ArkUI';
 
-import { getExtensions, getLanguages } from '../../api/InfoApi';
+import { getExtensions, getLanguages } from '../../model/api/InfoApi';
 import { preferencesUtils } from '../data/PreferencesUtils';
 import { StorageConstants } from '../const/StorageConstants';
-import { SettingsModel } from '../../models/SettingsModel';
+import { SettingsModel } from '../../model/entities/SettingsModel';
 
 
 export async function appInit(context: common.UIAbilityContext) {

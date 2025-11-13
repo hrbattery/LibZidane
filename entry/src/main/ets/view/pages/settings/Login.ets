@@ -1,7 +1,7 @@
 import { AppStorageV2, promptAction } from '@kit.ArkUI';
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
-import { login } from '../../../api/LoginApi';
-import { SettingsModel } from '../../../models/SettingsModel';
+import { login } from '../../../model/api/LoginApi';
+import { SettingsModel } from '../../../model/entities/SettingsModel';
 
 @Builder
 export function SettingsLoginBuilder() {

@@ -1,4 +1,4 @@
-import { Command } from "../common/types/CommonTypes";
+import { Command } from "../../common/types/CommonTypes";
 
 @ObservedV2
 export class SearchFilterOptions {

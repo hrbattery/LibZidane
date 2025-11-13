@@ -1,8 +1,8 @@
 import { AppStorageV2, prompt, promptAction, window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { ToastUtil } from '@pura/harmony-utils';
-import { login } from '../../api/LoginApi';
-import { SettingsModel } from '../../models/SettingsModel';
+import { login } from '../../model/api/LoginApi';
+import { SettingsModel } from '../../model/entities/SettingsModel';
 
 @Entry
 @ComponentV2
@@ -25,7 +25,7 @@ struct Login {
     let res = await login(this.username, this.password)
     AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!.hasCookie = res
     if (res) {
-      this.getUIContext().getRouter().replaceUrl({ url: 'pages/Home' });
+      this.getUIContext().getRouter().replaceUrl({ url: 'view/pages/Home' });
     }
   }
 

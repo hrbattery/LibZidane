@@ -1,4 +1,4 @@
-import { CoverData } from "../../models/BookModel";
+import { CoverData } from "../../model/entities/BookModel";
 
 @ObservedV2
 export abstract class LibraryComponentViewModel {

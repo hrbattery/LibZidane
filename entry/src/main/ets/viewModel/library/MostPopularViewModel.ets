@@ -1,7 +1,7 @@
 import { LogUtil as logger } from "@pura/harmony-utils"
-import { getMostPopular } from "../../api/BookApi";
+import { getMostPopular } from "../../model/api/BookApi";
 
-import { CoverData } from "../../models/BookModel";
+import { CoverData } from "../../model/entities/BookModel";
 import { LibraryComponentViewModel } from "./LibraryComponentViewModel";
 
 @ObservedV2

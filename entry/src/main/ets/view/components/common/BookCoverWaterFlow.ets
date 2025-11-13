@@ -1,4 +1,4 @@
-import { BookDetailParam, CoverData } from '../../../models/BookModel'
+import { BookDetailParam, CoverData } from '../../../model/entities/BookModel'
 import { BookCover } from './BookCover'
 
 /**

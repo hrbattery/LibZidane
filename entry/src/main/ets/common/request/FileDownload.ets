@@ -1,5 +1,5 @@
-import { FullBookDataType } from "../../models/BookModel";
-import { DownloadFileData } from "../../models/DownloadModel";
+import { FullBookDataType } from "../../model/entities/BookModel";
+import { DownloadFileData } from "../../model/entities/DownloadModel";
 import { path } from '@mysoft/path'
 import { fileUri, picker } from '@kit.CoreFileKit';
 import { fileIo as fs } from '@kit.CoreFileKit';

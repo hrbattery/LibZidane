@@ -1,5 +1,5 @@
 import { PaginationDataSource } from '../../../common/types/ResponseTypes';
-import { BookData, BookDetailParam } from '../../../models/BookModel';
+import { BookData, BookDetailParam } from '../../../model/entities/BookModel';
 import { BookInfoListItem } from './BookInfoListItem';
 
 @ComponentV2

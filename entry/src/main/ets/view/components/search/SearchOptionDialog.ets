@@ -1,4 +1,4 @@
-import { SearchFilterOptions } from '../../../models/SearchFilterOptionModel';
+import { SearchFilterOptions } from '../../../model/entities/SearchFilterOptionModel';
 import { YearPicker, LanguageSelector, ExtensionSelector, generateYearRange } from './SearchOptionBuilders';
 /**
  * 搜索选项对话框组件
@@ -6,11 +6,6 @@ import { YearPicker, LanguageSelector, ExtensionSelector, generateYearRange } fr
  */
 @ComponentV2
 export struct SearchOptionDialog {
-  // /**
-  //  * 是否显示对话框
-  //  */
-  // @Param visible: boolean;
-  
   /**
    * 当前筛选条件
    */

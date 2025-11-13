@@ -4,10 +4,12 @@ import { preferencesUtils } from "../../../common/data/PreferencesUtils";
 import { DarkMode } from "./DarkMode";
 import { LanguageSetting } from "./LanguageSetting";
 import { AppStorageV2 } from '@kit.ArkUI';
-import { SettingsModel } from "../../../models/SettingsModel";
+import { SettingsModel } from "../../../model/entities/SettingsModel";
 
 @ComponentV2
 export struct Settings {
+  @Local settingsModel: SettingsModel = AppStorageV2.connect(SettingsModel, "settingsModel")!
+
   // 导入所需的颜色和组件
   private readonly bgColor = $r("app.color.settings_bg_color");
   private readonly dividerColor: Color = Color.Gray;
@@ -18,7 +20,6 @@ export struct Settings {
   };
 
   private pathStack: NavPathStack | undefined = undefined;
-  @Local settingsModel: SettingsModel = AppStorageV2.connect(SettingsModel, "settingsModel")!
 
   async aboutToAppear(): Promise<void> {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
@@ -121,7 +122,6 @@ struct ItemCard {
           .fontSize(16)
           .textAlign(TextAlign.Center)
           .fontWeight(FontWeight.Medium)
-          .textAlign(TextAlign.Start)
           .layoutWeight(1)
         Image($r('app.media.chevron_right'))
           .width(16)
