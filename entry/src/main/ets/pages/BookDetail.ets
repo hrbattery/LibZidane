@@ -1,12 +1,12 @@
 import { getBookFormat, getBookInfo, getSimilar } from '../api/BookApi';
-import { BookCover } from '../components/BookCover'
+import { BookCover } from '../components/common/BookCover'
 import { BookDetailParam, BookFormatType, CoverData, FullBookDataType } from '../models/BookModel'
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { webview } from '@kit.ArkWeb';
-import { BookCoverWaterFlow } from '../components/BookCoverWaterFlow';
+import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
 import { bookDataCache } from '../common/cache/BookDataCache';
 import { saveBook, unsaveBook } from '../api/UserApi';
-import { BookFormatSheet } from '../components/BookFormatSheet';
+import { BookFormatSheet } from '../components/bookdetail/BookFormatSheet';
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
@@ -41,6 +41,7 @@ struct BookDetailPage {
 
   @Local bookFormats: BookFormatType[] = []
   @Local isShowSelectFormatSheet: boolean = false
+  @Local similarBookCoverDataSource: CoverData[] = []
 
   webController: webview.WebviewController = new webview.WebviewController()
   richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
@@ -132,7 +133,7 @@ struct BookDetailPage {
 
   async loadSimilar() {
     let similar = await getSimilar(this.bookId, this.hash);
-    return similar.map(element => {
+    this.similarBookCoverDataSource = similar.map(element => {
       return new CoverData(
         element.id,
         element.hash,
@@ -301,7 +302,7 @@ struct BookDetailPage {
               })
               .alignSelf(ItemAlign.Start)
             BookCoverWaterFlow({
-              onInitialData: (): Promise<CoverData[]> => this.loadSimilar()
+              coverDataSource: this.similarBookCoverDataSource
             })
           }
         }
@@ -314,7 +315,8 @@ struct BookDetailPage {
       this.hash = param.hash;
       await Promise.all([
         this.loadBookData(),
-        this.loadDownloadFormats()
+        this.loadDownloadFormats(),
+        this.loadSimilar()
       ])
     })
     .menus(this.navMenu)

@@ -1,18 +1,11 @@
 import { LogUtil } from "@pura/harmony-utils";
-import { PaginationDataSource } from "../common/types/ResponseTypes";
-import { BookData, BookDetailParam } from "../models/BookModel";
+import { PaginationDataSource } from "../../common/types/ResponseTypes";
+import { BookData, BookDetailParam } from "../../models/BookModel";
 import { BookInfoListItem } from "./BookInfoListItem";
 
 export interface BookInfoListParam {
   books: Array<BookData>,
   pagination: PaginationDataSource | undefined;
-}
-
-const defaultSourceData: () => BookInfoListParam = () => {
-  return {
-    books: [],
-    pagination: undefined
-  }
 }
 
 @ComponentV2

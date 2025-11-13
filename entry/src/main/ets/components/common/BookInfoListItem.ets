@@ -1,5 +1,5 @@
-import { saveBook, unsaveBook } from '../api/UserApi';
-import { BookData } from '../models/BookModel';
+import { saveBook, unsaveBook } from '../../api/UserApi';
+import { BookData } from '../../models/BookModel';
 import { BookCover } from './BookCover';
 import { LogUtil as logger } from "@pura/harmony-utils"
 

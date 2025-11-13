@@ -1,4 +1,4 @@
-import { SearchFilterOptions } from '../models/SearchFilterOptionModel';
+import { SearchFilterOptions } from '../../models/SearchFilterOptionModel';
 import { YearPicker, LanguageSelector, ExtensionSelector, generateYearRange } from './SearchOptionBuilders';
 /**
  * 搜索选项对话框组件

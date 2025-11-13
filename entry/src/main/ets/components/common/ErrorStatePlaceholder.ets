@@ -1,4 +1,4 @@
-import { SettingsLogin } from "../pages/settings/Login";
+import { SettingsLogin } from "../../pages/settings/Login";
 
 /**
  * 错误状态占位组件

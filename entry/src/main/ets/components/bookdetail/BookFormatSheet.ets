@@ -1,7 +1,7 @@
-import { BookFormatType, FullBookDataType } from "../models/BookModel"
+import { BookFormatType, FullBookDataType } from "../../models/BookModel"
 import { common } from "@kit.AbilityKit"
-import { fileDownload } from "../common/request/FileDownload"
-import { getBookDownloadUrl } from "../api/BookApi"
+import { fileDownload } from "../../common/request/FileDownload"
+import { getBookDownloadUrl } from "../../api/BookApi"
 import { url } from "@kit.ArkTS"
 import { ToastUtil } from "@pura/harmony-utils"
 
