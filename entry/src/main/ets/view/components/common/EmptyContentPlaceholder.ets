@@ -1,23 +1,19 @@
 /**
- * 错误状态占位组件
- * 用于在因加载失败时显示占位内容
+ * 空内容占位组件
+ * 用于在无内容可展示时显示占位内容
  */
 @Preview
 @ComponentV2
-export struct ErrorStatePlaceholder {
+export struct EmptyContentPlaceholder {
   /**
    * 提示文本
    */
   @Param message: string = '暂无相关书籍数据';
-  /**
-   * 刷新按钮点击回调
-   */
-  @Event onRefreshClick: () => void;
 
   build() {
     Column({ space: 20 }) {
       // 图标
-      Image($r('app.media.link_slash'))
+      Image($r('app.media.xmark_circle'))
         .width(120)
         .height(120)
         .objectFit(ImageFit.Contain);
@@ -28,16 +24,6 @@ export struct ErrorStatePlaceholder {
         .fontColor('#666666')
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
-
-      // 操作按钮
-      Button('刷新页面')
-        .width(180)
-        .height(44)
-        .fontSize(16)
-        .backgroundColor('#EFEFF4')
-        .fontColor('#007AFF')
-        .borderRadius(22)
-        .onClick(() => this.onRefreshClick());
     }
     .width('100%')
     .height('100%')

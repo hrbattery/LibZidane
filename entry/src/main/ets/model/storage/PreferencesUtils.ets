@@ -6,13 +6,13 @@ class PreferencesUtils {
   private preferencesMap: Map<string, preferences.Preferences> = new Map()
 
   // 加载首选项表
-  async loadPreference(context: Context, name: string) {
+  async loadPreference(context: Context, field: string) {
     try {
-      const preference = await preferences.getPreferences(context, name)
-      this.preferencesMap.set(name,preference)
+      const preference = await preferences.getPreferences(context, field)
+      this.preferencesMap.set(field, preference)
     } catch (e) {
-      logger.error(`加载 Preference ${name} 失败: ${JSON.stringify(e)}`)
-      throw new Error(`加载 Preference ${name} 失败: ${JSON.stringify(e)}`)
+      logger.error(`加载 Preference ${field} 失败: ${JSON.stringify(e)}`)
+      throw new Error(`加载 Preference ${field} 失败: ${JSON.stringify(e)}`)
     }
   }
 
@@ -46,7 +46,6 @@ class PreferencesUtils {
       throw new Error(`无法读取 Preference ${field}.${key}`)
     }
   }
-
 
   // 删除数据
   async delete(field: string, key: string) {

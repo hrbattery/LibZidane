@@ -1,11 +1,21 @@
-import { AppStorageV2, promptAction } from '@kit.ArkUI';
+import { PersistenceV2, promptAction } from '@kit.ArkUI';
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
+import { StorageConstants } from '../../../common/const/StorageConstants';
 import { login } from '../../../model/api/LoginApi';
-import { SettingsModel } from '../../../model/entities/SettingsModel';
+import { AppState } from '../../../model/entities/AppState';
+import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
 
 @Builder
 export function SettingsLoginBuilder() {
-  SettingsLogin()
+  SettingLoginNav()
+}
+
+@Builder
+function SettingLoginNav() {
+  NavDestination() {
+    SettingsLogin()
+  }
+  .title("登录")
 }
 
 @ComponentV2
@@ -27,7 +37,7 @@ export struct SettingsLogin {
     // 实际开发中应替换为真实接口调用
     logger.info('login_success.')
     let res = await login(this.username, this.password)
-    AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!.hasCookie = res
+    PersistenceV2.connect(AppState, "appState", () => new AppState())!.loginState = res
     if (res) {
       ToastUtil.showToast("登录成功", {
         duration: 2000,
@@ -42,48 +52,46 @@ export struct SettingsLogin {
     this.pathStack?.pushPathByName("Settings_CookieLogin", null)
   }
 
+  aboutToAppear(): void {
+    this.pathStack = this.queryNavigationInfo()?.pathStack;
+  }
+
   build() {
-    NavDestination() {
-      Column() {
-        TextInput({ placeholder: '请输入账号' })
-          .width('90%')
-          .height(45)
-          .fontSize(16)
-          .backgroundColor('#F0F2F4')
-          .onChange(value => this.username = value)
-          .margin({ top: 20, bottom: 20 })
-
-        TextInput({ placeholder: '请输入密码' })
-          .width('90%')
-          .height(45)
-          .type(InputType.Password)
-          .backgroundColor('#F0F2F4')
-          .onChange(value => this.password = value)
-          .margin({ bottom: 20 })
-
-        Flex({direction: FlexDirection.Row}) {
-          // 登录按钮
-          Button('登录')
-            .loginButtonStyle()
-            .margin({ right: 10 })
-            .onClick(async () => await this.onLogin())
-
-          Button('Cookie登录')
-            .loginButtonStyle()
-            .margin({ left: 10 })
-            .onClick(() => this.onCookieLogin())
-        }
+    Column() {
+      TextInput({ placeholder: '请输入账号' })
         .width('90%')
+        .height(45)
+        .fontSize(16)
+        .backgroundColor('#F0F2F4')
+        .onChange(value => this.username = value)
+        .margin({ top: 20, bottom: 20 })
+
+      TextInput({ placeholder: '请输入密码' })
+        .width('90%')
+        .height(45)
+        .type(InputType.Password)
+        .backgroundColor('#F0F2F4')
+        .onChange(value => this.password = value)
         .margin({ bottom: 20 })
+
+      Flex({direction: FlexDirection.Row}) {
+        // 登录按钮
+        Button('登录')
+          .loginButtonStyle()
+          .margin({ right: 10 })
+          .onClick(async () => await this.onLogin())
+
+        Button('Cookie登录')
+          .loginButtonStyle()
+          .margin({ left: 10 })
+          .onClick(() => this.onCookieLogin())
       }
-      .height('100%')
-      .width('100%')
-      .backgroundColor(Color.White)
+      .width('90%')
+      .margin({ bottom: 20 })
     }
-    .title("登录")
-    .onReady((context: NavDestinationContext) => {
-      this.pathStack = context.pathStack;
-    })
+    .height('100%')
+    .width('100%')
+    .backgroundColor(Color.White)
   }
 }
 

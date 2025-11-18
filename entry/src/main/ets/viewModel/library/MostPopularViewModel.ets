@@ -6,6 +6,8 @@ import { LibraryComponentViewModel } from "./LibraryComponentViewModel";
 
 @ObservedV2
 export class MostPopularViewModel extends LibraryComponentViewModel{
+  @Trace needLoginStatus: boolean = false;
+
   private async loadMostPopularDataSource() {
     this.isLoading = true;
     try {

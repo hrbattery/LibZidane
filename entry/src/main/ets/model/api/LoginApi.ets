@@ -27,6 +27,5 @@ interface LoginResponse {
 
 export async function login(email: string, password: string): Promise<boolean> {
   let response = await ReqInst.post<LoginResponse, LoginData>("/eapi/user/login", { email, password })
-  logger.debug(response)
   return response.success === 1
 }

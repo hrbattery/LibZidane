@@ -5,6 +5,11 @@ import { LibraryComponent } from "./LibraryComponent"
 export struct RecommendedBooks {
   @Local viewModel: RecommendedViewModel = new RecommendedViewModel()
 
+  @Monitor("viewModel.appState.loginState")
+  onUpdateLoginState() {
+    this.viewModel.coverDataSource = []
+  }
+
   build() {
     LibraryComponent({
       viewModel: this.viewModel

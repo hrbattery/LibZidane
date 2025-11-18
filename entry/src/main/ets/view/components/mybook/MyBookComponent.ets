@@ -1,9 +1,9 @@
-import { LibraryComponentViewModel } from "../../../viewModel/library/LibraryComponentViewModel"
-import { MyBookComponentViewModel } from "../../../viewModel/mybook/MyBookComponentViewModel";
+import { MyBookComponentViewModel } from '../../../viewModel/mybook/MyBookComponentViewModel';
 
-import { BookCoverWaterFlow } from "../common/BookCoverWaterFlow"
-import { BookInfoList } from "../common/BookInfoList";
-import { ErrorStatePlaceholder } from "../common/ErrorStatePlaceholder"
+import { BookInfoList } from '../common/BookInfoList';
+import { EmptyContentPlaceholder } from '../common/EmptyContentPlaceholder';
+import { ErrorStatePlaceholder } from '../common/ErrorStatePlaceholder';
+import { LogoutStatePlaceholder } from '../common/LogoutStatePlaceholder';
 
 @ComponentV2
 export struct MyBookComponent {
@@ -22,13 +22,60 @@ export struct MyBookComponent {
     await this.viewModel.loadDataSource(this.sortOrder)
   }
 
+  @Computed
+  get showNormal() {
+    return this.viewModel.bookDataSource.length > 0
+  }
+
+  @Computed
+  get showSkeleton() {
+    return this.viewModel.isLoading
+  }
+
+  @Computed
+  get showErrorPlaceholder() {
+    return !this.viewModel.isLoading
+      && this.viewModel.isLoadFailed
+  }
+
+  @Computed
+  get showLogoutPlaceholder() {
+    return !this.viewModel.isLoading
+      && !this.viewModel.appState.loginState
+  }
+
+  @Computed
+  get showEmptyPlaceholder() {
+    return !this.viewModel.isLoading
+      && !this.viewModel.isLoadFailed
+      && this.viewModel.bookDataSource.length === 0
+  }
+
   build() {
     Refresh({ refreshing: this.viewModel.isRefreshing!! }) {
-      // todo: empty placeholder && skeleton
-      if (this.viewModel.isLoadFailed) {
-        ErrorStatePlaceholder({
-          onRefreshClick: async () => await this.viewModel.loadDataSource(this.sortOrder)
+      if (this.showNormal) {
+        BookInfoList({
+          bookDataSource: this.viewModel.bookDataSource,
+          pagination: this.viewModel.pagination,
+          onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder)
         })
+        Footer(this.viewModel.isLoadingNew)
+      } else if (this.showSkeleton) {
+        // todo: skeleton impl
+      } else if (this.showLogoutPlaceholder) {
+        LogoutStatePlaceholder()
+      } else if (this.showErrorPlaceholder) {
+        ErrorStatePlaceholder({
+          onRefreshClick: async () => {
+            if (!this.viewModel.isRefreshing) {
+              this.viewModel.isRefreshing = true
+              await this.viewModel.loadDataSource(this.sortOrder)
+              this.viewModel.isRefreshing = false
+            }
+          }
+        })
+      } else if (this.showEmptyPlaceholder) {
+        EmptyContentPlaceholder()
       } else {
         BookInfoList({
           bookDataSource: this.viewModel.bookDataSource,

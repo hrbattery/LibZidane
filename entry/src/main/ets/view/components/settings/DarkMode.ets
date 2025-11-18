@@ -8,7 +8,6 @@ export struct DarkMode {
     Row() {
       Text("深色模式")
         .fontSize(16)
-        .textAlign(TextAlign.Center)
         .fontWeight(FontWeight.Medium)
         .textAlign(TextAlign.Start)
         .layoutWeight(1)

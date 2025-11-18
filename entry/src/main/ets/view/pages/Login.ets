@@ -1,8 +1,10 @@
-import { AppStorageV2, prompt, promptAction, window } from '@kit.ArkUI';
+import { AppStorageV2, PersistenceV2, prompt, promptAction, window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { ToastUtil } from '@pura/harmony-utils';
+import { StorageConstants } from '../../common/const/StorageConstants';
 import { login } from '../../model/api/LoginApi';
-import { SettingsModel } from '../../model/entities/SettingsModel';
+import { AppState } from '../../model/entities/AppState';
+import { preferencesUtils } from '../../model/storage/PreferencesUtils';
 
 @Entry
 @ComponentV2
@@ -23,7 +25,9 @@ struct Login {
     // 实际开发中应替换为真实接口调用
     hilog.info(0x000, 'libzidane', 'login_go')
     let res = await login(this.username, this.password)
-    AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!.hasCookie = res
+    PersistenceV2.connect(AppState, 'appState', () => new AppState())!.loginState = res
+    //
+    // preferencesUtils.put(StorageConstants.DEFAULT_PREF, "loginState", res)
     if (res) {
       this.getUIContext().getRouter().replaceUrl({ url: 'view/pages/Home' });
     }

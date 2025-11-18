@@ -1,8 +1,8 @@
-import { LogUtil as logger } from "@pura/harmony-utils"
+import { LogUtil as logger } from '@pura/harmony-utils';
 
-import { getFavorite } from "../../model/api/UserApi";
-import { BookData, BookDataType, CoverData } from "../../model/entities/BookModel";
-import { MyBookComponentViewModel } from "./MyBookComponentViewModel";
+import { getFavorite } from '../../model/api/UserApi';
+import { BookData, BookDataType } from '../../model/entities/BookModel';
+import { MyBookComponentViewModel } from './MyBookComponentViewModel';
 
 @ObservedV2
 export class FavoriteViewModel extends MyBookComponentViewModel {

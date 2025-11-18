@@ -1,14 +1,16 @@
 import { SettingsConstants } from "../../../common/const/SettingsConstants";
 import { StorageConstants } from "../../../common/const/StorageConstants";
-import { preferencesUtils } from "../../../common/data/PreferencesUtils";
+import { preferencesUtils } from "../../../model/storage/PreferencesUtils";
 import { DarkMode } from "./DarkMode";
 import { LanguageSetting } from "./LanguageSetting";
-import { AppStorageV2 } from '@kit.ArkUI';
-import { SettingsModel } from "../../../model/entities/SettingsModel";
+import { PersistenceV2 } from '@kit.ArkUI';
+import { AppState } from "../../../model/entities/AppState";
+import preferences from "@ohos.data.preferences";
 
 @ComponentV2
 export struct Settings {
-  @Local settingsModel: SettingsModel = AppStorageV2.connect(SettingsModel, "settingsModel")!
+  // @Local settingsModel: SettingsModel = AppStorageV2.connect(SettingsModel, "settingsModel")!
+  @Local appState: AppState = PersistenceV2.connect(AppState, 'appState', () => new AppState())!
 
   // 导入所需的颜色和组件
   private readonly bgColor = $r("app.color.settings_bg_color");
@@ -21,7 +23,15 @@ export struct Settings {
 
   private pathStack: NavPathStack | undefined = undefined;
 
+  // async onLoginStateChange(loginState: boolean) {
+  //   this.loginState = loginState
+  // }
+
   async aboutToAppear(): Promise<void> {
+    // this.loginState = await preferencesUtils.get<boolean>(StorageConstants.DEFAULT_PREF, 'loginState', false)
+    // preferencesUtils.on(StorageConstants.DEFAULT_PREF, ['loginState'], (data) => {
+    //   this.onLoginStateChange(data['loginState'] as boolean)
+    // })
     this.pathStack = this.queryNavigationInfo()?.pathStack;
   }
 
@@ -35,7 +45,7 @@ export struct Settings {
         .alignSelf(ItemAlign.Start)
 
       Column() {
-        if (!this.settingsModel.hasCookie) {
+        if (!this.appState.loginState) {
           ItemCard({
             text: '登录（账号/cookie）',
             action: () => {
@@ -88,7 +98,7 @@ export struct Settings {
       .borderRadius(20)
 
       // 登出按钮
-      if (this.settingsModel.hasCookie) {
+      if (this.appState.loginState) {
         Column() {
           Button('登出')
             .width('100%')
@@ -97,7 +107,9 @@ export struct Settings {
             .fontColor(Color.White)
             .onClick(async () => {
               await preferencesUtils.delete(StorageConstants.DEFAULT_PREF, 'cookie')
-              this.settingsModel.hasCookie = false
+              // PersistenceV2.connect(AppState, 'appState', () => new AppState())!.loginState = false
+              // await preferencesUtils.put(StorageConstants.DEFAULT_PREF, 'loginState', false)
+              this.appState.loginState = false
             })
         }
         .margin(16)
@@ -120,7 +132,7 @@ struct ItemCard {
       Row({ space: 10 }) {
         Text(this.text)
           .fontSize(16)
-          .textAlign(TextAlign.Center)
+          .textAlign(TextAlign.Start)
           .fontWeight(FontWeight.Medium)
           .layoutWeight(1)
         Image($r('app.media.chevron_right'))

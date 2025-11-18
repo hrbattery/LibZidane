@@ -1,11 +1,11 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "@ohos/axios"
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { StorageConstants } from "../const/StorageConstants"
-import { preferencesUtils } from "../data/PreferencesUtils"
+import { preferencesUtils } from "../../model/storage/PreferencesUtils"
 import { qpsController } from "./RequestQueue"
 
 const TAG = '[Request]'
-const baseUrl = AppStorage.get("base_url") as string ?? "https://1lib.sk"
+const baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
 
 let reqInst = axios.create({
   timeout: 15000
@@ -70,7 +70,6 @@ let ReqInst: Request = new Request()
 export default ReqInst
 
 export async function getCookie() {
-  // todo: use cacheManager without expired time
   let curCookie = await preferencesUtils.get<Record<string, string>>(StorageConstants.DEFAULT_PREF, 'cookie', {})
   let cookies: string[] = []
 
@@ -85,8 +84,7 @@ export async function getCookie() {
 export async function setCookie(cookies: string[]) {
   let curCookie = await preferencesUtils.get<Record<string, string>>(StorageConstants.DEFAULT_PREF, 'cookie', {})
   cookies.forEach(cookie => {
-    let GeneratedDestructArray_1 = cookie.split(';');
-    let keyValue = GeneratedDestructArray_1[0]; // 提取键值部分（忽略过期时间等属性）
+    let keyValue = cookie.split(';')[0]; // 提取键值部分（忽略过期时间等属性）
 
     let GeneratedDestructArray_2 = keyValue.split('=');
     let key = GeneratedDestructArray_2[0];

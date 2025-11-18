@@ -1,7 +1,10 @@
 import { CoverData } from "../../model/entities/BookModel";
+import { AppState } from "../../model/entities/AppState";
+import { PersistenceV2 } from "@kit.ArkUI";
+import { AppViewModel } from "../AppViewModel";
 
 @ObservedV2
-export abstract class LibraryComponentViewModel {
+export abstract class LibraryComponentViewModel extends AppViewModel {
   /**
    * data source to book cover waterflow
    */
@@ -21,6 +24,11 @@ export abstract class LibraryComponentViewModel {
    * state to determine show refreshing component or not
    */
   @Trace isRefreshing: boolean = false
+
+  /**
+   * flag to determine this page requires login status or not
+   */
+  @Trace needLoginStatus: boolean = true
 
   public abstract loadDataSource(): Promise<void>
 }

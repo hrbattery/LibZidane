@@ -8,6 +8,12 @@ export struct DownloadedBooks {
 
   @Event updateEntriesAmount: (amount: number) => void;
 
+  @Monitor("viewModel.appState.loginState")
+  onUpdateLoginState() {
+    this.viewModel.bookDataSource = []
+    this.viewModel.pagination = undefined
+  }
+
   @Monitor("viewModel.pagination")
   onUpdatePagination() {
     this.updateEntriesAmount(this.viewModel.pagination?.total_items ?? 0)

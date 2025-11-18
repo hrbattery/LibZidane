@@ -79,7 +79,7 @@ struct BookDetailPage {
   }
 
   shareBook() {
-    const baseUrl = AppStorage.get("base_url") as string ?? "https://1lib.sk/"
+    const baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
 
     if (this.bookData) {
       let shareData: systemShare.SharedData = new systemShare.SharedData({
