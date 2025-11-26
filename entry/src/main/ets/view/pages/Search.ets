@@ -7,6 +7,8 @@ import { BookInfoList } from '../components/common/BookInfoList'
 import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
 import { BookData, BookDataType } from '../../model/entities/BookModel'
 import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel'
+import { SearchResults } from '../components/search/SearchResults'
+import { SearchViewModel } from '../../viewModel/search/SearchResultViewModel'
 
 @Builder
 export function SearchPageBuilder() {
@@ -15,83 +17,22 @@ export function SearchPageBuilder() {
 
 @ComponentV2
 struct SearchPage {
-  @Local searchKeyword: string = ""
-  @Local searchSortOrder: number = 0
-  @Local sortMenuItems: SheetInfo[] = this.getSortMenuItems()
-  @Local searchController: SearchController = new SearchController()
-  @Local searchFilterOption: SearchFilterOptions = new SearchFilterOptions()
-  // bookInfoList datasource
-  @Local searchResultBooks: BookData[] = []
-  @Local searchResultPagination: PaginationDataSource | undefined = undefined;
-  pathStack: NavPathStack | undefined = undefined;
-  private _languageOptions: Record<string, string> = AppStorage.get("language_options") ?? {}
+  @Local viewModel: SearchViewModel = new SearchViewModel()
 
-  @Monitor('searchKeyword')
-  clearDataSource() {
-    if (this.searchKeyword === '') {
-      this.searchResultBooks = [];
-      this.searchResultPagination = undefined;
-    }
-  }
-
-  async aboutToAppear(): Promise<void> {
-    this.pathStack = this.queryNavigationInfo()?.pathStack;
-  }
-
-  async loadSearchDataSource(): Promise<void> {
-    if (this.searchKeyword && this.searchKeyword !== '') {
-      try {
-        // todo: support order
-        let favorites = await getSearch({
-          message: this.searchKeyword,
-          yearFrom: this.searchFilterOption.startYear === '不限' ? undefined : this.searchFilterOption.startYear,
-          yearTo: this.searchFilterOption.endYear === '不限' ? undefined : this.searchFilterOption.endYear,
-          languages: this.searchFilterOption.selectedLanguages.map((ele) => this._languageOptions[ele]),
-          extensions: this.searchFilterOption.selectedExtensions,
-          e: this.searchFilterOption.exactMatch ? 1 : 0,
-          order: Constants.SEARCH_SORT_KEY[this.searchSortOrder]["value"]
-        });
-        if (favorites !== null) {
-          this.searchResultBooks = favorites.books.map(element => new BookData(element as BookDataType))
-          this.searchResultPagination = favorites.pagination
-        }
-      } catch (e) {
-        logger.error(e)
-        // todo: toast error or use a 404 page
-      }
-    }
-  }
-
-  async loadNewSearchData(): Promise<void> {
-    if (this.searchResultPagination && this.searchKeyword && this.searchKeyword !== '') {
-      try {
-        // todo: support all params
-        let favorites = await getSearch({
-          message: this.searchKeyword,
-          yearFrom: this.searchFilterOption.startYear === '不限' ? undefined : this.searchFilterOption.startYear,
-          yearTo: this.searchFilterOption.endYear === '不限' ? undefined : this.searchFilterOption.endYear,
-          languages: this.searchFilterOption.selectedLanguages.map((ele) => this._languageOptions[ele]),
-          extensions: this.searchFilterOption.selectedExtensions,
-          e: this.searchFilterOption.exactMatch ? 1 : 0,
-          page: this.searchResultPagination.current + 1,
-          order: Constants.SEARCH_SORT_KEY[this.searchSortOrder]["value"]
-        });
-        if (favorites !== null) {
-          this.searchResultBooks.push(...favorites.books.map(element => new BookData(element as BookDataType)))
-          this.searchResultPagination = favorites.pagination
-        }
-      } catch (e) {
-        logger.error(e)
-        // todo: toast error or use a 404 page
-      }
-    }
+  getSortMenuItems(): SheetInfo[] {
+    return Constants.SEARCH_SORT_KEY.map((value, index) => {
+      return {
+        title: value["key"],
+        action: () => this.viewModel.searchSortOrderIndex = index
+      } as SheetInfo
+    })
   }
 
   handleSortClick(): void {
     const dialogId = DialogHelper.showSelectDialog({
-      selectedIndex: this.searchSortOrder,
+      selectedIndex: this.viewModel.searchSortOrderIndex,
       title: "排序方式",
-      radioContent: this.sortMenuItems,
+      radioContent: this.getSortMenuItems(),
       onCheckedChanged: (index: number): void => {
         closeDialog()
         logger.debug(`onCheckedChanged: index=${index}`)
@@ -106,12 +47,19 @@ struct SearchPage {
     }
   }
 
-  getSortMenuItems(): SheetInfo[] {
-    return Constants.SEARCH_SORT_KEY.map((value, index) => {
-      return {
-        title: value["key"],
-        action: () => this.searchSortOrder = index
-      } as SheetInfo
+  private handleSearchOptionsClick() {
+    DialogHelper.showCustomContentDialog({
+      contentBuilder: () => this.SearchOptionDialogBuilder(),
+      onAction: () => {
+        // 用命令模式来暂存更改，然后在onAction这里再决定是否要使用对应的更改
+        // 这样的话，传递过去的object也可以确定是只读的了
+        // 这样的话，不如将SearchOption设计成一个类，有对应的command和applyCommand方法
+        // 还可以抽象出类似的类，都可以用在这种需要暂存更改、但将apply更改的决定权交到另一个地方的场景了
+        this.viewModel.searchFilterOption.apply()
+      },
+      uiContext: this.getUIContext(),
+      title: '搜索选项',
+      backgroundColor: '#FFFFFF'
     })
   }
 
@@ -119,21 +67,59 @@ struct SearchPage {
   SearchOptionDialogBuilder() {
     Scroll() {
       SearchOptionDialog({
-        options: this.searchFilterOption
+        options: this.viewModel.searchFilterOption
+      }).height("60%")
+    }
+  }
+
+  @Builder
+  SearchInput() {
+    Column() {
+      Search({
+        placeholder: "搜索内容",
+        value: this.viewModel.searchKeyword
       })
-        .height("60%")
+        .defaultFocus(true)
+        .layoutWeight(1)
+        .searchButton('搜索')
+        .onChange((value) => {
+          if (!value) {
+            this.viewModel.searchKeyword = ''
+          }
+        })
+        .onSubmit(async (value) => {
+          if (!value) {
+            ToastUtil.showToast('请输入搜索内容')
+          } else {
+            this.viewModel.searchKeyword = value
+            this.viewModel.loadDataSource()
+          }
+        })
+    }
+    .margin({ left: 10, right: 10 })
+  }
+
+  @Builder
+  SearchResultAmount() {
+    if (this.viewModel.pagination) {
+      Text(`找到 ${this.viewModel.pagination?.total_items} 本书`)
+        .alignSelf(ItemAlign.Start)
+        .textAlign(TextAlign.Center)
+        .fontSize(16)
+        .fontWeight(FontWeight.Bold)
+        .margin({ top: 4, left: 10 })
     }
   }
 
   build() {
     NavDestination() {
       Column() {
-        BookInfoList({
-          bookDataSource: this.searchResultBooks,
-          pagination: this.searchResultPagination,
-          onLoadNewData: (): Promise<void> => this.loadNewSearchData()
+        this.SearchResultAmount()
+        SearchResults({
+          viewModel: this.viewModel
         })
       }
+      .width("100%")
     }
     .title(this.SearchInput())
     .menus([
@@ -151,53 +137,8 @@ struct SearchPage {
     .onReady((context: NavDestinationContext) => {
       let param = context.pathInfo.param as string;
       if (param && param !== "") {
-        this.searchKeyword = param;
+        this.viewModel.searchKeyword = param;
       }
     })
-  }
-
-  private handleSearchOptionsClick() {
-    DialogHelper.showCustomContentDialog({
-      contentBuilder: () => this.SearchOptionDialogBuilder(),
-      onAction: () => {
-        // 用命令模式来暂存更改，然后在onAction这里再决定是否要使用对应的更改
-        // 这样的话，传递过去的object也可以确定是只读的了
-        // 这样的话，不如将SearchOption设计成一个类，有对应的command和applyCommand方法
-        // 还可以抽象出类似的类，都可以用在这种需要暂存更改、但将apply更改的决定权交到另一个地方的场景了
-        this.searchFilterOption.apply()
-      },
-      uiContext: this.getUIContext(),
-      title: '搜索选项',
-      backgroundColor: '#FFFFFF'
-    })
-  }
-
-  @Builder
-  SearchInput() {
-    Column() {
-      Search({
-        placeholder: "搜索内容",
-        value: this.searchKeyword,
-        icon: '/resources/base/media/search.svg',
-        controller: this.searchController
-      })
-        .defaultFocus(true)
-        .layoutWeight(1)
-        .searchButton('搜索')
-        .onChange((value) => {
-          if (!value) {
-            this.searchKeyword = ''
-          }
-        })
-        .onSubmit(async (value) => {
-          if (!value) {
-            ToastUtil.showToast('请输入搜索内容')
-          } else {
-            this.searchKeyword = value
-            this.loadSearchDataSource()
-          }
-        })
-    }
-    .margin({ left: 10, right: 10 })
   }
 }

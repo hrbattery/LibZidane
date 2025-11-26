@@ -35,7 +35,7 @@ export async function appInit(context: common.UIAbilityContext) {
 }
 
 async function initPreferences(context: common.UIAbilityContext) {
-  preferencesUtils.loadPreference(context, StorageConstants.DEFAULT_PREF)
+  await preferencesUtils.loadPreference(context, StorageConstants.DEFAULT_PREF)
 }
 
 // async function initAppStorage() {
