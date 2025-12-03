@@ -9,7 +9,6 @@ import preferences from "@ohos.data.preferences";
 
 @ComponentV2
 export struct Settings {
-  // @Local settingsModel: SettingsModel = AppStorageV2.connect(SettingsModel, "settingsModel")!
   @Local appState: AppState = PersistenceV2.connect(AppState, 'appState', () => new AppState())!
 
   // 导入所需的颜色和组件
@@ -23,15 +22,7 @@ export struct Settings {
 
   private pathStack: NavPathStack | undefined = undefined;
 
-  // async onLoginStateChange(loginState: boolean) {
-  //   this.loginState = loginState
-  // }
-
   async aboutToAppear(): Promise<void> {
-    // this.loginState = await preferencesUtils.get<boolean>(StorageConstants.DEFAULT_PREF, 'loginState', false)
-    // preferencesUtils.on(StorageConstants.DEFAULT_PREF, ['loginState'], (data) => {
-    //   this.onLoginStateChange(data['loginState'] as boolean)
-    // })
     this.pathStack = this.queryNavigationInfo()?.pathStack;
   }
 
@@ -90,6 +81,15 @@ export struct Settings {
           text: '关于应用',
           action: () => {
             this.pathStack?.pushPathByName("Settings_About", null)
+          }
+        })
+        Divider()
+          .margin({ left: 8, right: 8})
+          .color(this.dividerColor)
+        ItemCard({
+          text: '自定义 API',
+          action: () => {
+            this.pathStack?.pushPathByName("Settings_Custom_API", null)
           }
         })
       }
