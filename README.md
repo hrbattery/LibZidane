@@ -2,6 +2,7 @@
 <p align="center">
     <img alt="lz_icon.png" height="240" src="AppScope/resources/base/media/lz_icon.png" width="240"/>
 </p>
+
 ## A third-party Z-Library app for HarmonyOS
 
 ## 📖 Software Features
