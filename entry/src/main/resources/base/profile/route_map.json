@@ -24,6 +24,16 @@
       "name": "Settings_Login",
       "pageSourceFile": "src/main/ets/view/pages/settings/Login.ets",
       "buildFunction": "SettingsLoginBuilder"
+    },
+    {
+      "name": "Settings_CookieLogin",
+      "pageSourceFile": "src/main/ets/view/pages/settings/CookieLogin.ets",
+      "buildFunction": "CookieLoginBuilder"
+    },
+    {
+      "name": "Settings_Custom_API",
+      "pageSourceFile": "src/main/ets/view/pages/settings/CustomApi.ets",
+      "buildFunction": "CustomApiBuilder"
     }
   ]
 }

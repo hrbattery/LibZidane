@@ -28,7 +28,6 @@ export struct LogoutStatePlaceholder {
       // 提示文本
       Text(this.message)
         .fontSize(16)
-        .fontColor('#666666')
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
 
@@ -37,30 +36,17 @@ export struct LogoutStatePlaceholder {
         .width(180)
         .height(44)
         .fontSize(16)
-        .backgroundColor('#007AFF')
         .fontColor(Color.White)
         .borderRadius(22)
         .onClick(() => this.onLoginClick())
-        .bindSheet(!!this.isShowLoginSheet, this.LoginSheetBuilder(), {
-          height: SheetSize.LARGE,
-          preferType: SheetType.BOTTOM,
-          title: { title: '登录' },
-        })
     }
     .width('100%')
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
-    .padding({ top: 100 })
-
   }
 
   private onLoginClick() {
-    this.isShowLoginSheet = true
-  }
-
-  @Builder
-  LoginSheetBuilder() {
-    SettingsLogin()
+    this.pathStack?.pushPathByName("Settings_Login", null)
   }
 }
