@@ -3,6 +3,14 @@
     {
       "name": "app_name",
       "value": "LibZidane"
+    },
+    {
+      "name": "app_version",
+      "value": "0.8.0"
+    },
+    {
+      "name": "app_description",
+      "value": "LibZidane 是一个为 HarmonyOS 开发的第三方 Z-Library 客户端。"
     }
   ]
 }
