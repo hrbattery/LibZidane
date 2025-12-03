@@ -53,6 +53,7 @@ export class SearchViewModel extends AppViewModel {
   async onSearchParamChange(): Promise<void> {
     await this.loadDataSource();
   }
+
   @Computed
   get searchSortOrder(): string {
     return Constants.SEARCH_SORT_KEY[this.searchSortOrderIndex]["value"];

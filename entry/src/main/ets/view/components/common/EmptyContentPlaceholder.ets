@@ -13,7 +13,7 @@ export struct EmptyContentPlaceholder {
   build() {
     Column({ space: 20 }) {
       // 图标
-      Image($r('app.media.xmark_circle'))
+      Image($r('app.media.empty'))
         .width(120)
         .height(120)
         .objectFit(ImageFit.Contain);
@@ -21,7 +21,6 @@ export struct EmptyContentPlaceholder {
       // 提示文本
       Text(this.message)
         .fontSize(16)
-        .fontColor('#666666')
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
     }
@@ -29,6 +28,5 @@ export struct EmptyContentPlaceholder {
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
-    .padding({ top: 100 })
   }
 }

@@ -25,7 +25,6 @@ export struct ErrorStatePlaceholder {
       // 提示文本
       Text(this.message)
         .fontSize(16)
-        .fontColor('#666666')
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
 
@@ -34,8 +33,6 @@ export struct ErrorStatePlaceholder {
         .width(180)
         .height(44)
         .fontSize(16)
-        .backgroundColor('#EFEFF4')
-        .fontColor('#007AFF')
         .borderRadius(22)
         .onClick(() => this.onRefreshClick());
     }
@@ -43,6 +40,5 @@ export struct ErrorStatePlaceholder {
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
-    .padding({ top: 100 })
   }
 }

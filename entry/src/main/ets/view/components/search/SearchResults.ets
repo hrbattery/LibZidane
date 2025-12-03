@@ -40,7 +40,6 @@ export struct SearchResults {
   build() {
     Refresh({ refreshing: this.viewModel.isRefreshing!! }) {
       if (this.showNormal) {
-        // this.SearchResultAmount()
         this.NormalContent()
       } else if (this.showSkeleton) {
         // todo: skeleton impl
@@ -55,10 +54,8 @@ export struct SearchResults {
           }
         })
       } else if (this.showEmptyPlaceholder) {
-        // this.SearchResultAmount()
         EmptyContentPlaceholder()
       } else {
-        // this.SearchResultAmount()
         this.NormalContent()
       }
     }
