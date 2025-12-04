@@ -1,9 +1,14 @@
 import {
-  CoverDataSource, DownloadedResponse,
+  CoverDataSource,
+  DonationDataSource,
+  DonationResponse,
+  DownloadedResponse,
   FavoriteResponse,
-  MostPopularResponse,
+  RecommendedResponse,
   SaveBookResponse,
-  UnsaveBookResponse} from "../../common/types/ResponseTypes";
+  UnsaveBookResponse,
+  UserProfileDataSource,
+  UserProfileResponse} from "../../common/types/ResponseTypes";
 import ReqInst from "../../common/request/Request";
 import { LogUtil as logger } from "@pura/harmony-utils"
 import { DownloadedQueryType, FavoriteQueryType } from "../../common/types/QueryTypes";
@@ -11,8 +16,6 @@ import { DownloadedQueryType, FavoriteQueryType } from "../../common/types/Query
 /*
  * todo:
  * /eapi/user/book/{id}/delete (GET)
- * /eapi/user/donations (GET)
- * /eapi/user/profile (GET)
  *
  * not going to do:
  * /eapi/user/hide-banner (GET)
@@ -23,7 +26,7 @@ import { DownloadedQueryType, FavoriteQueryType } from "../../common/types/Query
  * */
 
 export async function getRecommended(): Promise<Array<CoverDataSource>> {
-  let response = await ReqInst.get<MostPopularResponse>("/eapi/user/book/recommended");
+  let response = await ReqInst.get<RecommendedResponse>("/eapi/user/book/recommended");
   logger.debug(response)
   if (response.success === 1) {
     return response.books;
@@ -65,4 +68,22 @@ export async function unsaveBook(bookId: number): Promise<boolean> {
     return true
   }
   return false
+}
+
+export async function getProfile(): Promise<UserProfileDataSource | null> {
+  let response = await ReqInst.get<UserProfileResponse>("/eapi/user/profile");
+  logger.debug(response)
+  if (response.success === 1) {
+    return response.user
+  }
+  return null
+}
+
+export async function getDonations(): Promise<DonationDataSource[]> {
+  let response = await ReqInst.get<DonationResponse>("/eapi/user/donations");
+  logger.debug(response)
+  if (response.success === 1) {
+    return response.donations
+  }
+  return []
 }

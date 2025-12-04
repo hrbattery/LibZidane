@@ -1,9 +1,10 @@
 import ReqInst from "../../common/request/Request";
-import { ExtensionsResponse, LanguagesResponse } from "../../common/types/ResponseTypes";
+import { DomainDataSource,
+  DomainsResponse,
+  ExtensionsResponse, LanguagesResponse } from "../../common/types/ResponseTypes";
 import { LogUtil as logger } from "@pura/harmony-utils"
 /*
  * todo:
- * /eapi/info/domains (GET)
  * /eapi/info/plans (GET); query: switchLanguage
  * /eapi/info (GET); query: switchLanguage
  * */
@@ -21,6 +22,15 @@ export async function getExtensions(): Promise<string[]> {
   logger.debug(response)
   if (response.success) {
     return response.extensions;
+  }
+  return [];
+}
+
+export async function getDomains(): Promise<DomainDataSource[]> {
+  let response = await ReqInst.get<DomainsResponse>('/eapi/info/domains');
+  logger.debug(response)
+  if (response.success) {
+    return response.domains;
   }
   return [];
 }
