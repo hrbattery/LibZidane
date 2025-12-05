@@ -84,7 +84,7 @@ export interface UserProfileDataSource {
   name: string,
   kindle_email: string,
   remix_userkey: string,
-  donations_active: number | null,
+  donations_active: number | null, // 目前有效的捐赠金额
   donations_expire: string | null,
   downloads_today: number,
   downloads_limit: number,

@@ -17,8 +17,8 @@
     },
     {
       "name": "Settings_Donation",
-      "pageSourceFile": "src/main/ets/view/pages/Search.ets",
-      "buildFunction": "SearchPageBuilder"
+      "pageSourceFile": "src/main/ets/view/pages/settings/Donation.ets",
+      "buildFunction": "DonationBuilder"
     },
     {
       "name": "Settings_Login",

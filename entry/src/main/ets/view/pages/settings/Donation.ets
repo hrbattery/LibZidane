@@ -1,0 +1,97 @@
+import { DonationViewModel } from '../../../viewModel/settings/DonationsViewModel'
+
+@Builder
+export function DonationBuilder() {
+  Donation()
+}
+
+
+@Preview
+@ComponentV2
+struct Donation {
+  @Local viewModel: DonationViewModel = new DonationViewModel()
+
+  async aboutToAppear(): Promise<void> {
+    await Promise.all([
+      this.viewModel.loadDonationRecords(),
+      this.viewModel.loadDonationProfile()
+    ])
+  }
+
+  build() {
+    NavDestination() {
+      Column() {
+        Column() {
+          InfoCard({
+            title: '有效捐赠',
+            content: this.viewModel.activeDonationString
+          })
+          Divider()
+            .margin({ left: 8, right: 8})
+            .color(Color.Gray)
+          InfoCard({
+            title: '有效日期',
+            content: this.viewModel.donationExpireDate
+          })
+        }
+        .backgroundColor(Color.White)
+        .margin(16)
+        .borderRadius(20)
+
+        if (this.viewModel.donationRecords.length > 0) {
+          Column() {
+            List() {
+              Repeat(this.viewModel.donationRecords)
+                .each(ri => {
+                  InfoCard({
+                    title: `$${ri.item.amount}`,
+                    content: new Date(ri.item.date).toLocaleDateString()
+                  })
+                })
+            }
+            .divider({
+              strokeWidth: "1px",
+              color: Color.Gray,
+              startMargin: 8,
+              endMargin: 8
+            })
+            .width("100%")
+          }
+          .backgroundColor(Color.White)
+          .margin({ left: 16, right: 16 })
+          .borderRadius(20)
+        } else {
+          Text("没有有效的历史捐赠记录")
+        }
+      }
+      .backgroundColor($r("app.color.settings_bg_color"))
+      .height("100%")
+      .width("100%")
+    }
+    .title('捐赠和捐赠记录')
+  }
+}
+
+@ComponentV2
+struct InfoCard {
+  @Param @Require title: string;
+  @Param @Require content: string
+
+  build() {
+    Row({ space: 10 }) {
+      Text(this.title)
+        .fontSize(16)
+        .textAlign(TextAlign.Start)
+        .fontWeight(FontWeight.Bold)
+        .layoutWeight(1)
+      Text(this.content)
+        .fontSize(16)
+        .textAlign(TextAlign.End)
+        .fontWeight(FontWeight.Regular)
+        .layoutWeight(1)
+    }
+    .backgroundColor(Color.Transparent)
+    .width('100%')
+    .padding({left: 10, right: 10, top: 15, bottom: 15})
+  }
+}

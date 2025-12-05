@@ -43,18 +43,14 @@ export struct Settings {
               this.pathStack?.pushPathByName("Settings_Login", null)
             }
           })
-
-          Divider()
-            .margin({ left: 8, right: 8})
-            .color(this.dividerColor)
+        } else {
+          ItemCard({
+            text: '捐赠和捐赠记录',
+            action: () => {
+              this.pathStack?.pushPathByName("Settings_Donation", null)
+            }
+          })
         }
-
-        ItemCard({
-          text: '捐赠和捐赠记录',
-          action: () => {
-            this.pathStack?.pushPathByName("Settings_Donation", null)
-          }
-        })
       }
       .backgroundColor(Color.White)
       .margin({ left: 16, right: 16 })
