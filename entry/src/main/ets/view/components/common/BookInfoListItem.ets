@@ -8,21 +8,23 @@ export struct BookInfoListItem {
   @Require @Param bookData: BookData;
 
   build() {
-    Column(){
+    Column({ space: 10 }){
       Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Start}) {
-        BookCover({ coverData: this.bookData.cover, altHeight: 130})
-          .width("100vp")
+        BookCover({ coverData: this.bookData.cover, altHeight: 120})
+          .width("40%")
           .alignSelf(ItemAlign.Center)
+          .constraintSize({
+            maxHeight: 120
+          })
 
         Column() {
           Flex({direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween}) {
-            Column() {
+            Column({space: 2}) {
               Text(this.bookData.title)
                 .fontSize("16vp")
                 .fontWeight(FontWeight.Bold)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .wordBreak(WordBreak.BREAK_ALL)
-                .margin({ bottom: "4vp", top: "4vp" })
                 .maxLines(2)
               Text(this.bookData.author)
                 .fontSize("14vp")
@@ -62,42 +64,40 @@ export struct BookInfoListItem {
             }
           }
 
-          Row({space: 8}) {
-            if (this.bookData.year !== 0) {
-              Text(`${this.bookData.year}`).fontSize("14vp")
-              Divider().vertical(true)
-            }
-            Text() {
-              SymbolSpan($r("sys.symbol.worldclock"))
-            }.fontSize("14vp")
-            Text(this.bookData.language).fontSize("14vp")
-            Divider().vertical(true)
-            Text() {
-              SymbolSpan($r("sys.symbol.doc_text"))
-            }.fontSize("14vp")
-            Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize("14vp")
+          if (this.bookData.date_download) {
+            Text(`下载 ${new Date(this.bookData.date_download).toLocaleDateString()}`)
+              .alignSelf(ItemAlign.Start)
+              .fontSize("12vp")
+              .fontColor(Color.Gray)
           }
-            // .justifyContent(FlexAlign.Start)
-            .height("14vp")
-            .width("100%")
         }
           .width("100%")
           .height("100%")
           .justifyContent(FlexAlign.SpaceBetween)
           .alignItems(HorizontalAlign.Start)
-          .padding({ left: "10vp", right: "10vp", top: "5vp", bottom: "5vp" })
+          .padding({ left: "10vp", right: "10vp" })
       }
-      .margin({ top: "4vp", bottom: "4vp" })
-      .height("130vp")
-      .width("100%")
-      if (this.bookData.date_download) {
-        Text(`下载 ${new Date(this.bookData.date_download).toLocaleDateString()}`)
-          .alignSelf(ItemAlign.Start)
-          .margin({ bottom: "4vp"})
-          .fontSize("12vp")
-          .fontColor(Color.Gray)
+        .height(120)
+        .width("100%")
+      Row({space: 8}) {
+        if (this.bookData.year !== 0) {
+          Text(`${this.bookData.year}`).fontSize("14vp")
+          Divider().vertical(true)
+        }
+        Text() {
+          SymbolSpan($r("sys.symbol.worldclock"))
+        }.fontSize("14vp")
+        Text(this.bookData.language).fontSize("14vp")
+        Divider().vertical(true)
+        Text() {
+          SymbolSpan($r("sys.symbol.doc_text"))
+        }.fontSize("14vp")
+        Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize("14vp")
       }
+        .height("14vp")
+        .width("100%")
     }
+    .margin({ top: 10, bottom: 10})
   }
 
   async onClickStar(): Promise<void> {

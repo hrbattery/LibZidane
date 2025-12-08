@@ -107,7 +107,7 @@ struct SearchPage {
         .textAlign(TextAlign.Center)
         .fontSize(16)
         .fontWeight(FontWeight.Bold)
-        .margin({ top: 4, left: 10 })
+        .margin({ top: 4, left: 10, bottom: 4 })
     }
   }
 

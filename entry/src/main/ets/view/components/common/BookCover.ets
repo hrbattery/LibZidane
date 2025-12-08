@@ -9,7 +9,7 @@ export struct BookCover {
   @Local imgRatio: number = 0.75;
 
   build() {
-    Column() {
+    Row() {
       if (!this.isLoaded || this.loadError) {
         Text(this.coverData.name ?? '加载中...')
           .fontSize("14vp")
@@ -17,6 +17,9 @@ export struct BookCover {
           .height(this.altHeight ?? 200)
           .textAlign(TextAlign.Center)
           .backgroundColor("#ffaaaaaa")
+          .maxLines(6)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .wordBreak(WordBreak.BREAK_ALL)
       }
 
       Image(this.coverData.img)
@@ -33,8 +36,13 @@ export struct BookCover {
           this.loadError = true
         })
         .aspectRatio(this.imgRatio)
+        .constraintSize({
+          maxHeight: this.altHeight ?? Infinity
+        })
+        .width("100%")
+
     }
-    .height("auto")
-    .width("auto")
+    .justifyContent(FlexAlign.Center)
+    .width("100%")
   }
 }
