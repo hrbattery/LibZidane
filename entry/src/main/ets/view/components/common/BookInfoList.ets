@@ -1,11 +1,15 @@
+import { WidthBreakpointType } from '../../../common/system/BreakpointUtil';
 import { PaginationDataSource } from '../../../common/types/ResponseTypes';
 import { BookData, BookDetailParam } from '../../../model/entities/BookModel';
 import { BookInfoListItem } from './BookInfoListItem';
+import { AppStorageV2 } from '@kit.ArkUI';
+import { WindowInfo } from '../../../common/system/WindowUtil';
 
 @ComponentV2
 export struct BookInfoList {
   @Param bookDataSource: Array<BookData> = []
   @Param pagination: PaginationDataSource | undefined = undefined;
+  @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
 
   @Event onLoadNewData: () => Promise<void> = async () => {}
 
@@ -42,6 +46,13 @@ export struct BookInfoList {
         })
         .key((item, index) => `${index}:${item.title}:${item._isFavorite}`)
     }
+    .divider({
+      color: Color.Gray,
+      strokeWidth: "1px",
+      // startMargin: 10,
+      // endMargin: 10
+    })
+    .lanes(new WidthBreakpointType(1, 2, 3, 3).getValue(this.windowInfo.widthBp), 10)
     .width("100%")
     .height("100%")
     .onScrollIndex(async (start: number, end: number) => {
@@ -49,6 +60,7 @@ export struct BookInfoList {
       await this.onEndOfList(end);
     })
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+    .padding({left: "10vp", right: "10vp"})
   }
 
   private async onEndOfList(end: number) {

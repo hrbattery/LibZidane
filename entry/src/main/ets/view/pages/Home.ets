@@ -5,6 +5,7 @@ import { DialogHelper } from "@pura/harmony-dialog"
 import { Constants } from '../../common/const/Constants';
 import { Settings } from '../components/settings/Settings';
 
+const TAG = "[Home] "
 @Entry
 @ComponentV2
 struct Home {
@@ -12,7 +13,7 @@ struct Home {
   @Local tabCurrentIndex: number = 0;
   @Local tabController: TabsController = new TabsController()
   @Local titleMap: string[] = ["图书馆", "我的书籍", "设置"]
-  @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems()
+  @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems;
 
   @Local myBookTabIndex: number = 0;
   @Local sortMenuItems: SheetInfo[] = this.getSortMenuItems()
@@ -53,7 +54,7 @@ struct Home {
       .barPosition(BarPosition.End)
       .onAnimationStart((from, target) => {
         this.index = target;
-        this.navMenuItems = this.getMenuItems();
+        this.navMenuItems = this.getMenuItems;
       })
       // .onChange((index) => {
       //   this.menuItems = this.getMenuItems();
@@ -63,6 +64,7 @@ struct Home {
     .title(this.titleMap[this.index])
     .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
+    .mode(NavigationMode.Stack)
   }
 
   @Builder ToolBar() {
@@ -91,7 +93,8 @@ struct Home {
     })
   }
 
-  getMenuItems(): NavigationMenuItem[] {
+  @Computed
+  get getMenuItems(): NavigationMenuItem[] {
     if (this.index === 0) {
       return [
         {
@@ -144,10 +147,10 @@ struct Home {
       radioContent: this.sortMenuItems,
       onCheckedChanged: (index: number): void => {
         closeDialog()
-        logger.debug(`onCheckedChanged: index=${index}`)
+        logger.debug(TAG, `onCheckedChanged: index=${index}`)
       },
       onAction: (action: number, dialogId: string, value: string): void => {
-        logger.debug(`onAction: action=${action}, dialogId=${dialogId}, value=${value}`)
+        logger.debug(TAG, `onAction: action=${action}, dialogId=${dialogId}, value=${value}`)
       }
     })
 

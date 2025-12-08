@@ -1,5 +1,8 @@
+import { WidthBreakpointType } from '../../../common/system/BreakpointUtil';
+import { WindowInfo, windowUtil } from '../../../common/system/WindowUtil';
 import { BookDetailParam, CoverData } from '../../../model/entities/BookModel'
 import { BookCover } from './BookCover'
+import { AppStorageV2 } from '@kit.ArkUI';
 
 /**
  * WaterFlow component showing book covers.
@@ -9,6 +12,7 @@ import { BookCover } from './BookCover'
 @ComponentV2
 export struct BookCoverWaterFlow {
   @Param coverDataSource: CoverData[] = []
+  @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
 
   pathStack: NavPathStack | undefined = undefined;
 
@@ -43,7 +47,8 @@ export struct BookCoverWaterFlow {
         })
         .key((item, index) => `${index}:${item.name}`)
     }
-    .columnsTemplate('1fr 1fr 1fr')
+    // .columnsTemplate('1fr 1fr 1fr')
+    .columnsTemplate(`repeat(${new WidthBreakpointType(3, 4, 6, 8).getValue(this.windowInfo.widthBp)}, 1fr)`)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     .nestedScroll({
       scrollForward: NestedScrollMode.PARENT_FIRST,

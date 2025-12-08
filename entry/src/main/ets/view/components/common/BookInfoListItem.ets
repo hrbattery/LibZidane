@@ -39,7 +39,7 @@ export struct BookInfoListItem {
                   .maxLines(1)
               }
             }
-            .alignItems(HorizontalAlign.Start)
+              .alignItems(HorizontalAlign.Start)
 
             if (this.bookData._isFavorite !== undefined) {
               if (this.bookData._isFavorite) {
@@ -62,36 +62,41 @@ export struct BookInfoListItem {
             }
           }
 
-          Row() {
+          Row({space: 8}) {
             if (this.bookData.year !== 0) {
               Text(`${this.bookData.year}`).fontSize("14vp")
-              Divider().vertical(true).margin({ left: 8, right: 8 })
+              Divider().vertical(true)
             }
+            Text() {
+              SymbolSpan($r("sys.symbol.worldclock"))
+            }.fontSize("14vp")
             Text(this.bookData.language).fontSize("14vp")
-            Divider().vertical(true).margin({ left: 8, right: 8 })
+            Divider().vertical(true)
+            Text() {
+              SymbolSpan($r("sys.symbol.doc_text"))
+            }.fontSize("14vp")
             Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize("14vp")
           }
-          // .justifyContent(FlexAlign.Start)
-          .height("14vp")
+            // .justifyContent(FlexAlign.Start)
+            .height("14vp")
+            .width("100%")
         }
-        .width("100%")
-        .height("100%")
-        .justifyContent(FlexAlign.SpaceBetween)
-        .alignItems(HorizontalAlign.Start)
-        .padding({left: "10vp", right: "10vp", top: "5vp", bottom: "5vp"})
+          .width("100%")
+          .height("100%")
+          .justifyContent(FlexAlign.SpaceBetween)
+          .alignItems(HorizontalAlign.Start)
+          .padding({ left: "10vp", right: "10vp", top: "5vp", bottom: "5vp" })
       }
-      .padding({left: "10vp", right: "10vp"})
-      .margin({top: "4vp", bottom: "4vp"})
+      .margin({ top: "4vp", bottom: "4vp" })
       .height("130vp")
       .width("100%")
       if (this.bookData.date_download) {
         Text(`下载 ${new Date(this.bookData.date_download).toLocaleDateString()}`)
           .alignSelf(ItemAlign.Start)
-          .margin({left: "10vp", bottom: "4vp"})
+          .margin({ bottom: "4vp"})
           .fontSize("12vp")
           .fontColor(Color.Gray)
       }
-      Divider()
     }
   }
 
