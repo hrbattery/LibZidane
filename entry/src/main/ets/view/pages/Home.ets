@@ -13,7 +13,7 @@ struct Home {
   @Local tabCurrentIndex: number = 0;
   @Local tabController: TabsController = new TabsController()
   @Local titleMap: string[] = ["图书馆", "我的书籍", "设置"]
-  @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems;
+  @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems();
 
   @Local myBookTabIndex: number = 0;
   @Local sortMenuItems: SheetInfo[] = this.getSortMenuItems()
@@ -54,7 +54,7 @@ struct Home {
       .barPosition(BarPosition.End)
       .onAnimationStart((from, target) => {
         this.index = target;
-        this.navMenuItems = this.getMenuItems;
+        this.navMenuItems = this.getMenuItems();
       })
       // .onChange((index) => {
       //   this.menuItems = this.getMenuItems();
@@ -93,8 +93,7 @@ struct Home {
     })
   }
 
-  @Computed
-  get getMenuItems(): NavigationMenuItem[] {
+  getMenuItems(): NavigationMenuItem[] {
     if (this.index === 0) {
       return [
         {
