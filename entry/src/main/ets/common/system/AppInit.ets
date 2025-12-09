@@ -16,7 +16,6 @@ export async function appInit(context: common.UIAbilityContext) {
     console.log(reason.message)
   }).then(() => {})
 
-  await initPreferences(context);
   // await initAppStorage()
 
   // get languages options
@@ -34,8 +33,8 @@ export async function appInit(context: common.UIAbilityContext) {
   })
 }
 
-async function initPreferences(context: common.UIAbilityContext) {
-  await preferencesUtils.loadPreference(context, StorageConstants.DEFAULT_PREF)
+export function initPreferences(context: common.UIAbilityContext) {
+  preferencesUtils.loadPreferenceSync(context, StorageConstants.DEFAULT_PREF)
 }
 
 // async function initAppStorage() {

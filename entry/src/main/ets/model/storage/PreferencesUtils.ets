@@ -1,5 +1,5 @@
-import { preferences } from '@kit.ArkData'
 import { Context } from '@kit.AbilityKit'
+import { preferences } from '@kit.ArkData'
 import { LogUtil as logger } from '@pura/harmony-utils'
 
 class PreferencesUtils {
@@ -9,6 +9,19 @@ class PreferencesUtils {
   async loadPreference(context: Context, field: string) {
     try {
       const preference = await preferences.getPreferences(context, field)
+      this.preferencesMap.set(field, preference)
+    } catch (e) {
+      logger.error(`加载 Preference ${field} 失败: ${JSON.stringify(e)}`)
+      throw new Error(`加载 Preference ${field} 失败: ${JSON.stringify(e)}`)
+    }
+  }
+
+  // 加载首选项表
+  loadPreferenceSync(context: Context, field: string) {
+    try {
+      const preference = preferences.getPreferencesSync(context, {
+        name: field
+      })
       this.preferencesMap.set(field, preference)
     } catch (e) {
       logger.error(`加载 Preference ${field} 失败: ${JSON.stringify(e)}`)
@@ -49,7 +62,7 @@ class PreferencesUtils {
 
   // 删除数据
   async delete(field: string, key: string) {
-    if(!this.preferencesMap.has(field)) {
+    if (!this.preferencesMap.has(field)) {
       logger.error(`Preference ${field} 尚未初始化`)
       return
     }
@@ -80,7 +93,7 @@ class PreferencesUtils {
 
   // 精确监听 Preference 中对应 field 和 key 的变动
   on(field: string, keys: string[], cbs: Callback<Record<string, preferences.ValueType>>) {
-    if(!this.preferencesMap.has(field)) {
+    if (!this.preferencesMap.has(field)) {
       logger.error(`Preference ${field} 尚未初始化`)
       return
     }
@@ -95,7 +108,7 @@ class PreferencesUtils {
 
   // 取消监听 Preference 中对应 field 和 key 的变动
   off(field: string, keys: string[], cbs?: Callback<Record<string, preferences.ValueType>>) {
-    if(!this.preferencesMap.has(field)) {
+    if (!this.preferencesMap.has(field)) {
       logger.error(`Preference ${field} 尚未初始化`)
       return
     }
