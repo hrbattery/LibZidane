@@ -52,7 +52,7 @@ export struct BookInfoList {
       // startMargin: 10,
       // endMargin: 10
     })
-    .lanes(new WidthBreakpointType(1, 2, 3, 3).getValue(this.windowInfo.widthBp), 10)
+    .lanes(new WidthBreakpointType(1, 2, 3, 4).getValue(this.windowInfo.widthBp), 10)
     .width("100%")
     .height("100%")
     .onScrollIndex(async (start: number, end: number) => {

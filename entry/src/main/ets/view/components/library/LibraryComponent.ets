@@ -51,7 +51,7 @@ export struct LibraryComponent {
       if (this.showNormal) {
         BookCoverWaterFlow({
           coverDataSource: this.viewModel.coverDataSource
-        })
+        }).padding({ left: 5, right: 5 })
       } else if (this.showSkeleton) {
         // todo: skeleton impl
       } else if (this.showLogoutPlaceholder) {
@@ -71,7 +71,7 @@ export struct LibraryComponent {
       } else {
         BookCoverWaterFlow({
           coverDataSource: this.viewModel.coverDataSource
-        })
+        }).padding({ left: 5, right: 5 })
       }
     }
     .onRefreshing(async () => {

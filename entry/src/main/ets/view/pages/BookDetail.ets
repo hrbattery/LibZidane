@@ -174,18 +174,20 @@ struct BookDetailPage {
                   this.bookData.author,
                   this.bookData.cover
                 )
-              }).width("30%")
+              })
+                .width("30%")
+                .constraintSize({
+                  maxWidth: 120
+                })
               Text(this.bookData.title)
                 .fontSize("16vp")
                 .fontColor("#ffffffff")
                 .fontWeight(FontWeight.Bold)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .margin({"left": "10vp", "right": "10vp"})
                 .textAlign(TextAlign.Center)
               Text(this.bookData.author)
                 .fontSize("14vp")
                 .fontColor("#ffdadada")
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .textAlign(TextAlign.Center)
                 .margin({"left": "10vp", "right": "10vp"})
                 .onClick(() => {
@@ -231,80 +233,20 @@ struct BookDetailPage {
             .width("100%")
             .backgroundColor("#4A688A")
 
-            Tabs() {
-              TabContent() {
-                Grid() {
-                  if (this.bookData.year !== undefined && this.bookData.year !== 0) {
-                    this.BookInfoKeyGridItem("年份：")
-                    this.BookInfoValueGridItem(`${this.bookData.year}`)
-                  }
-                  if (this.bookData.edition) {
-                    this.BookInfoKeyGridItem("版本:")
-                    this.BookInfoValueGridItem(`${this.bookData.edition}`)
-                  }
-                  if (this.bookData.publisher) {
-                    this.BookInfoKeyGridItem("出版社:")
-                    this.BookInfoValueGridItem(`${this.bookData.publisher}`)
-                  }
-                  if (this.bookData.language) {
-                    this.BookInfoKeyGridItem("语言:")
-                    this.BookInfoValueGridItem(`${this.bookData.language}`)
-                  }
-                  if (this.bookData.pages) {
-                    this.BookInfoKeyGridItem("页数:")
-                    this.BookInfoValueGridItem(`${this.bookData.pages}`)
-                  }
-                  if (this.bookData.identifier) {
-                    this.BookInfoKeyGridItem("ISBN 10:")
-                    this.BookInfoValueGridItem(`${this.bookData.identifier}`)
-
-                    // fixme: series parse
-                  }
-                  if (this.bookData.series) {
-                    this.BookInfoKeyGridItem("系列:")
-                    this.BookInfoValueGridItem(`${this.bookData.series}`)
-                  }
-                  if (this.bookData.extension && this.bookData.filesizeString) {
-                    this.BookInfoKeyGridItem("文件:")
-                    this.BookInfoValueGridItem(`${this.bookData.extension}, ${this.bookData.filesizeString}`)
-                    // fixme: 考虑只有ext或只有filesize的情况
-                  }
-                }
-                .columnsTemplate('1fr 3fr')
-                .enableScrollInteraction(false)
-                .supportAnimation(false)
-              }
-              .height("auto")
-              .tabBar('书')
-
-              TabContent() {
-                Web({ src: '', controller: this.webController, renderMode: RenderMode.SYNC_RENDER })
-                  .onControllerAttached(() => { // 当Controller成功绑定到Web组件时触发该回调
-                    this.webController.loadData(this.richStrHead + this.bookData?.description, 'text/html', 'UTF-8', ' ', ' ')
-                  })
-                  .width('100%')
-                  .layoutMode(WebLayoutMode.FIT_CONTENT)
-                  .overScrollMode(OverScrollMode.NEVER)
-                  .zoomAccess(false)
-                  .minFontSize(14)
-                  .javaScriptAccess(false)
-              }
-              .tabBar('描述')
-            }
-            .height("auto")
-            .barMode(BarMode.Fixed)
+            this.BookDetailDescription(this.bookData)
 
             Text("您可能对以下内容感兴趣")
-              .fontSize("18vp")
+              .fontSize(18)
               .margin({
-                top: "15vp",
-                bottom: "4vp",
-                left: "4vp"
+                top: 15,
+                bottom: 4,
+                left: 10
               })
               .alignSelf(ItemAlign.Start)
             BookCoverWaterFlow({
               coverDataSource: this.similarBookCoverDataSource
             })
+              .padding({ left: 5, right: 5 })
           }
         }
       }
@@ -324,14 +266,79 @@ struct BookDetailPage {
   }
 
   @Builder
+  BookDetailDescription(bookData: FullBookDataType) {
+    Tabs() {
+      TabContent() {
+        Grid() {
+          if (bookData.year !== undefined && bookData.year !== 0) {
+            this.BookInfoKeyGridItem("年份：");
+            this.BookInfoValueGridItem(`${bookData.year}`);
+          }
+          if (bookData.edition) {
+            this.BookInfoKeyGridItem("版本:");
+            this.BookInfoValueGridItem(`${bookData.edition}`);
+          }
+          if (bookData.publisher) {
+            this.BookInfoKeyGridItem("出版社:");
+            this.BookInfoValueGridItem(`${bookData.publisher}`);
+          }
+          if (bookData.language) {
+            this.BookInfoKeyGridItem("语言:");
+            this.BookInfoValueGridItem(`${bookData.language}`);
+          }
+          if (bookData.pages) {
+            this.BookInfoKeyGridItem("页数:");
+            this.BookInfoValueGridItem(`${bookData.pages}`);
+          }
+          if (bookData.identifier) {
+            this.BookInfoKeyGridItem("ISBN 10:");
+            this.BookInfoValueGridItem(`${bookData.identifier}`);
+
+            // fixme: series parse
+          }
+          if (bookData.series) {
+            this.BookInfoKeyGridItem("系列:");
+            this.BookInfoValueGridItem(`${bookData.series}`);
+          }
+          if (bookData.extension && bookData.filesizeString) {
+            this.BookInfoKeyGridItem("文件:");
+            this.BookInfoValueGridItem(`${bookData.extension}, ${bookData.filesizeString}`);
+            // fixme: 考虑只有ext或只有filesize的情况
+          }
+        }
+        .columnsGap(10)
+        .rowsGap(15)
+        .margin({ left: 10, right: 10 })
+        .columnsTemplate('1fr 3fr')
+        .enableScrollInteraction(false)
+        .supportAnimation(false);
+      }
+      .height("auto")
+      .tabBar('书');
+
+      TabContent() {
+        Web({ src: '', controller: this.webController, renderMode: RenderMode.SYNC_RENDER })
+          .onControllerAttached(() => {
+            this.webController.loadData(this.richStrHead + this.bookData?.description, 'text/html', 'UTF-8', ' ', ' ');
+          })
+          .width('100%')
+          .layoutMode(WebLayoutMode.FIT_CONTENT)
+          .overScrollMode(OverScrollMode.NEVER)
+          .zoomAccess(false)
+          .minFontSize(14)
+          .javaScriptAccess(false);
+      }
+      .tabBar('描述');
+    }
+    .height("auto")
+    .barMode(BarMode.Fixed)
+  }
+
+  @Builder
   BookInfoKeyGridItem(text: string) {
     GridItem() {
       Text(text)
         .textAlign(TextAlign.Center)
-        .margin({
-          top: 15,
-          left: 15,
-        })
         .fontColor("#D6D5D8")
     }.align(Alignment.Start)
   }
@@ -341,9 +348,6 @@ struct BookDetailPage {
     GridItem() {
       Text(text)
         .textAlign(TextAlign.Center)
-        .margin({
-          top: 15
-        })
     }.align(Alignment.Start)
   }
 
