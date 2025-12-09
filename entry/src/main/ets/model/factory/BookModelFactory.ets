@@ -82,6 +82,11 @@ export class FullBookDataFactory {
     param.date_download = FullBookDataFactory.getField(data, "date_download");
     param.date_saved = FullBookDataFactory.getField(data, "date_saved");
     param._isFavorite = FullBookDataFactory.getField(data, "_isUserSavedBook") ?? (param.date_saved ? true : undefined)
+
+    if (data.identifier !== undefined) {
+      FullBookDataFactory.parseIdentifier(data.identifier, param);
+    }
+
     return new FullBookData(param);
   }
 
@@ -91,5 +96,22 @@ export class FullBookDataFactory {
   ): S {
     const dataAny = data as object;
     return dataAny[fieldName];
+  }
+
+  private static parseIdentifier(identifier: string, param: FullBookDataType) {
+    let identifiers: string[] = identifier.split(",");
+    let isbn10: string[] = [];
+    let isbn13: string[] = [];
+
+    for (const s of identifiers) {
+      if (s.length === 10) {
+        isbn10.push(s);
+      } else if (s.length === 13) {
+        isbn13.push(s);
+      }
+    }
+
+    param.isbn10 = isbn10;
+    param.isbn13 = isbn13;
   }
 }

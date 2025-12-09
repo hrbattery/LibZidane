@@ -60,6 +60,8 @@ export class FullBookData extends BookData {
   @Trace href: string
   @Trace dl?: string
   @Trace description: string
+  @Trace isbn10?: string[]
+  @Trace isbn13?: string[]
 
   constructor(bookData: FullBookDataType) {
     super(bookData);
@@ -75,6 +77,8 @@ export class FullBookData extends BookData {
     this.href = bookData.href
     this.dl = bookData.dl
     this.description = bookData.description
+    this.isbn10 = bookData.isbn10
+    this.isbn13 = bookData.isbn13
   }
 }
 
@@ -109,7 +113,9 @@ export interface FullBookDataType extends BookDataType, BookFormatType {
   sha256: string,
   href: string,
   dl?: string,
-  description: string
+  description: string,
+  isbn10?: string[],
+  isbn13?: string[]
 }
 
 export interface BookDetailParam {

@@ -20,6 +20,7 @@ import { SearchQueryType } from "../../common/types/QueryTypes";
  */
 
 export async function getMostPopular(): Promise<CoverDataSource[]> {
+  // todo: switch language
   let response = await ReqInst.get<MostPopularResponse>("/eapi/book/most-popular");
   logger.debug(response)
   if (response.success === 1) {
@@ -29,6 +30,7 @@ export async function getMostPopular(): Promise<CoverDataSource[]> {
 }
 
 export async function getBookInfo(bookId: number, hash: string): Promise<BookCommonDataSource | undefined> {
+  // todo: switch language
   let response = await ReqInst.get<BookInfoResponse>(`/eapi/book/${bookId}/${hash}`);
   logger.debug(response)
   if (response.success) {

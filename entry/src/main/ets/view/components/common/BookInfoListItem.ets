@@ -7,6 +7,18 @@ import { BookCover } from './BookCover';
 export struct BookInfoListItem {
   @Require @Param bookData: BookData;
 
+  async onClickStar(): Promise<void> {
+    try {
+      // todo: 总之改改这段
+      this.bookData._isFavorite = !this.bookData._isFavorite
+      !this.bookData._isFavorite ? await unsaveBook(this.bookData.id) : await saveBook(this.bookData.id);
+    } catch (e) {
+      logger.error(e)
+      this.bookData._isFavorite = !this.bookData._isFavorite
+      // todo: toast error or use a 404 page
+    }
+  }
+
   build() {
     Column({ space: 8 }) {
       Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Start }) {
@@ -80,38 +92,31 @@ export struct BookInfoListItem {
       .height(120)
       .width("100%")
 
-      Row({ space: 8 }) {
-        if (this.bookData.year !== 0) {
-          Text(`${this.bookData.year}`).fontSize(12)
-          Divider().vertical(true)
-        }
-        Text() {
-          SymbolSpan($r("sys.symbol.worldclock"))
-        }.fontSize(12)
-
-        Text(this.bookData.language).fontSize(12)
-        Divider().vertical(true)
-        Text() {
-          SymbolSpan($r("sys.symbol.doc_text"))
-        }.fontSize(12)
-
-        Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize(12)
-      }
-      .height(12)
-      .width("100%")
+      this.SubBookInfo(12)
     }
     .margin({ top: 8, bottom: 8 })
   }
 
-  async onClickStar(): Promise<void> {
-    try {
-      // todo: 总之改改这段
-      this.bookData._isFavorite = !this.bookData._isFavorite
-      !this.bookData._isFavorite ? await unsaveBook(this.bookData.id) : await saveBook(this.bookData.id);
-    } catch (e) {
-      logger.error(e)
-      this.bookData._isFavorite = !this.bookData._isFavorite
-      // todo: toast error or use a 404 page
+  @Builder
+  SubBookInfo(fontSize: number) {
+    Row({ space: 8 }) {
+      if (this.bookData.year !== 0) {
+        Text(`${this.bookData.year}`).fontSize(fontSize);
+        Divider().vertical(true);
+      }
+      Text() {
+        SymbolSpan($r("sys.symbol.worldclock"));
+      }.fontSize(fontSize);
+
+      Text(this.bookData.language).fontSize(fontSize);
+      Divider().vertical(true);
+      Text() {
+        SymbolSpan($r("sys.symbol.doc_text"));
+      }.fontSize(fontSize);
+
+      Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize(fontSize);
     }
+    .height(fontSize)
+    .width("100%")
   }
 }
