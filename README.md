@@ -1,9 +1,7 @@
-# **LibZidane**
+# LibZidane: A third-party Z-Library app for HarmonyOS
 <p align="center">
     <img alt="lz_icon.png" height="240" src="AppScope/resources/base/media/lz_icon.png" width="240"/>
 </p>
-
-## A third-party Z-Library app for HarmonyOS
 
 ## 📖 Software Features
 
@@ -19,7 +17,7 @@ Emm...This is just a simple (WIP) replacement of Z-Library Android App for Harmo
 - [ ] Dark mode
 - [ ] Custom Api
 - [ ] Donation page to original Z-Library (not to me)
-- [ ] Multi-device adaption (Tablet, 2in1, PC)
+- [x] Multi-device adaption (Tablet, 2in1, PC)
 
 ## 🛠️ System Require
 
@@ -29,7 +27,7 @@ API Version 17+ / HarmonyOS NEXT 5.0.1.120+
 
 ## 📦 How to use
 
-Only build from source is available now.
+Only building from source is available now.
 
 ```bash
 git clone https://github.com/hrbattery/LibZidane
