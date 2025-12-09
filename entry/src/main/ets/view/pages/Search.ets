@@ -1,14 +1,9 @@
 import { DialogHelper } from '@pura/harmony-dialog'
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils'
-import { getSearch } from '../../model/api/BookApi'
 import { Constants } from '../../common/const/Constants'
-import { PaginationDataSource } from '../../common/types/ResponseTypes'
-import { BookInfoList } from '../components/common/BookInfoList'
-import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
-import { BookData, BookDataType } from '../../model/entities/BookModel'
-import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel'
-import { SearchResults } from '../components/search/SearchResults'
 import { SearchViewModel } from '../../viewModel/search/SearchResultViewModel'
+import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
+import { SearchResults } from '../components/search/SearchResults'
 
 @Builder
 export function SearchPageBuilder() {

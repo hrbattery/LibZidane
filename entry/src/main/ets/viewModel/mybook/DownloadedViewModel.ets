@@ -1,6 +1,7 @@
 import { LogUtil as logger } from '@pura/harmony-utils';
 import { getDownloaded } from '../../model/api/UserApi';
 import { BookData, BookDataType } from '../../model/entities/BookModel';
+import { BookDataFactory } from '../../model/factory/BookModelFactory';
 import { MyBookComponentViewModel } from './MyBookComponentViewModel';
 
 @ObservedV2
@@ -14,7 +15,7 @@ export class DownloadedViewModel extends MyBookComponentViewModel {
       this.isLoadFailed = false;
       this.isLoading = false;
       if (downloaded !== null) {
-        this.bookDataSource = downloaded.books.map(element => new BookData(element as BookDataType))
+        this.bookDataSource = downloaded.books.map(element => BookDataFactory.fromBookCommonDataSource(element))
         this.pagination = downloaded.pagination
       }
     } catch (e) {

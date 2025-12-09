@@ -1,13 +1,13 @@
-import { BookFormatType, FullBookDataType } from "../../../model/entities/BookModel"
-import { common } from "@kit.AbilityKit"
-import { fileDownload } from "../../../common/request/FileDownload"
-import { getBookDownloadUrl } from "../../../model/api/BookApi"
-import { url } from "@kit.ArkTS"
-import { ToastUtil } from "@pura/harmony-utils"
+import { common } from '@kit.AbilityKit'
+import { url } from '@kit.ArkTS'
+import { ToastUtil } from '@pura/harmony-utils'
+import { fileDownload } from '../../../common/request/FileDownload'
+import { getBookDownloadUrl } from '../../../model/api/BookApi'
+import { BookFormatType, FullBookData } from '../../../model/entities/BookModel'
 
 @ComponentV2
 export struct BookFormatSheet {
-  @Param @Require mainBookData: FullBookDataType
+  @Param @Require mainBookData: FullBookData
   @Param @Require formats: BookFormatType[]
   @Param @Require onClose: () => void;
 
@@ -15,12 +15,12 @@ export struct BookFormatSheet {
     Column() {
       this.BookFormatItem(this.mainBookData)
       Divider()
-        .margin({top: 10, bottom: 10})
+        .margin({ top: 10, bottom: 10 })
         .width("90%")
       Text("其他格式")
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
-        .margin({left: 20, top: 10, bottom: 10})
+        .margin({ left: 20, top: 10, bottom: 10 })
         .alignSelf(ItemAlign.Start)
       List({ space: 10 }) {
         Repeat(this.formats)
@@ -44,8 +44,8 @@ export struct BookFormatSheet {
   }
 
   @Builder
-  BookFormatItem(item: FullBookDataType | BookFormatType) {
-    Button({type: ButtonType.Normal}) {
+  BookFormatItem(item: FullBookData | BookFormatType) {
+    Button({ type: ButtonType.Normal }) {
       Row({ space: 10 }) {
         Text(item.extension).fontSize(16).layoutWeight(1)
         Text(item.filesizeString).fontSize(16)
@@ -55,7 +55,7 @@ export struct BookFormatSheet {
     .backgroundColor(Color.Transparent)
     .width("100%")
     .height('40vp')
-    .padding({left: 20, right: 20})
+    .padding({ left: 20, right: 20 })
     .onClick(async () => {
       // todo: bg color
       if (this.mainBookData) {

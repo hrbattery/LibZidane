@@ -1,127 +1,115 @@
+/**
+ * Datasource type for displaying book cover
+ */
 @ObservedV2
 export class CoverData {
   id: number;
   hash: string;
-  @Trace name: string;
+  @Trace title: string;
   @Trace author: string;
-  @Trace img: string;
+  @Trace cover: string;
 
-  constructor(id: number, hash: string, name: string, author: string, img: string) {
-    this.id = id;
-    this.hash = hash;
-    this.name = name;
-    this.author = author;
-    this.img = img;
+  constructor(data: CoverDataType) {
+    this.id = data.id;
+    this.hash = data.hash;
+    this.title = data.title;
+    this.author = data.author;
+    this.cover = data.cover;
   }
 }
 
+/**
+ * Datasource type for displaying book list
+ */
 @ObservedV2
-export class BookData {
-  id: number;
-  hash: string;
-  @Trace cover: CoverData;
-  @Trace title: string;
-  @Trace author: string;
+export class BookData extends CoverData {
   @Trace publisher: string | undefined;
   @Trace year: number;
-  @Trace language: string;
+  @Trace language?: string;
   @Trace extension: string;
   @Trace filesizeString: string;
   @Trace date_download: string | undefined
   @Trace _isFavorite: boolean | undefined
 
   constructor(bookData: BookDataType) {
-    this.id = bookData.id;
-    this.hash = bookData.hash;
-    this.cover = new CoverData(
-      bookData.id,
-      bookData.hash,
-      bookData.title,
-      bookData.author,
-      bookData.cover
-    );
-    this.title = bookData.title;
-    this.author = bookData.author;
+    super(bookData);
     this.publisher = bookData.publisher;
     this.year = bookData.year;
     this.language = bookData.language;
     this.extension = bookData.extension;
     this.filesizeString = bookData.filesizeString
     this.date_download = bookData.date_download
-    this._isFavorite = bookData.date_saved ? true: undefined
+    this._isFavorite = bookData._isFavorite
   }
-
-  toString(): string {
-		return JSON.stringify({
-      id: this.id,
-      hash: this.hash,
-      title: this.title,
-      author: this.author,
-      publisher: this.publisher,
-      year: this.year,
-      language: this.language,
-      extension: this.extension,
-      filesizeString: this.filesizeString,
-      date_download: this.date_download,
-      _isFavorite: this._isFavorite,
-    });
-	}
 }
 
+/**
+ * Datasource type for displaying book detail page
+ */
 @ObservedV2
-export class FullBookData {
+export class FullBookData extends BookData {
+  @Trace content_type: string
+  @Trace volume?: string
+  @Trace edition?: string
+  @Trace identifier?: string
+  @Trace pages?: number
+  @Trace series?: string
+  @Trace deleted: number
+  @Trace md5: string
+  @Trace sha256: string
+  @Trace href: string
+  @Trace dl?: string
+  @Trace description: string
 
+  constructor(bookData: FullBookDataType) {
+    super(bookData);
+    this.content_type = bookData.content_type;
+    this.volume = bookData.volume;
+    this.edition = bookData.edition;
+    this.identifier = bookData.identifier;
+    this.pages = bookData.pages
+    this.series = bookData.series
+    this.deleted = bookData.deleted
+    this.md5 = bookData.md5
+    this.sha256 = bookData.sha256
+    this.href = bookData.href
+    this.dl = bookData.dl
+    this.description = bookData.description
+  }
 }
 
-export interface BookDataType {
-  id: number;
-  hash: string;
-  title: string;
-  cover: string;
-  author: string;
+export interface CoverDataType {
+  id: number,
+  title: string,
+  author: string,
+  cover: string,
+  hash: string
+}
+
+export interface BookDataType extends CoverDataType {
   publisher?: string;
   year: number;
-  language: string;
+  language?: string;
   extension: string;
   filesizeString: string;
   date_download?: string;
   date_saved?: string
+  _isFavorite?: boolean
 }
 
-export interface FullBookDataType {
-  id: number,
+export interface FullBookDataType extends BookDataType, BookFormatType {
   content_type: string,
-  title: string,
-  author: string,
   volume?: string,
-  year: number,
   edition?: string,
-  publisher?: string,
   identifier?: string,
-  language?: string,
   pages?: number,
   series?: string,
-  cover: string,
-  terms_hash?: string,
-  active: number,
   deleted: number,
-  filesize: number,
-  filesizeString: string,
-  extension: string,
   md5: string,
   sha256: string,
   href: string,
-  hash: string,
-  kindleAvailable: boolean,
-  sendToEmailAvailable: boolean,
-  interestScore?: string,
-  qualityScore?: string,
   dl?: string,
-  readOnlineUrl?: string,
-  date_download?: string,
-  readOnlineAvailable?: boolean,
-  description: string,
-  _isUserSavedBook?: boolean
+  description: string
 }
 
 export interface BookDetailParam {

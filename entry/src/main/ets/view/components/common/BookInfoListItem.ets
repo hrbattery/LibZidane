@@ -10,7 +10,7 @@ export struct BookInfoListItem {
   build() {
     Column({ space: 8 }) {
       Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Start }) {
-        BookCover({ coverData: this.bookData.cover, altHeight: 120 })
+        BookCover({ coverData: this.bookData, altHeight: 120 })
           .width("40%")
           .alignSelf(ItemAlign.Center)
           .constraintSize({

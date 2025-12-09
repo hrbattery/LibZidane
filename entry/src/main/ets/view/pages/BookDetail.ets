@@ -1,16 +1,17 @@
-import { getBookFormat, getBookInfo, getSimilar } from '../../model/api/BookApi';
-import { BookCover } from '../components/common/BookCover'
-import { BookDetailParam, BookFormatType, CoverData, FullBookDataType } from '../../model/entities/BookModel'
-import { LogUtil as logger } from "@pura/harmony-utils"
-import { webview } from '@kit.ArkWeb';
-import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
-import { bookDataCache } from '../../common/cache/BookDataCache';
-import { saveBook, unsaveBook } from '../../model/api/UserApi';
-import { BookFormatSheet } from '../components/bookdetail/BookFormatSheet';
-import { systemShare } from '@kit.ShareKit';
-import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
+import { uniformTypeDescriptor as utd } from '@kit.ArkData';
+import { webview } from '@kit.ArkWeb';
 import { BusinessError } from '@kit.BasicServicesKit';
+import { systemShare } from '@kit.ShareKit';
+import { LogUtil as logger } from '@pura/harmony-utils';
+import { bookDataCache } from '../../common/cache/BookDataCache';
+import { getBookFormat, getBookInfo, getSimilar } from '../../model/api/BookApi';
+import { saveBook, unsaveBook } from '../../model/api/UserApi';
+import { BookDetailParam, BookFormatType, CoverData, FullBookData } from '../../model/entities/BookModel';
+import { CoverDataFactory, FullBookDataFactory } from '../../model/factory/BookModelFactory';
+import { BookFormatSheet } from '../components/bookdetail/BookFormatSheet';
+import { BookCover } from '../components/common/BookCover';
+import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
 
 
 @Builder
@@ -23,8 +24,7 @@ struct BookDetailPage {
   pathStack: NavPathStack | undefined = undefined;
   @Local bookId: number = 0
   @Local hash: string = "";
-  @Local bookData: FullBookDataType | undefined = undefined
-
+  @Local bookData: FullBookData | undefined = undefined
   @Local isUserFavorite: boolean = false
   @Local navMenu: NavigationMenuItem[] = [
     {
@@ -38,11 +38,9 @@ struct BookDetailPage {
       'action': () => this.onClickStar()
     }
   ]
-
   @Local bookFormats: BookFormatType[] = []
   @Local isShowSelectFormatSheet: boolean = false
   @Local similarBookCoverDataSource: CoverData[] = []
-
   webController: webview.WebviewController = new webview.WebviewController()
   richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
 
@@ -54,7 +52,8 @@ struct BookDetailPage {
         {
           'value': "分享",
           'icon': $r("app.media.share"),
-          'action': () => {}
+          'action': () => {
+          }
         },
         {
           'value': "收藏",
@@ -67,7 +66,8 @@ struct BookDetailPage {
         {
           'value': "分享",
           'icon': $r("app.media.share"),
-          'action': () => {}
+          'action': () => {
+          }
         },
         {
           'value': "收藏",
@@ -118,9 +118,11 @@ struct BookDetailPage {
     const cache = bookDataCache.getCache(`${this.bookId}_${this.hash}`);
     if (!cache) {
       try {
-        let bookData = await getBookInfo(this.bookId, this.hash) as FullBookDataType;
-        this.bookData = bookData;
-        bookDataCache.setCache(`${this.bookId}_${this.hash}`, bookData)
+        let bookData = await getBookInfo(this.bookId, this.hash);
+        if (bookData) {
+          this.bookData = FullBookDataFactory.fromBookCommonDataSource(bookData);
+          bookDataCache.setCache(`${this.bookId}_${this.hash}`, this.bookData)
+        }
       } catch (e) {
         logger.error(e)
         // todo: toast error or use a 404 page
@@ -128,19 +130,13 @@ struct BookDetailPage {
     } else {
       this.bookData = cache
     }
-    this.isUserFavorite = !!this.bookData?._isUserSavedBook
+    this.isUserFavorite = !!this.bookData?._isFavorite
   }
 
   async loadSimilar() {
     let similar = await getSimilar(this.bookId, this.hash);
     this.similarBookCoverDataSource = similar.map(element => {
-      return new CoverData(
-        element.id,
-        element.hash,
-        element.title,
-        element.author,
-        element.cover
-      )
+      return CoverDataFactory.fromCoverDataSource(element)
     })
   }
 
@@ -167,13 +163,7 @@ struct BookDetailPage {
               alignItems: ItemAlign.Center
             }) {
               BookCover({
-                coverData: new CoverData(
-                  this.bookData.id,
-                  this.bookData.hash,
-                  this.bookData.title,
-                  this.bookData.author,
-                  this.bookData.cover
-                )
+                coverData: this.bookData
               })
                 .width("30%")
                 .constraintSize({
@@ -183,13 +173,13 @@ struct BookDetailPage {
                 .fontSize("16vp")
                 .fontColor("#ffffffff")
                 .fontWeight(FontWeight.Bold)
-                .margin({"left": "10vp", "right": "10vp"})
+                .margin({ "left": "10vp", "right": "10vp" })
                 .textAlign(TextAlign.Center)
               Text(this.bookData.author)
                 .fontSize("14vp")
                 .fontColor("#ffdadada")
                 .textAlign(TextAlign.Center)
-                .margin({"left": "10vp", "right": "10vp"})
+                .margin({ "left": "10vp", "right": "10vp" })
                 .onClick(() => {
                   this.pathStack?.pushPathByName("Search", this.bookData?.author)
                 })
@@ -266,7 +256,7 @@ struct BookDetailPage {
   }
 
   @Builder
-  BookDetailDescription(bookData: FullBookDataType) {
+  BookDetailDescription(bookData: FullBookData) {
     Tabs() {
       TabContent() {
         Grid() {
@@ -352,7 +342,7 @@ struct BookDetailPage {
   }
 
   @Builder
-  BookFormatSheetBuilder(mainBookData: FullBookDataType, formats: BookFormatType[], onClose: () => void) {
+  BookFormatSheetBuilder(mainBookData: FullBookData, formats: BookFormatType[], onClose: () => void) {
     BookFormatSheet({
       mainBookData: mainBookData,
       formats: formats,

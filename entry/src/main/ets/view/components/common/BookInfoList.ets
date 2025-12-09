@@ -1,18 +1,17 @@
+import { AppStorageV2 } from '@kit.ArkUI';
 import { WidthBreakpointType } from '../../../common/system/BreakpointUtil';
+import { WindowInfo } from '../../../common/system/WindowUtil';
 import { PaginationDataSource } from '../../../common/types/ResponseTypes';
 import { BookData, BookDetailParam } from '../../../model/entities/BookModel';
 import { BookInfoListItem } from './BookInfoListItem';
-import { AppStorageV2 } from '@kit.ArkUI';
-import { WindowInfo } from '../../../common/system/WindowUtil';
 
 @ComponentV2
 export struct BookInfoList {
-  @Param bookDataSource: Array<BookData> = []
+  @Param bookDataSource: BookData[] = []
   @Param pagination: PaginationDataSource | undefined = undefined;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
-
-  @Event onLoadNewData: () => Promise<void> = async () => {}
-
+  @Event onLoadNewData: () => Promise<void> = async () => {
+  }
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -60,7 +59,7 @@ export struct BookInfoList {
       await this.onEndOfList(end);
     })
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-    .padding({left: "10vp", right: "10vp"})
+    .padding({ left: "10vp", right: "10vp" })
   }
 
   private async onEndOfList(end: number) {

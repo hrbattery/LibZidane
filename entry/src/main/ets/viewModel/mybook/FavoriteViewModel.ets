@@ -2,6 +2,7 @@ import { LogUtil as logger } from '@pura/harmony-utils';
 
 import { getFavorite } from '../../model/api/UserApi';
 import { BookData, BookDataType } from '../../model/entities/BookModel';
+import { BookDataFactory } from '../../model/factory/BookModelFactory';
 import { MyBookComponentViewModel } from './MyBookComponentViewModel';
 
 @ObservedV2
@@ -15,7 +16,7 @@ export class FavoriteViewModel extends MyBookComponentViewModel {
       this.isLoadFailed = false;
       this.isLoading = false;
       if (favorites !== null) {
-        this.bookDataSource = favorites.books.map(element => new BookData(element as BookDataType))
+        this.bookDataSource = favorites.books.map(element => BookDataFactory.fromBookCommonDataSource(element))
         this.pagination = favorites.pagination
       }
     } catch (e) {

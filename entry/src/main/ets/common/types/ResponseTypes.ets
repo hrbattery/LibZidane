@@ -16,38 +16,33 @@ export interface PaginationDataSource {
   total_pages: number
 }
 
-export interface BookCommonDataSource {
-  id: number,
-  content_type: string,
-  title: string,
-  author: string,
-  volume: string,
-  year: number,
-  edition: string,
-  publisher: string,
-  identifier: string,
-  language: string,
-  pages: number,
-  series: string,
-  cover: string,
+export interface BookCommonDataSource extends CoverDataSource {
+  content_type: string, // 内容类型
+  volume: string, // 卷
+  year: number, // 年份
+  edition: string, // 版本
+  publisher: string, // 出版社
+  identifier: string, // ISBN码
+  language: string, // 语言
+  pages: number, // 页数
+  series: string, // 系列
   terms_hash: string,
   active: number,
-  deleted: number,
-  filesize: number,
-  filesizeString: string,
-  extension: string,
-  md5: string,
-  sha256: string,
-  href: string,
-  hash: string,
-  kindleAvailable: boolean,
-  sendToEmailAvailable: boolean,
+  deleted: number, // 是否已删除 - 无法下载
+  filesize: number, // 文件大小
+  filesizeString: string, // 文件大小 - 字符串
+  extension: string, // 文件扩展名
+  md5: string, // 文件md5
+  sha256: string, // 文件sha256
+  href: string, // 书籍url
+  kindleAvailable: boolean, // 是否可以发送到kindle
+  sendToEmailAvailable: boolean, // 是否可以发送到email
   interestScore: string,
   qualityScore: string,
-  dl: string,
-  readOnlineUrl: string,
-  readOnlineAvailable: boolean,
-  description: string
+  dl: string, // 文件下载链接
+  readOnlineUrl: string, // 在线阅读链接
+  readOnlineAvailable: boolean, // 是否可以在线阅读
+  description: string // 书籍描述
 }
 
 export interface DownloadedDataSource extends BookCommonDataSource {

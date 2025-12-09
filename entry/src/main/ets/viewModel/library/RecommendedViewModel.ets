@@ -1,11 +1,11 @@
-import { LogUtil as logger } from "@pura/harmony-utils"
+import { LogUtil as logger } from '@pura/harmony-utils';
 
-import { getRecommended } from "../../model/api/UserApi";
-import { CoverData } from "../../model/entities/BookModel";
-import { LibraryComponentViewModel } from "./LibraryComponentViewModel";
+import { getRecommended } from '../../model/api/UserApi';
+import { CoverDataFactory } from '../../model/factory/BookModelFactory';
+import { LibraryComponentViewModel } from './LibraryComponentViewModel';
 
 @ObservedV2
-export class RecommendedViewModel extends LibraryComponentViewModel{
+export class RecommendedViewModel extends LibraryComponentViewModel {
   private async loadRecommendedDataSource() {
     this.isLoading = true;
     try {
@@ -13,13 +13,7 @@ export class RecommendedViewModel extends LibraryComponentViewModel{
       this.isLoadFailed = false;
       this.isLoading = false;
       return recommends.map(element => {
-        return new CoverData(
-          element.id,
-          element.hash,
-          element.title,
-          element.author,
-          element.cover
-        )
+        return CoverDataFactory.fromCoverDataSource(element)
       })
     } catch (e) {
       logger.error(e)

@@ -1,4 +1,4 @@
-import { CoverData } from "../../../model/entities/BookModel";
+import { CoverData } from '../../../model/entities/BookModel';
 
 @ComponentV2
 export struct BookCover {
@@ -11,10 +11,13 @@ export struct BookCover {
   build() {
     Row() {
       if (!this.isLoaded || this.loadError) {
-        Text(this.coverData.name ?? '加载中...')
+        Text(this.coverData.title ?? '加载中...')
           .fontSize("14vp")
           .width("100%")
           // .height(this.altHeight ?? 200)
+          .constraintSize({
+            maxHeight: this.altHeight ?? Infinity
+          })
           .aspectRatio(this.imgRatio)
           .textAlign(TextAlign.Center)
           .backgroundColor("#ffaaaaaa")
@@ -23,7 +26,7 @@ export struct BookCover {
           .wordBreak(WordBreak.BREAK_ALL)
       }
 
-      Image(this.coverData.img)
+      Image(this.coverData.cover)
         .objectFit(ImageFit.Contain)
         .visibility(this.isLoaded && !this.loadError ? Visibility.Visible : Visibility.None)
         .onComplete(event => {

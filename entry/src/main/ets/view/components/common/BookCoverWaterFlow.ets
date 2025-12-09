@@ -1,8 +1,8 @@
-import { WidthBreakpointType } from '../../../common/system/BreakpointUtil';
-import { WindowInfo, windowUtil } from '../../../common/system/WindowUtil';
-import { BookDetailParam, CoverData } from '../../../model/entities/BookModel'
-import { BookCover } from './BookCover'
 import { AppStorageV2 } from '@kit.ArkUI';
+import { WidthBreakpointType } from '../../../common/system/BreakpointUtil';
+import { WindowInfo } from '../../../common/system/WindowUtil';
+import { BookDetailParam, CoverData } from '../../../model/entities/BookModel';
+import { BookCover } from './BookCover';
 
 /**
  * WaterFlow component showing book covers.
@@ -13,7 +13,6 @@ import { AppStorageV2 } from '@kit.ArkUI';
 export struct BookCoverWaterFlow {
   @Param coverDataSource: CoverData[] = []
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
-
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -45,7 +44,7 @@ export struct BookCoverWaterFlow {
               this.gotoBookDetail(ri.item.id, ri.item.hash)
             })
         })
-        .key((item, index) => `${index}:${item.name}`)
+        .key((item, index) => `${index}:${item.title}`)
     }
     // .columnsTemplate('1fr 1fr 1fr')
     .columnsTemplate(`repeat(${new WidthBreakpointType(3, 4, 6, 8).getValue(this.windowInfo.widthBp)}, 1fr)`)

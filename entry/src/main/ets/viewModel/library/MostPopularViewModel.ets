@@ -1,11 +1,11 @@
-import { LogUtil as logger } from "@pura/harmony-utils"
-import { getMostPopular } from "../../model/api/BookApi";
+import { LogUtil as logger } from '@pura/harmony-utils';
+import { getMostPopular } from '../../model/api/BookApi';
 
-import { CoverData } from "../../model/entities/BookModel";
-import { LibraryComponentViewModel } from "./LibraryComponentViewModel";
+import { CoverDataFactory } from '../../model/factory/BookModelFactory';
+import { LibraryComponentViewModel } from './LibraryComponentViewModel';
 
 @ObservedV2
-export class MostPopularViewModel extends LibraryComponentViewModel{
+export class MostPopularViewModel extends LibraryComponentViewModel {
   @Trace needLoginStatus: boolean = false;
 
   private async loadMostPopularDataSource() {
@@ -15,13 +15,7 @@ export class MostPopularViewModel extends LibraryComponentViewModel{
       this.isLoadFailed = false;
       this.isLoading = false;
       return mostPopulars.map(element => {
-        return new CoverData(
-          element.id,
-          element.hash,
-          element.title,
-          element.author,
-          element.cover
-        )
+        return CoverDataFactory.fromCoverDataSource(element)
       })
     } catch (e) {
       logger.error(e)

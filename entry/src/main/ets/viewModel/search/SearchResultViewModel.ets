@@ -1,11 +1,12 @@
 import { LogUtil as logger } from '@pura/harmony-utils';
 
-import { Constants } from "../../common/const/Constants";
-import { PaginationDataSource } from "../../common/types/ResponseTypes";
-import { getSearch } from "../../model/api/BookApi";
-import { BookData, BookDataType } from "../../model/entities/BookModel";
-import { SearchFilterOptions } from "../../model/entities/SearchFilterOptionModel";
-import { AppViewModel } from "../AppViewModel";
+import { Constants } from '../../common/const/Constants';
+import { PaginationDataSource } from '../../common/types/ResponseTypes';
+import { getSearch } from '../../model/api/BookApi';
+import { BookData, BookDataType } from '../../model/entities/BookModel';
+import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel';
+import { BookDataFactory } from '../../model/factory/BookModelFactory';
+import { AppViewModel } from '../AppViewModel';
 
 @ObservedV2
 export class SearchViewModel extends AppViewModel {
@@ -45,11 +46,9 @@ export class SearchViewModel extends AppViewModel {
    * state to determine show loadingNew component or not
    */
   @Trace isLoadingNew: boolean = false
-
   private _languageOptions: Record<string, string> = AppStorage.get("language_options") ?? {}
 
-  @Monitor('searchSortOrderIndex', 'searchFilterOption.exactMatch', 'searchFilterOption.startYear',
-  'searchFilterOption.endYear','searchFilterOption.selectedLanguages','searchFilterOption.selectedExtensions')
+  @Monitor('searchSortOrderIndex','searchFilterOption.exactMatch','searchFilterOption.startYear','searchFilterOption.endYear','searchFilterOption.selectedLanguages','searchFilterOption.selectedExtensions')
   async onSearchParamChange(): Promise<void> {
     await this.loadDataSource();
   }
@@ -75,7 +74,7 @@ export class SearchViewModel extends AppViewModel {
         this.isLoadFailed = false;
         this.isLoading = false;
         if (searchResult !== null) {
-          this.bookDataSource = searchResult.books.map(element => new BookData(element as BookDataType))
+          this.bookDataSource = searchResult.books.map(element => BookDataFactory.fromBookCommonDataSource(element))
           this.pagination = searchResult.pagination
         }
       } catch (e) {
