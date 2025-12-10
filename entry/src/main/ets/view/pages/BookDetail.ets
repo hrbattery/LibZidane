@@ -1,16 +1,8 @@
 import { common } from '@kit.AbilityKit';
-import { uniformTypeDescriptor as utd } from '@kit.ArkData';
-import { webview } from '@kit.ArkWeb';
-import { BusinessError } from '@kit.BasicServicesKit';
-import { systemShare } from '@kit.ShareKit';
-import { LogUtil as logger } from '@pura/harmony-utils';
-import { bookDataCache } from '../../common/cache/BookDataCache';
-import { getBookFormat, getBookInfo, getSimilar } from '../../model/api/BookApi';
-import { saveBook, unsaveBook } from '../../model/api/UserApi';
-import { BookDetailParam, BookFormatType, CoverData, FullBookData } from '../../model/entities/BookModel';
-import { CoverDataFactory, FullBookDataFactory } from '../../model/factory/BookModelFactory';
-import { BookFormatSheet } from '../components/bookdetail/BookFormatSheet';
-import { BookCover } from '../components/common/BookCover';
+import { BookDetailParam } from '../../model/entities/BookModel';
+import { BookDetailViewModel } from '../../viewModel/bookdetail/BookDetailViewModel';
+import { BookDetailDescription } from '../components/bookdetail/BookDetailDescription';
+import { BookDetailHeader } from '../components/bookdetail/BookDetailHeader';
 import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
 
 
@@ -21,196 +13,58 @@ export function BookDetailBuilder() {
 
 @ComponentV2
 struct BookDetailPage {
-  pathStack: NavPathStack | undefined = undefined;
-  @Local bookId: number = 0
-  @Local hash: string = "";
-  @Local bookData: FullBookData | undefined = undefined
-  @Local isUserFavorite: boolean = false
-  @Local navMenu: NavigationMenuItem[] = [
-    {
-      'value': "分享",
-      'icon': $r("app.media.share"),
-      'action': () => this.shareBook()
-    },
-    {
-      'value': "收藏",
-      'icon': $r("app.media.star"),
-      'action': () => this.onClickStar()
-    }
-  ]
-  @Local bookFormats: BookFormatType[] = []
-  @Local isShowSelectFormatSheet: boolean = false
-  @Local similarBookCoverDataSource: CoverData[] = []
-  webController: webview.WebviewController = new webview.WebviewController()
-  richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
+  @Local viewModel: BookDetailViewModel = new BookDetailViewModel()
 
-  @Monitor('isUserFavorite')
-  triggerStarButtonChange() {
-    // todo: 看看能不能改良这段代码逻辑，现在直接赋值太粗暴了，用别的装饰器试试
-    if (this.isUserFavorite) {
-      this.navMenu = [
+  @Computed
+  get navMenu(): NavigationMenuItem[] {
+    if (this.viewModel.isUserFavorite) {
+      return [
         {
           'value': "分享",
           'icon': $r("app.media.share"),
-          'action': () => {
-          }
+          'action': () => this.viewModel.shareBook(this.getUIContext().getHostContext() as common.UIAbilityContext)
         },
         {
           'value': "收藏",
           'icon': $r("app.media.star_fill"),
-          'action': () => this.onClickStar()
+          'action': () => this.viewModel.onClickStar()
         }
       ]
     } else {
-      this.navMenu = [
+      return [
         {
           'value': "分享",
           'icon': $r("app.media.share"),
-          'action': () => {
-          }
+          'action': () => this.viewModel.shareBook(this.getUIContext().getHostContext() as common.UIAbilityContext)
         },
         {
           'value': "收藏",
           'icon': $r("app.media.star"),
-          'action': () => this.onClickStar()
+          'action': () => this.viewModel.onClickStar()
         }
       ]
     }
-  }
-
-  shareBook() {
-    const baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
-
-    if (this.bookData) {
-      let shareData: systemShare.SharedData = new systemShare.SharedData({
-        utd: utd.UniformDataType.HYPERLINK,
-        content: baseUrl + this.bookData.href,
-        title: this.bookData.title,
-        description: baseUrl + this.bookData.href
-      });
-
-      let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
-      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-      controller.show(context, {
-        selectionMode: systemShare.SelectionMode.SINGLE,
-        previewMode: systemShare.SharePreviewMode.DEFAULT,
-      }).then(() => {
-        logger.info('ShareController show success.');
-      }).catch((error: BusinessError) => {
-        logger.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
-      });
-    }
-  }
-
-  async onClickStar(): Promise<void> {
-    try {
-      this.isUserFavorite = !this.isUserFavorite
-      !this.isUserFavorite ? await unsaveBook(this.bookId) : await saveBook(this.bookId);
-      bookDataCache.clearCache(`${this.bookId}_${this.hash}`);
-    } catch (e) {
-      logger.error(e)
-      this.isUserFavorite = !this.isUserFavorite
-      // todo: toast error or use a 404 page
-    }
-  }
-
-  async loadBookData() {
-    const cache = bookDataCache.getCache(`${this.bookId}_${this.hash}`);
-    if (!cache) {
-      try {
-        let bookData = await getBookInfo(this.bookId, this.hash);
-        if (bookData) {
-          this.bookData = FullBookDataFactory.fromBookCommonDataSource(bookData);
-          bookDataCache.setCache(`${this.bookId}_${this.hash}`, this.bookData)
-        }
-      } catch (e) {
-        logger.error(e)
-        // todo: toast error or use a 404 page
-      }
-    } else {
-      this.bookData = cache
-    }
-    this.isUserFavorite = !!this.bookData?._isFavorite
-  }
-
-  async loadSimilar() {
-    let similar = await getSimilar(this.bookId, this.hash);
-    this.similarBookCoverDataSource = similar.map(element => {
-      return CoverDataFactory.fromCoverDataSource(element)
-    })
-  }
-
-  showSelectFormatSheet(): void {
-    this.isShowSelectFormatSheet = true;
-  }
-
-  handleSelectFormatSheet(): void {
-    this.isShowSelectFormatSheet = false;
-  }
-
-  async loadDownloadFormats() {
-    this.bookFormats = await getBookFormat(this.bookId, this.hash) as BookFormatType[];
   }
 
   build() {
     NavDestination() {
       Scroll() {
         Column() {
-          if (this.bookData !== undefined) {
-            Column({ space: 24 }) {
-              BookCover({
-                coverData: this.bookData
-              })
-                .width("30%")
-                .constraintSize({
-                  maxWidth: 120
-                })
-              Text(this.bookData.title)
-                .fontSize(18)
-                .fontColor("#ffffffff")
-                .fontWeight(FontWeight.Bold)
-                .textAlign(TextAlign.Center)
-              Text(this.bookData.author)
-                .fontSize(16)
-                .fontColor("#ffdadada")
-                .textAlign(TextAlign.Center)
-                .onClick(() => {
-                  this.pathStack?.pushPathByName("Search", this.bookData?.author)
-                })
-              this.SubBookInfo(16, Color.White)
+          if (this.viewModel.bookData !== undefined) {
+            BookDetailHeader({
+              bookData: this.viewModel.bookData,
+              bookFormats: this.viewModel.bookFormats
+            })
 
-              Button('下载')
-                .width("90%")
-                .onClick(() => this.showSelectFormatSheet())
-                .bindSheet(this.isShowSelectFormatSheet!!, this.BookFormatSheetBuilder(
-                  this.bookData,
-                  this.bookFormats,
-                  () => this.handleSelectFormatSheet()
-                ), {
-                  detents: [SheetSize.MEDIUM, SheetSize.LARGE, 600],
-                  preferType: SheetType.BOTTOM,
-                  title: { title: '选择格式' },
-                  scrollSizeMode: ScrollSizeMode.CONTINUOUS
-                })
-            }
-            .width("100%")
-            .padding({ top: 24, bottom: 24, left: 16, right: 16 })
-            .margin({ left: 16, right: 16 })
-            .alignItems(HorizontalAlign.Center)
-            .backgroundColor("#4A688A")
-
-            this.BookDetailDescription(this.bookData)
+            BookDetailDescription({ bookData: this.viewModel.bookData })
 
             Text("您可能对以下内容感兴趣")
               .fontSize(18)
-              .margin({
-                top: 15,
-                bottom: 4,
-                left: 10
-              })
+              .margin({ top: 15, bottom: 4, left: 10 })
               .alignSelf(ItemAlign.Start)
+
             BookCoverWaterFlow({
-              coverDataSource: this.similarBookCoverDataSource
+              coverDataSource: this.viewModel.similarBookCoverDataSource
             })
               .padding({ left: 5, right: 5 })
           }
@@ -218,145 +72,11 @@ struct BookDetailPage {
       }
     }
     .onReady(async (context: NavDestinationContext) => {
-      this.pathStack = context.pathStack;
       let param = context.pathInfo.param as BookDetailParam;
-      this.bookId = param.bookId;
-      this.hash = param.hash;
-      await Promise.all([
-        this.loadBookData(),
-        this.loadDownloadFormats(),
-        this.loadSimilar()
-      ])
+      this.viewModel.bookId = param.bookId;
+      this.viewModel.hash = param.hash;
+      await this.viewModel.loadPageData()
     })
     .menus(this.navMenu)
-  }
-
-  @Builder
-  SubBookInfo(fontSize: number, color: Color) {
-    Row({ space: 8 }) {
-      if (this.bookData!.year !== 0) {
-        Text(`${this.bookData!.year}`).fontSize(fontSize).fontColor(color);
-        Divider().vertical(true);
-      }
-      Text() {
-        SymbolSpan($r("sys.symbol.worldclock"));
-      }.fontSize(fontSize).fontColor(color);
-
-      Text(this.bookData!.language).fontSize(fontSize).fontColor(color);
-      Divider().vertical(true);
-      Text() {
-        SymbolSpan($r("sys.symbol.doc_text"));
-      }.fontSize(fontSize).fontColor(color);
-
-      Text(`${this.bookData!.extension}, ${this.bookData!.filesizeString}`).fontSize(fontSize).fontColor(color);
-    }
-    .justifyContent(FlexAlign.Center)
-    .height(fontSize)
-    .width("100%")
-  }
-
-  @Builder
-  BookDetailDescription(bookData: FullBookData) {
-    Tabs() {
-      TabContent() {
-        Grid() {
-          if (bookData.year !== undefined && bookData.year !== 0) {
-            this.BookInfoKeyGridItem("年份：");
-            this.BookInfoValueGridItem(`${bookData.year}`);
-          }
-          if (bookData.content_type) {
-            this.BookInfoKeyGridItem("内容类型:");
-            this.BookInfoValueGridItem(`${bookData.content_type}`);
-          }
-          if (bookData.volume) {
-            this.BookInfoKeyGridItem("卷:");
-            this.BookInfoValueGridItem(`${bookData.volume}`);
-          }
-          if (bookData.edition) {
-            this.BookInfoKeyGridItem("版本:");
-            this.BookInfoValueGridItem(`${bookData.edition}`);
-          }
-          if (bookData.publisher) {
-            this.BookInfoKeyGridItem("出版社:");
-            this.BookInfoValueGridItem(`${bookData.publisher}`);
-          }
-          if (bookData.language) {
-            this.BookInfoKeyGridItem("语言:");
-            this.BookInfoValueGridItem(`${bookData.language}`);
-          }
-          if (bookData.pages) {
-            this.BookInfoKeyGridItem("页数:");
-            this.BookInfoValueGridItem(`${bookData.pages}`);
-          }
-          if (bookData.isbn10 && bookData.isbn10.length > 0) {
-            this.BookInfoKeyGridItem("ISBN 10:");
-            this.BookInfoValueGridItem(`${bookData.isbn10.join(",")}`);
-          }
-          if (bookData.isbn13 && bookData.isbn13.length > 0) {
-            this.BookInfoKeyGridItem("ISBN 13:");
-            this.BookInfoValueGridItem(`${bookData.isbn13.join(",")}`);
-          }
-          if (bookData.series) {
-            this.BookInfoKeyGridItem("系列:");
-            this.BookInfoValueGridItem(`${bookData.series}`);
-          }
-          if (bookData.extension && bookData.filesizeString) {
-            this.BookInfoKeyGridItem("文件:");
-            this.BookInfoValueGridItem(`${bookData.extension}, ${bookData.filesizeString}`);
-            // fixme: 考虑只有ext或只有filesize的情况
-          }
-        }
-        .columnsGap(10)
-        .rowsGap(15)
-        .margin({ left: 10, right: 10 })
-        .columnsTemplate('1fr 3fr')
-        .enableScrollInteraction(false)
-        .supportAnimation(false);
-      }
-      .height("auto")
-      .tabBar('书');
-
-      TabContent() {
-        Web({ src: '', controller: this.webController, renderMode: RenderMode.SYNC_RENDER })
-          .onControllerAttached(() => {
-            this.webController.loadData(this.richStrHead + this.bookData?.description, 'text/html', 'UTF-8', ' ', ' ');
-          })
-          .width('100%')
-          .layoutMode(WebLayoutMode.FIT_CONTENT)
-          .overScrollMode(OverScrollMode.NEVER)
-          .zoomAccess(false)
-          .minFontSize(14)
-          .javaScriptAccess(false);
-      }
-      .tabBar('描述');
-    }
-    .height("auto")
-    .barMode(BarMode.Fixed)
-  }
-
-  @Builder
-  BookInfoKeyGridItem(text: string) {
-    GridItem() {
-      Text(text)
-        .textAlign(TextAlign.Center)
-        .fontColor("#D6D5D8")
-    }.align(Alignment.Start)
-  }
-
-  @Builder
-  BookInfoValueGridItem(text: string) {
-    GridItem() {
-      Text(text)
-        .textAlign(TextAlign.Center)
-    }.align(Alignment.Start)
-  }
-
-  @Builder
-  BookFormatSheetBuilder(mainBookData: FullBookData, formats: BookFormatType[], onClose: () => void) {
-    BookFormatSheet({
-      mainBookData: mainBookData,
-      formats: formats,
-      onClose: onClose
-    })
   }
 }
