@@ -16,7 +16,8 @@ export struct EmptyContentPlaceholder {
       Image($r('app.media.empty'))
         .width(120)
         .height(120)
-        .objectFit(ImageFit.Contain);
+        .objectFit(ImageFit.Contain)
+        .fillColor($r("sys.color.icon_primary"))
 
       // 提示文本
       Text(this.message)

@@ -3,7 +3,7 @@ export class CustomApiViewModel {
   /**
    * Current used custom API list
    */
-  @Trace customApis: string[] = ["test"]
+  @Trace customApis: string[] = ["test", "test2"]
 
   /**
    * keyword used to add to custom API list

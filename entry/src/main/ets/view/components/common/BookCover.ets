@@ -14,13 +14,12 @@ export struct BookCover {
         Text(this.coverData.title ?? '加载中...')
           .fontSize("14vp")
           .width("100%")
-          // .height(this.altHeight ?? 200)
           .constraintSize({
             maxHeight: this.altHeight ?? Infinity
           })
           .aspectRatio(this.imgRatio)
           .textAlign(TextAlign.Center)
-          .backgroundColor("#ffaaaaaa")
+          .backgroundColor($r("sys.color.background_fourth"))
           .maxLines(6)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .wordBreak(WordBreak.BREAK_ALL)

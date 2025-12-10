@@ -46,7 +46,7 @@ export struct BookInfoList {
         .key((item, index) => `${index}:${item.title}:${item._isFavorite}`)
     }
     .divider({
-      color: Color.Gray,
+      color: $r("sys.color.font_tertiary"),
       strokeWidth: "1px",
       // startMargin: 10,
       // endMargin: 10

@@ -20,7 +20,7 @@ export struct YearPicker {
       })
       .width('100%')
       .height(100) // 降低高度使界面更紧凑
-      .backgroundColor('#FFFFFF') // 设置为白色背景
+      // .backgroundColor('#FFFFFF') // 设置为白色背景
       .borderRadius(10) // 保持圆角设计
       .padding({ top: 5, bottom: 5 }); // 保持内边距
   }
@@ -61,14 +61,13 @@ function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: 
             .margin({ right: 15 }); // 增加右侧间距
           Text(item)
             .fontSize(16)
-            .fontColor('#333333')
             .flexGrow(1)
             .fontWeight(FontWeight.Medium); // 略微加粗文本
         }
         .alignItems(VerticalAlign.Center)
         .width('100%')
         .padding({ top: 12, bottom: 12, left: 16, right: 16 }) // 增加内边距
-        .backgroundColor('#FFFFFF') // 设置为白色背景
+        // .backgroundColor() // 设置为白色背景
         .borderRadius(10) // 保持圆角设计
         .onClick(() => {
           // 点击整行时切换选中状态
@@ -80,12 +79,12 @@ function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: 
   }
   .height(190) // 略微增加高度
   .width('100%')
-  .divider({ 
-    strokeWidth: 1,
-    color: '#EEEEEE',
-    startMargin: 16,
-    endMargin: 16
-  }) // 恢复分隔线
+  // .divider({
+  //   strokeWidth: 1,
+  //   color: $r("sys.color.font_tertiary"),
+  //   startMargin: 16,
+  //   endMargin: 16
+  // }) // 恢复分隔线
   .scrollBar(BarState.Off)
 }
 

@@ -52,7 +52,7 @@ export struct Settings {
           })
         }
       }
-      .backgroundColor(Color.White)
+      .backgroundColor($r("sys.color.comp_background_primary"))
       .margin({ left: 16, right: 16 })
       .borderRadius(20)
 
@@ -89,7 +89,7 @@ export struct Settings {
           }
         })
       }
-      .backgroundColor(Color.White)
+      .backgroundColor($r("sys.color.comp_background_primary"))
       .margin({ left: 16, right: 16 })
       .borderRadius(20)
 
@@ -100,7 +100,6 @@ export struct Settings {
             .width('100%')
             .height(48)
             .fontSize(16)
-            .fontColor(Color.White)
             .onClick(async () => {
               await preferencesUtils.delete(StorageConstants.DEFAULT_PREF, 'cookie')
               // PersistenceV2.connect(AppState, 'appState', () => new AppState())!.loginState = false
@@ -111,7 +110,7 @@ export struct Settings {
         .margin(16)
       }
     }
-    .backgroundColor(this.bgColor)
+    .backgroundColor($r("sys.color.background_secondary"))
     .height('100%')
     .width('100%')
   }
@@ -133,7 +132,7 @@ struct ItemCard {
           .layoutWeight(1)
         Image($r('app.media.chevron_right'))
           .width(16)
-          .fillColor(Color.Gray)
+          .fillColor($r("sys.color.icon_primary"))
           .draggable(false)
       }
     }

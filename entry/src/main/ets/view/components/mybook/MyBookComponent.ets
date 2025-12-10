@@ -89,6 +89,8 @@ export struct MyBookComponent {
       await this.viewModel.loadDataSource(this.sortOrder)
       this.viewModel.isRefreshing = false
     })
+    .width("100%")
+    .height("100%")
   }
 }
 

@@ -1,4 +1,4 @@
-import { CustomApiViewModel } from "../../../viewModel/settings/CustomApiViewModel"
+import { CustomApiViewModel } from '../../../viewModel/settings/CustomApiViewModel'
 
 @Builder
 export function CustomApiBuilder() {
@@ -20,10 +20,14 @@ struct CustomApi {
           Text("当前正在使用：")
         }
         .alignItems(HorizontalAlign.Start)
+        .alignSelf(ItemAlign.Start)
 
         this.CustomApiContainer()
       }
-      .padding({top: 10, left: 20, right: 20})
+      .height("100%")
+      .width("100%")
+      .padding({ top: 20, left: 20, right: 20 })
+      .backgroundColor($r("sys.color.background_secondary"))
     }
     .title('自定义 API')
   }
@@ -34,6 +38,7 @@ struct CustomApi {
       ListItem() {
         this.AddNewEntry(this.viewModel.newApi, (): void => this.viewModel.addApi())
       }
+
       Repeat(this.viewModel.customApis)
         .each((ri) => {
           ListItem() {
@@ -41,16 +46,19 @@ struct CustomApi {
           }
         })
     }
-    .height("100%")
     .width("100%")
-    .padding({top: 10})
+    .borderRadius(20)
+    .padding(10)
+    .margin({ top: 20 })
+    .backgroundColor($r("sys.color.comp_background_primary"))
   }
 
   @Builder
   ApiEntry(ri: RepeatItem<string>, onClick: (index: number) => void) {
-    Row({space: 2}) {
+    Row({ space: 2 }) {
       Image($r("app.media.list_item_drag"))
         .height(15)
+        .fillColor($r("sys.color.icon_primary"))
       Text(ri.item)
       Button() {
         Image($r("app.media.subtract"))
@@ -70,8 +78,8 @@ struct CustomApi {
 
   @Builder
   AddNewEntry(newApiText: string, onClick: () => void) {
-    Row({space: 2}) {
-      TextInput({text: newApiText})
+    Row({ space: 2 }) {
+      TextInput({ text: newApiText })
         .showUnderline(true)
         .underlineColor(Color.Gray)
         .width("90%")

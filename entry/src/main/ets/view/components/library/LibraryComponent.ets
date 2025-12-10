@@ -1,9 +1,9 @@
-import { LibraryComponentViewModel } from "../../../viewModel/library/LibraryComponentViewModel"
+import { LibraryComponentViewModel } from '../../../viewModel/library/LibraryComponentViewModel';
 
-import { BookCoverWaterFlow } from "../common/BookCoverWaterFlow"
-import { EmptyContentPlaceholder } from "../common/EmptyContentPlaceholder";
-import { ErrorStatePlaceholder } from "../common/ErrorStatePlaceholder"
-import { LogoutStatePlaceholder } from "../common/LogoutStatePlaceholder";
+import { BookCoverWaterFlow } from '../common/BookCoverWaterFlow';
+import { EmptyContentPlaceholder } from '../common/EmptyContentPlaceholder';
+import { ErrorStatePlaceholder } from '../common/ErrorStatePlaceholder';
+import { LogoutStatePlaceholder } from '../common/LogoutStatePlaceholder';
 
 @ComponentV2
 export struct LibraryComponent {
@@ -42,8 +42,8 @@ export struct LibraryComponent {
   @Computed
   get showEmptyPlaceholder() {
     return !this.viewModel.isLoading
-    && !this.viewModel.isLoadFailed
-    && this.viewModel.coverDataSource.length === 0
+      && !this.viewModel.isLoadFailed
+      && this.viewModel.coverDataSource.length === 0
   }
 
   build() {
@@ -78,5 +78,7 @@ export struct LibraryComponent {
       await this.viewModel.loadDataSource()
       this.viewModel.isRefreshing = false
     })
+    .width("100%")
+    .height("100%")
   }
 }

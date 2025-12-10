@@ -40,14 +40,14 @@ export struct BookInfoListItem {
                 .maxLines(2)
               Text(this.bookData.author)
                 .fontSize(14)
-                .fontColor("#a900bbff")
+                .fontColor($r("sys.color.font_emphasize"))
                 .wordBreak(WordBreak.BREAK_ALL)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .maxLines(1)
               if (this.bookData.publisher) {
                 Text(this.bookData.publisher)
                   .fontSize(12)
-                  .fontColor(Color.Gray)
+                  .fontColor($r("sys.color.font_secondary"))
                   .wordBreak(WordBreak.BREAK_ALL)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .maxLines(1)
@@ -61,7 +61,7 @@ export struct BookInfoListItem {
                   .height(24)
                   .width(24)
                   .alignSelf(ItemAlign.Start)
-                  .fillColor("#a900bbff")
+                  .fillColor($r("sys.color.icon_emphasize"))
                   .margin({ left: 20 })
                   .onClick(async () => await this.onClickStar())
               } else {
@@ -69,7 +69,7 @@ export struct BookInfoListItem {
                   .height(24)
                   .width(24)
                   .alignSelf(ItemAlign.Start)
-                  .fillColor("#a900bbff")
+                  .fillColor($r("sys.color.icon_emphasize"))
                   .margin({ left: 20 })
                   .onClick(async () => await this.onClickStar())
               }
@@ -80,7 +80,7 @@ export struct BookInfoListItem {
             Text(`下载 ${new Date(this.bookData.date_download).toLocaleDateString()}`)
               .alignSelf(ItemAlign.Start)
               .fontSize(12)
-              .fontColor(Color.Gray)
+              .fontColor($r("sys.color.font_secondary"))
           }
         }
         .width("100%")
@@ -92,29 +92,29 @@ export struct BookInfoListItem {
       .height(120)
       .width("100%")
 
-      this.SubBookInfo(12)
+      this.SubBookInfo(12, $r("sys.color.font_secondary"))
     }
     .margin({ top: 8, bottom: 8 })
   }
 
   @Builder
-  SubBookInfo(fontSize: number) {
+  SubBookInfo(fontSize: number, color: ResourceColor) {
     Row({ space: 8 }) {
       if (this.bookData.year !== 0) {
-        Text(`${this.bookData.year}`).fontSize(fontSize);
+        Text(`${this.bookData.year}`).fontSize(fontSize).fontColor(color);
         Divider().vertical(true);
       }
       Text() {
         SymbolSpan($r("sys.symbol.worldclock"));
-      }.fontSize(fontSize);
+      }.fontSize(fontSize).fontColor(color);
 
-      Text(this.bookData.language).fontSize(fontSize);
+      Text(this.bookData.language).fontSize(fontSize).fontColor(color);
       Divider().vertical(true);
       Text() {
         SymbolSpan($r("sys.symbol.doc_text"));
-      }.fontSize(fontSize);
+      }.fontSize(fontSize).fontColor(color);
 
-      Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize(fontSize);
+      Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize(fontSize).fontColor(color);
     }
     .height(fontSize)
     .width("100%")

@@ -1,4 +1,3 @@
-import { SettingsLogin } from "../../pages/settings/Login";
 
 /**
  * 登出状态占位组件
@@ -8,22 +7,21 @@ import { SettingsLogin } from "../../pages/settings/Login";
 @ComponentV2
 export struct LogoutStatePlaceholder {
   @Local isShowLoginSheet: boolean = false
-
   @Param message: string = '请先登录以查看您的书籍内容';
-
   pathStack: NavPathStack | undefined = undefined;
-  
+
   aboutToAppear(): void {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
   }
 
   build() {
-    Column({ space: 20 }){
+    Column({ space: 20 }) {
       // 图标
       Image($r('app.media.exclamationmark_circle'))
         .width(120)
         .height(120)
-        .objectFit(ImageFit.Contain);
+        .objectFit(ImageFit.Contain)
+        .fillColor($r("sys.color.icon_primary"))
 
       // 提示文本
       Text(this.message)
@@ -36,7 +34,6 @@ export struct LogoutStatePlaceholder {
         .width(180)
         .height(44)
         .fontSize(16)
-        .fontColor(Color.White)
         .borderRadius(22)
         .onClick(() => this.onLoginClick())
     }

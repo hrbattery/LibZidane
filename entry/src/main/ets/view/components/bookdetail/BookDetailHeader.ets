@@ -1,15 +1,13 @@
-import { windowUtil } from "../../../common/system/WindowUtil"
-import { BookFormatType, FullBookData } from "../../../model/entities/BookModel"
-import { BookCover } from "../common/BookCover"
-import { BookFormatSheet } from "./BookFormatSheet"
+import { windowUtil } from '../../../common/system/WindowUtil'
+import { BookFormatType, FullBookData } from '../../../model/entities/BookModel'
+import { BookCover } from '../common/BookCover'
+import { BookFormatSheet } from './BookFormatSheet'
 
 @ComponentV2
 export struct BookDetailHeader {
   @Param @Require bookData: FullBookData
   @Param @Require bookFormats: BookFormatType[]
-
   @Local isShowSelectFormatSheet: boolean = false
-
   pathStack: NavPathStack | undefined = undefined;
 
   aboutToAppear(): void {
@@ -133,5 +131,5 @@ function headerFancy() {
     right: 16
   })
   .margin({ left: 16, right: 16 })
-  // .backgroundColor("#4A688A")
+  .backgroundColor($r("sys.color.background_secondary"))
 }

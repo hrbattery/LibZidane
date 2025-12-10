@@ -1,9 +1,7 @@
 import { PersistenceV2, promptAction } from '@kit.ArkUI';
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
-import { StorageConstants } from '../../../common/const/StorageConstants';
 import { login } from '../../../model/api/LoginApi';
 import { AppState } from '../../../model/entities/AppState';
-import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
 
 @Builder
 export function SettingsLoginBuilder() {
@@ -62,7 +60,6 @@ export struct SettingsLogin {
         .width('90%')
         .height(45)
         .fontSize(16)
-        .backgroundColor('#F0F2F4')
         .onChange(value => this.username = value)
         .margin({ top: 20, bottom: 20 })
 
@@ -70,11 +67,10 @@ export struct SettingsLogin {
         .width('90%')
         .height(45)
         .type(InputType.Password)
-        .backgroundColor('#F0F2F4')
         .onChange(value => this.password = value)
         .margin({ bottom: 20 })
 
-      Flex({direction: FlexDirection.Row}) {
+      Flex({ direction: FlexDirection.Row }) {
         // 登录按钮
         Button('登录')
           .loginButtonStyle()
@@ -91,7 +87,6 @@ export struct SettingsLogin {
     }
     .height('100%')
     .width('100%')
-    .backgroundColor(Color.White)
   }
 }
 
@@ -100,5 +95,4 @@ function loginButtonStyle() {
   // 登录按钮
   .width('100%')
   .height(45)
-  .fontColor(Color.White)
 }

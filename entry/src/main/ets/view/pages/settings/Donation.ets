@@ -27,14 +27,14 @@ struct Donation {
             content: this.viewModel.activeDonationString
           })
           Divider()
-            .margin({ left: 8, right: 8})
+            .margin({ left: 8, right: 8 })
             .color(Color.Gray)
           InfoCard({
             title: '有效日期',
             content: this.viewModel.donationExpireDate
           })
         }
-        .backgroundColor(Color.White)
+        .backgroundColor($r("sys.color.comp_background_primary"))
         .margin(16)
         .borderRadius(20)
 
@@ -51,20 +51,20 @@ struct Donation {
             }
             .divider({
               strokeWidth: "1px",
-              color: Color.Gray,
+              color: $r("sys.color.font_tertiary"),
               startMargin: 8,
               endMargin: 8
             })
             .width("100%")
           }
-          .backgroundColor(Color.White)
+          .backgroundColor($r("sys.color.comp_background_primary"))
           .margin({ left: 16, right: 16 })
           .borderRadius(20)
         } else {
           Text("没有有效的历史捐赠记录")
         }
       }
-      .backgroundColor($r("app.color.settings_bg_color"))
+      .backgroundColor($r("sys.color.background_secondary"))
       .height("100%")
       .width("100%")
     }
@@ -92,6 +92,11 @@ struct InfoCard {
     }
     .backgroundColor(Color.Transparent)
     .width('100%')
-    .padding({left: 10, right: 10, top: 15, bottom: 15})
+    .padding({
+      left: 10,
+      right: 10,
+      top: 15,
+      bottom: 15
+    })
   }
 }

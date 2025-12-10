@@ -67,31 +67,31 @@ struct Home {
     .mode(NavigationMode.Stack)
   }
 
-  @Builder ToolBar() {
-    Row() {
-      this.ToolBarItem(0, '图书馆')
-      this.ToolBarItem(1, '我的书籍')
-    }
-    .backgroundColor(Color.Transparent)
-    .justifyContent(FlexAlign.SpaceEvenly)
-    .width('100%')
-  }
+  // @Builder ToolBar() {
+  //   Row() {
+  //     this.ToolBarItem(0, '图书馆')
+  //     this.ToolBarItem(1, '我的书籍')
+  //   }
+  //   .backgroundColor(Color.Transparent)
+  //   .justifyContent(FlexAlign.SpaceEvenly)
+  //   .width('100%')
+  // }
 
-  @Builder ToolBarItem(index: number, text: string | ResourceStr) {
-    Column({ space: 3 }) {
-      // Image(this.index == index ? activeIcon : icon)
-      //   .width(Constants.SIZE_ICON_BUTTON_BAR)
-      //   .fillColor(this.index == index ? $r('app.color.app_red') : Color.Gray)
-      Text(text)
-        .fontSize(16)
-        .fontColor(this.index == index ? Color.Green : Color.Gray)
-    }
-    .layoutWeight(1)
-    .onClick(() => {
-      this.tabController.changeIndex(index)
-      // this.index = index;
-    })
-  }
+  // @Builder ToolBarItem(index: number, text: string | ResourceStr) {
+  //   Column({ space: 3 }) {
+  //     // Image(this.index == index ? activeIcon : icon)
+  //     //   .width(Constants.SIZE_ICON_BUTTON_BAR)
+  //     //   .fillColor(this.index == index ? $r('app.color.app_red') : Color.Gray)
+  //     Text(text)
+  //       .fontSize(16)
+  //       .fontColor(this.index == index ? Color.Green : Color.Gray)
+  //   }
+  //   .layoutWeight(1)
+  //   .onClick(() => {
+  //     this.tabController.changeIndex(index)
+  //     // this.index = index;
+  //   })
+  // }
 
   getMenuItems(): NavigationMenuItem[] {
     if (this.index === 0) {
