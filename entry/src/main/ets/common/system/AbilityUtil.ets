@@ -1,13 +1,14 @@
-import { common } from '@kit.AbilityKit';
-import { notificationManager } from '@kit.NotificationKit';
+import { common, ConfigurationConstant } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { AppStorageV2 } from '@kit.ArkUI';
+import { notificationManager } from '@kit.NotificationKit';
+import { LogUtil as logger } from '@pura/harmony-utils';
 
 import { getExtensions, getLanguages } from '../../model/api/InfoApi';
 import { preferencesUtils } from '../../model/storage/PreferencesUtils';
+import { DarkModeEnum } from '../const/SettingsConstants';
 import { StorageConstants } from '../const/StorageConstants';
-import { AppState } from '../../model/entities/AppState';
 
+const TAG = '[AbilityUtil] '
 
 export async function appInit(context: common.UIAbilityContext) {
   AppStorage.setOrCreate("base_url", "https://z-library.sk");
@@ -41,3 +42,22 @@ export function initPreferences(context: common.UIAbilityContext) {
 //   let settingsModel = AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!
 //   settingsModel.loginState = await preferencesUtils.has(StorageConstants.DEFAULT_PREF, "cookie")
 // }
+
+export function setColorMode(context: common.ApplicationContext, index: DarkModeEnum) {
+  try {
+    switch (index) {
+      case DarkModeEnum.LIGHT:
+        context.setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_LIGHT);
+        break;
+      case DarkModeEnum.DARK:
+        context.setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_DARK);
+        break;
+      case DarkModeEnum.AUTO:
+      default:
+        context.setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
+        break;
+    }
+  } catch (err) {
+    logger.error(TAG, `Failed to set colorMode. Cause: ${JSON.stringify(err)}`);
+  }
+}

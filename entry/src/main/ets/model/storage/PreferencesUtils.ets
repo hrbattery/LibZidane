@@ -16,7 +16,6 @@ class PreferencesUtils {
     }
   }
 
-  // 加载首选项表
   loadPreferenceSync(context: Context, field: string) {
     try {
       const preference = preferences.getPreferencesSync(context, {
@@ -44,6 +43,20 @@ class PreferencesUtils {
     }
   }
 
+  putSync(field: string, key: string, value: preferences.ValueType) {
+    if (!this.preferencesMap.has(field)) {
+      logger.error(`Preference ${field} 尚未初始化`)
+      return
+    }
+    try {
+      const preference = this.preferencesMap.get(field)
+      preference?.putSync(key, value)
+      preference?.flushSync()
+    } catch (e) {
+      logger.error(`保存 Preference ${field} 失败: ${JSON.stringify(e)}`)
+    }
+  }
+
   // 读取数据
   async get<T extends preferences.ValueType>(field: string, key: string, defaultValue: T): Promise<T> {
     if (!this.preferencesMap.has(field)) {
@@ -53,6 +66,21 @@ class PreferencesUtils {
     try {
       const preference = this.preferencesMap.get(field)
       const value = await preference?.get(key, defaultValue)
+      return value as T;
+    } catch (e) {
+      logger.error(`读取 Preference ${field} 失败: ${JSON.stringify(e)}`)
+      throw new Error(`无法读取 Preference ${field}.${key}`)
+    }
+  }
+
+  getSync<T extends preferences.ValueType>(field: string, key: string, defaultValue: T): T {
+    if (!this.preferencesMap.has(field)) {
+      logger.error(`Preference ${field} 尚未初始化`)
+      throw new Error(`Preference ${field} 尚未初始化`)
+    }
+    try {
+      const preference = this.preferencesMap.get(field)
+      const value = preference?.getSync(key, defaultValue)
       return value as T;
     } catch (e) {
       logger.error(`读取 Preference ${field} 失败: ${JSON.stringify(e)}`)
@@ -75,6 +103,20 @@ class PreferencesUtils {
     }
   }
 
+  deleteSync(field: string, key: string) {
+    if (!this.preferencesMap.has(field)) {
+      logger.error(`Preference ${field} 尚未初始化`)
+      return
+    }
+    try {
+      const preference = this.preferencesMap.get(field)
+      preference?.deleteSync(key)
+      preference?.flushSync()
+    } catch (e) {
+      logger.error(`删除 Preference ${field} 失败: ${JSON.stringify(e)}`)
+    }
+  }
+
   // 判断 Preference 中是否存在指定的 key
   async has(field: string, key: string): Promise<boolean> {
     if (!this.preferencesMap.has(field)) {
@@ -84,6 +126,21 @@ class PreferencesUtils {
     try {
       const preference = this.preferencesMap.get(field)
       const value = await preference?.get(key, undefined)
+      return value !== undefined
+    } catch (e) {
+      logger.error(`判断 Preference ${field} 是否存在失败: ${JSON.stringify(e)}`)
+      return false
+    }
+  }
+
+  hasSync(field: string, key: string): boolean {
+    if (!this.preferencesMap.has(field)) {
+      logger.error(`Preference ${field} 尚未初始化`)
+      return false
+    }
+    try {
+      const preference = this.preferencesMap.get(field)
+      const value = preference?.getSync(key, undefined)
       return value !== undefined
     } catch (e) {
       logger.error(`判断 Preference ${field} 是否存在失败: ${JSON.stringify(e)}`)

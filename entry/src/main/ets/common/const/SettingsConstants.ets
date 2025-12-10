@@ -10,3 +10,9 @@ export class SettingsConstants {
    */
   static readonly LANGUAGE: string[] = ["中文", "English"]
 }
+
+export enum DarkModeEnum {
+  LIGHT = 0,
+  DARK = 1,
+  AUTO = 2
+}
