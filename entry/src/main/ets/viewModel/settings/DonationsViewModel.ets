@@ -2,9 +2,10 @@ import { LogUtil as logger } from '@pura/harmony-utils';
 
 import { DonationDataSource } from "../../common/types/ResponseTypes";
 import { getDonations, getProfile } from "../../model/api/UserApi";
+import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
 
 @ObservedV2
-export class DonationViewModel {
+export class DonationViewModel extends NetworkRequestViewModel {
   /**
    * history donation records
    */
@@ -17,14 +18,6 @@ export class DonationViewModel {
    * donation expire time
    */
   @Trace donationExpire: string | null = null
-  /**
-   * state to determine show skeleton or not
-   */
-  @Trace isLoading: boolean = true
-  /**
-   * state to determine show error placeholder or empty placeholder
-   */
-  @Trace isLoadFailed: boolean = false
 
   @Computed
   get activeDonationString() {

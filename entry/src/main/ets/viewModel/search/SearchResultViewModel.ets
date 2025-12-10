@@ -6,10 +6,10 @@ import { getSearch } from '../../model/api/BookApi';
 import { BookData, BookDataType } from '../../model/entities/BookModel';
 import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel';
 import { BookDataFactory } from '../../model/factory/BookModelFactory';
-import { AppViewModel } from '../AppViewModel';
+import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
 
 @ObservedV2
-export class SearchViewModel extends AppViewModel {
+export class SearchViewModel extends NetworkRequestViewModel {
   /**
    * keyword used to search books
    */
@@ -30,22 +30,7 @@ export class SearchViewModel extends AppViewModel {
    * data source for pagination data of book info list
    */
   @Trace pagination: PaginationDataSource | undefined = undefined;
-  /**
-   * state to determine show skeleton or not
-   */
-  @Trace isLoading: boolean = true
-  /**
-   * state to determine show error placeholder or empty placeholder
-   */
-  @Trace isLoadFailed: boolean = false
-  /**
-   * state to determine show refreshing component or not
-   */
-  @Trace isRefreshing: boolean = false
-  /**
-   * state to determine show loadingNew component or not
-   */
-  @Trace isLoadingNew: boolean = false
+
   private _languageOptions: Record<string, string> = AppStorage.get("language_options") ?? {}
 
   @Monitor('searchSortOrderIndex','searchFilterOption.exactMatch','searchFilterOption.startYear','searchFilterOption.endYear','searchFilterOption.selectedLanguages','searchFilterOption.selectedExtensions')

@@ -1,9 +1,9 @@
 import { PaginationDataSource } from '../../common/types/ResponseTypes';
 import { BookData } from '../../model/entities/BookModel';
-import { AppViewModel } from '../AppViewModel';
+import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
 
 @ObservedV2
-export abstract class MyBookComponentViewModel extends AppViewModel {
+export abstract class MyBookComponentViewModel extends NetworkRequestViewModel {
   /**
    * data source to book info list
    */
@@ -12,22 +12,6 @@ export abstract class MyBookComponentViewModel extends AppViewModel {
    * data source for pagination data of book info list
    */
   @Trace pagination: PaginationDataSource | undefined = undefined;
-  /**
-   * state to determine show skeleton or not
-   */
-  @Trace isLoading: boolean = true
-  /**
-   * state to determine show error placeholder or empty placeholder
-   */
-  @Trace isLoadFailed: boolean = false
-  /**
-   * state to determine show refreshing component or not
-   */
-  @Trace isRefreshing: boolean = false
-  /**
-   * state to determine show loadingNew component or not
-   */
-  @Trace isLoadingNew: boolean = false
 
   public abstract loadDataSource(sortOrder: string): Promise<void>
 

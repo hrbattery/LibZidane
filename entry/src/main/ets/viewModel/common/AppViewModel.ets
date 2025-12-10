@@ -1,5 +1,5 @@
 import { PersistenceV2 } from '@kit.ArkUI';
-import { AppState } from '../model/entities/AppState';
+import { AppState } from '../../model/entities/AppState';
 
 @ObservedV2
 export class AppViewModel {
