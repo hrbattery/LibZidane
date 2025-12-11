@@ -40,7 +40,7 @@ export class SearchViewModel extends NetworkRequestViewModel {
 
   @Computed
   get searchSortOrder(): string {
-    return Constants.SEARCH_SORT_KEY[this.searchSortOrderIndex]["value"];
+    return Constants.SEARCH_SORT_KEY[this.searchSortOrderIndex]["value"] as string
   }
 
   async loadDataSource(): Promise<void> {
@@ -49,8 +49,8 @@ export class SearchViewModel extends NetworkRequestViewModel {
       try {
         let searchResult = await getSearch({
           message: this.searchKeyword,
-          yearFrom: this.searchFilterOption.startYear === '不限' ? undefined : this.searchFilterOption.startYear,
-          yearTo: this.searchFilterOption.endYear === '不限' ? undefined : this.searchFilterOption.endYear,
+          yearFrom: this.searchFilterOption.startYear,
+          yearTo: this.searchFilterOption.endYear,
           languages: this.searchFilterOption.selectedLanguages.map((ele) => this._languageOptions[ele]),
           extensions: this.searchFilterOption.selectedExtensions,
           e: this.searchFilterOption.exactMatch ? 1 : 0,
@@ -75,8 +75,8 @@ export class SearchViewModel extends NetworkRequestViewModel {
       try {
         let favorites = await getSearch({
           message: this.searchKeyword,
-          yearFrom: this.searchFilterOption.startYear === '不限' ? undefined : this.searchFilterOption.startYear,
-          yearTo: this.searchFilterOption.endYear === '不限' ? undefined : this.searchFilterOption.endYear,
+          yearFrom: this.searchFilterOption.startYear,
+          yearTo: this.searchFilterOption.endYear,
           languages: this.searchFilterOption.selectedLanguages.map((ele) => this._languageOptions[ele]),
           extensions: this.searchFilterOption.selectedExtensions,
           e: this.searchFilterOption.exactMatch ? 1 : 0,

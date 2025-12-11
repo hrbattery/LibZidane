@@ -1,0 +1,17 @@
+{
+  "plural": [
+    {
+      "name": "ui_search_results",
+      "value": [
+        {
+          "quantity": "one",
+          "value": "Find %d book"
+        },
+        {
+          "quantity": "other",
+          "value": "Find %d books"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "plural": [
+    {
+      "name": "ui_search_results",
+      "value": [
+        {
+          "quantity": "other",
+          "value": "找到 %d 本书"
+        }
+      ]
+    }
+  ]
+}

@@ -22,12 +22,12 @@ export struct MyBook {
 
   @Computed
   get favoriteOrderStr(): string {
-    return Constants.FAVORITES_SORT_KEY[this.favoriteOrder]['value']
+    return Constants.FAVORITES_SORT_KEY[this.favoriteOrder]['value'] as string
   }
 
   @Computed
   get downloadedOrderStr(): string {
-    return Constants.DOWNLOADED_SORT_KEY[this.downloadedOrder]['value']
+    return Constants.DOWNLOADED_SORT_KEY[this.downloadedOrder]['value'] as string
   }
 
   build() {
@@ -39,7 +39,11 @@ export struct MyBook {
             updateEntriesAmount: (amount: number) => this.favoritesEntriesAmount = amount
           })
         }
-        .tabBar('选集' + (this.favoritesEntriesAmount > 0 ? ` ( ${this.favoritesEntriesAmount} )` : ''))
+        .tabBar(this.getUIContext().getHostContext()!.resourceManager.getStringSync(
+          $r("app.string.ui_mybook_favorite_tab").id,
+          this.favoritesEntriesAmount > 0 ? ` ( ${this.favoritesEntriesAmount} )` : ''
+        ))
+        // .tabBar('选集' + (this.favoritesEntriesAmount > 0 ? ` ( ${this.favoritesEntriesAmount} )` : ''))
 
         TabContent() {
           DownloadedBooks({
@@ -47,7 +51,11 @@ export struct MyBook {
             updateEntriesAmount: (amount: number) => this.downloadedEntriesAmount = amount
           })
         }
-        .tabBar('已下载' + (this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''))
+        .tabBar(this.getUIContext().getHostContext()!.resourceManager.getStringSync(
+          $r("app.string.ui_mybook_downloaded_tab").id,
+          this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''
+        ))
+        // .tabBar('已下载' + (this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''))
       }
       .barMode(BarMode.Fixed)
       // .onChange((index: number) => {

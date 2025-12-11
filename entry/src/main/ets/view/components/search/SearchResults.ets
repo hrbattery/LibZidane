@@ -82,7 +82,7 @@ export struct SearchResults {
 function Footer(isLoadingNew: boolean) {
   Row() {
     LoadingProgress().height(32).width(48)
-    Text("加载中")
+    Text($r("app.string.ui_common_loading"))
   }.width("100%")
   .height(64)
   .justifyContent(FlexAlign.Center)

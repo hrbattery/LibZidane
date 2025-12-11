@@ -1,0 +1,72 @@
+{
+  "string": [
+    {
+      "name": "notif_start_download",
+      "value": "Start downloading: %s"
+    },
+    {
+      "name": "notif_file_existed_title",
+      "value": "Notification"
+    },
+    {
+      "name": "notif_file_existed_message",
+      "value": "Downloading file already existed"
+    },
+    {
+      "name": "notif_file_downloading",
+      "value": "Downloading: (%1$s / %2$s)"
+    },
+    {
+      "name": "notif_download_error",
+      "value": "Error occurred during download: "
+    },
+    {
+      "name": "notif_download_failed",
+      "value": "Download failed"
+    },
+    {
+      "name": "notif_download_accomplish",
+      "value": "Download completed"
+    },
+    {
+      "name": "notif_download_get_url_failed",
+      "value": "Download failed: Failed to obtain the download address"
+    },
+    {
+      "name": "notif_search_empty_content",
+      "value": "Please enter the search content"
+    },
+    {
+      "name": "notif_open_link_failed",
+      "value": "Failed to open url: %s"
+    },
+    {
+      "name": "notif_cookie_login_get_cookie_invalid",
+      "value": "Failed to obtain the login information. Please confirm whether you have logged in within the webpage."
+    },
+    {
+      "name": "notif_cookie_login_get_cookie_failed",
+      "value": "Obtain cookie failed: %s"
+    },
+    {
+      "name": "notif_cookie_login_howto",
+      "value": "How to Login?"
+    },
+    {
+      "name": "notif_cookie_login_howto_msg",
+      "value": "Wait for the web page to load, and then log in to your account on the current web page.\nAfter logging in on the webpage, click the \"Get Login Cookie\" button and then wait for the login to complete."
+    },
+    {
+      "name": "notif_login_success",
+      "value": "Login success!"
+    },
+    {
+      "name": "notif_login_failed",
+      "value": "Login failed."
+    },
+    {
+      "name": "notif_login_empty_input",
+      "value": "Please enter your username and password."
+    }
+  ]
+}

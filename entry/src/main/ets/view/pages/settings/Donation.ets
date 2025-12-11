@@ -23,14 +23,14 @@ struct Donation {
       Column() {
         Column() {
           InfoCard({
-            title: '有效捐赠',
+            title: $r("app.string.ui_donation_active_donations"),
             content: this.viewModel.activeDonationString
           })
           Divider()
             .margin({ left: 8, right: 8 })
             .color(Color.Gray)
           InfoCard({
-            title: '有效日期',
+            title: $r("app.string.ui_donation_expiration_date"),
             content: this.viewModel.donationExpireDate
           })
         }
@@ -61,21 +61,21 @@ struct Donation {
           .margin({ left: 16, right: 16 })
           .borderRadius(20)
         } else {
-          Text("没有有效的历史捐赠记录")
+          Text($r("app.string.ui_donation_no_records"))
         }
       }
       .backgroundColor($r("sys.color.background_secondary"))
       .height("100%")
       .width("100%")
     }
-    .title('捐赠和捐赠记录')
+    .title($r("app.string.ui_setting_account_donation"))
   }
 }
 
 @ComponentV2
 struct InfoCard {
-  @Param @Require title: string;
-  @Param @Require content: string
+  @Param @Require title: ResourceStr;
+  @Param @Require content: ResourceStr
 
   build() {
     Row({ space: 10 }) {

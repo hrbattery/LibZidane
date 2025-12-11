@@ -5,11 +5,6 @@
 @Preview
 @ComponentV2
 export struct EmptyContentPlaceholder {
-  /**
-   * 提示文本
-   */
-  @Param message: string = '暂无相关书籍数据';
-
   build() {
     Column({ space: 20 }) {
       // 图标
@@ -20,7 +15,7 @@ export struct EmptyContentPlaceholder {
         .fillColor($r("sys.color.icon_primary"))
 
       // 提示文本
-      Text(this.message)
+      Text($r("app.string.ui_placeholder_empty"))
         .fontSize(16)
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });

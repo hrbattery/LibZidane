@@ -29,9 +29,9 @@ export class DonationViewModel extends NetworkRequestViewModel {
   }
 
   @Computed
-  get donationExpireDate() {
+  get donationExpireDate(): ResourceStr {
     if (this.donationExpire === null) {
-      return "不存在"
+      return $r("app.string.ui_donation_not_existed")
     } else {
       return new Date(this.donationExpire).toLocaleDateString()
     }

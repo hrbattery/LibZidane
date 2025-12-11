@@ -72,7 +72,7 @@ export struct BookDetailHeader {
       })
     this.BookSubInfos(this.bookData, 16, $r("sys.color.font_primary"))
 
-    Button('下载')
+    Button($r("app.string.ui_bookdetail_download_btn"))
       .width("90%")
       .onClick(() => this.showSelectFormatSheet())
       .bindSheet(this.isShowSelectFormatSheet!!, this.BookFormatSheetBuilder(
@@ -82,7 +82,7 @@ export struct BookDetailHeader {
       ), {
         detents: [SheetSize.MEDIUM, SheetSize.LARGE, 600],
         preferType: SheetType.BOTTOM,
-        title: { title: '选择格式' },
+        title: { title: $r("app.string.ui_bookdetail_downloadsheet_title") },
         scrollSizeMode: ScrollSizeMode.CONTINUOUS
       })
   }

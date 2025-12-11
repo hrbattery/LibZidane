@@ -26,8 +26,9 @@ struct SearchPage {
   handleSortClick(): void {
     const dialogId = DialogHelper.showSelectDialog({
       selectedIndex: this.viewModel.searchSortOrderIndex,
-      title: "排序方式",
+      title: $r("app.string.ui_search_menu_sort_by"),
       radioContent: this.getSortMenuItems(),
+      confirm: $r("app.string.ui_common_cancel_btn"),
       onCheckedChanged: (index: number): void => {
         closeDialog()
         logger.debug(`onCheckedChanged: index=${index}`)
@@ -53,8 +54,8 @@ struct SearchPage {
         this.viewModel.searchFilterOption.apply()
       },
       uiContext: this.getUIContext(),
-      title: '搜索选项',
-      backgroundColor: '#FFFFFF'
+      title: $r("app.string.ui_search_menu_filter"),
+      buttons: [$r("app.string.ui_common_cancel_btn"), $r("app.string.ui_common_confirm_btn")]
     })
   }
 
@@ -71,12 +72,12 @@ struct SearchPage {
   SearchInput() {
     Column() {
       Search({
-        placeholder: "搜索内容",
+        placeholder: $r("app.string.ui_search_placeholder"),
         value: this.viewModel.searchKeyword
       })
         .defaultFocus(true)
         .layoutWeight(1)
-        .searchButton('搜索')
+        .searchButton($r("app.string.ui_search_btn"))
         .onChange((value) => {
           if (!value) {
             this.viewModel.searchKeyword = ''
@@ -84,7 +85,7 @@ struct SearchPage {
         })
         .onSubmit(async (value) => {
           if (!value) {
-            ToastUtil.showToast('请输入搜索内容')
+            ToastUtil.showToast($r("app.string.notif_search_empty_content"))
           } else {
             this.viewModel.searchKeyword = value
             this.viewModel.loadDataSource()
@@ -97,7 +98,10 @@ struct SearchPage {
   @Builder
   SearchResultAmount() {
     if (this.viewModel.pagination) {
-      Text(`找到 ${this.viewModel.pagination?.total_items} 本书`)
+      Text(this.getUIContext().getHostContext()!.resourceManager.getPluralStringValueSync(
+        $r("app.plural.ui_search_results"),
+        this.viewModel.pagination?.total_items
+      ))
         .alignSelf(ItemAlign.Start)
         .textAlign(TextAlign.Center)
         .fontSize(16)
@@ -119,12 +123,12 @@ struct SearchPage {
     .title(this.SearchInput())
     .menus([
       {
-        value: '排序',
+        value: $r("app.string.ui_search_menu_sort"),
         icon: $r("app.media.sort"),
         action: () => this.handleSortClick()
       },
       {
-        value: "搜索选项",
+        value: $r("app.string.ui_search_menu_filter"),
         icon: $r("app.media.slider_vertical_3"),
         action: () => this.handleSearchOptionsClick()
       }

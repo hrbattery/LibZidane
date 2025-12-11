@@ -14,10 +14,8 @@ struct CustomApi {
     NavDestination() {
       Column() {
         Column() {
-          Text("Z-Library 使用多个可能的 API 域名来提供可用的服务。")
-          Text("如果仍然无法提供可用的服务，而您有可用、可信的 Z-Library 域名，可以添加自定义 API 域名。LibZidane 会优先使用自定义 API 域名。")
-          Text("注意：用户凭证等数据会被发送到自定义 API 域名。请自行承担使用自定义 API 域名的风险。")
-          Text("当前正在使用：")
+          Text($r("app.string.ui_custom_api_declaimer"))
+          Text($r("app.string.ui_custom_api_current_active"))
         }
         .alignItems(HorizontalAlign.Start)
         .alignSelf(ItemAlign.Start)
@@ -29,7 +27,7 @@ struct CustomApi {
       .padding({ top: 20, left: 20, right: 20 })
       .backgroundColor($r("sys.color.background_secondary"))
     }
-    .title('自定义 API')
+    .title($r("app.string.ui_setting_general_custom_api"))
   }
 
   @Builder

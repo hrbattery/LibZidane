@@ -3,8 +3,8 @@ import { Command } from "../../common/types/CommonTypes";
 @ObservedV2
 export class SearchFilterOptions {
   @Trace exactMatch: boolean = false;
-  @Trace startYear: string = '不限';
-  @Trace endYear: string = '不限';
+  @Trace startYear: string | undefined = undefined;
+  @Trace endYear: string | undefined = undefined;
   @Trace selectedLanguages: string[] = [];
   @Trace selectedExtensions: string[] = [];
 
@@ -16,13 +16,13 @@ export class SearchFilterOptions {
     }
   }
 
-  setStartYearCmd(value: string) {
+  setStartYearCmd(value: string | undefined) {
     this.commands[1] = () => {
       this.startYear = value;
     }
   }
 
-  setEndYearCmd(value: string) {
+  setEndYearCmd(value: string | undefined) {
     this.commands[2] = () => {
       this.endYear = value;
     }

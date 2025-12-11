@@ -1,0 +1,72 @@
+{
+  "string": [
+    {
+      "name": "notif_start_download",
+      "value": "开始下载：%s"
+    },
+    {
+      "name": "notif_file_existed_title",
+      "value": "提示"
+    },
+    {
+      "name": "notif_file_existed_message",
+      "value": "文件已存在"
+    },
+    {
+      "name": "notif_file_downloading",
+      "value": "正在下载 (%1$s / %2$s)"
+    },
+    {
+      "name": "notif_download_error",
+      "value": "下载时出错："
+    },
+    {
+      "name": "notif_download_failed",
+      "value": "下载失败"
+    },
+    {
+      "name": "notif_download_accomplish",
+      "value": "下载完成"
+    },
+    {
+      "name": "notif_download_get_url_failed",
+      "value": "下载失败：获取下载地址失败"
+    },
+    {
+      "name": "notif_search_empty_content",
+      "value": "请输入搜索内容"
+    },
+    {
+      "name": "notif_cookie_login_get_cookie_invalid",
+      "value": "获取登录信息失败，请确认是否已在网页内登录。"
+    },
+    {
+      "name": "notif_cookie_login_get_cookie_failed",
+      "value": "获取Cookie失败：%s"
+    },
+    {
+      "name": "notif_open_link_failed",
+      "value": "打开链接失败：%s"
+    },
+    {
+      "name": "notif_cookie_login_howto",
+      "value": "如何登录？"
+    },
+    {
+      "name": "notif_cookie_login_howto_msg",
+      "value": "等待网页加载，之后在当前网页中登录你的账号\n待在网页中登录完成后，点击\"获取登录Cookie\"按钮，之后等待登录完成"
+    },
+    {
+      "name": "notif_login_success",
+      "value": "登录成功！"
+    },
+    {
+      "name": "notif_login_failed",
+      "value": "登录失败"
+    },
+    {
+      "name": "notif_login_empty_input",
+      "value": "请输入账号和密码"
+    }
+  ]
+}

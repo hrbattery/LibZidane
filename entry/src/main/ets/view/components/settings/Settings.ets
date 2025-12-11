@@ -11,14 +11,7 @@ import preferences from "@ohos.data.preferences";
 export struct Settings {
   @Local appState: AppState = PersistenceV2.connect(AppState, 'appState', () => new AppState())!
 
-  // 导入所需的颜色和组件
-  private readonly bgColor = $r("app.color.settings_bg_color");
   private readonly dividerColor: Color = Color.Gray;
-  private readonly textColor: Color = Color.Black;
-  private readonly sectionHeaderTextStyle: TextStyle = {
-    fontSize: 16,
-    fontWeight: FontWeight.Bold
-  };
 
   private pathStack: NavPathStack | undefined = undefined;
 
@@ -29,7 +22,7 @@ export struct Settings {
   async build() {
     Column() {
       // 账户部分
-      Text('账号')
+      Text($r("app.string.ui_setting_account"))
         .fontSize(16)
         .fontWeight(FontWeight.Bold)
         .padding({ left: 16, top: 16, bottom: 16 })
@@ -38,14 +31,14 @@ export struct Settings {
       Column() {
         if (!this.appState.loginState) {
           ItemCard({
-            text: '登录（账号/cookie）',
+            text: $r("app.string.ui_setting_account_login"),
             action: () => {
               this.pathStack?.pushPathByName("Settings_Login", null)
             }
           })
         } else {
           ItemCard({
-            text: '捐赠和捐赠记录',
+            text: $r("app.string.ui_setting_account_donation"),
             action: () => {
               this.pathStack?.pushPathByName("Settings_Donation", null)
             }
@@ -57,7 +50,7 @@ export struct Settings {
       .borderRadius(20)
 
       // 通用部分
-      Text('通用')
+      Text($r("app.string.ui_setting_general"))
         .fontSize(16)
         .fontWeight(FontWeight.Bold)
         .padding({ left: 16, top: 16, bottom: 16 })
@@ -74,7 +67,7 @@ export struct Settings {
           .color(this.dividerColor)
 
         ItemCard({
-          text: '关于应用',
+          text: $r("app.string.ui_setting_general_about"),
           action: () => {
             this.pathStack?.pushPathByName("Settings_About", null)
           }
@@ -83,7 +76,7 @@ export struct Settings {
           .margin({ left: 8, right: 8})
           .color(this.dividerColor)
         ItemCard({
-          text: '自定义 API',
+          text: $r("app.string.ui_setting_general_custom_api"),
           action: () => {
             this.pathStack?.pushPathByName("Settings_Custom_API", null)
           }
@@ -96,14 +89,12 @@ export struct Settings {
       // 登出按钮
       if (this.appState.loginState) {
         Column() {
-          Button('登出')
+          Button($r("app.string.ui_setting_logout"))
             .width('100%')
             .height(48)
             .fontSize(16)
             .onClick(async () => {
               await preferencesUtils.delete(StorageConstants.DEFAULT_PREF, 'cookie')
-              // PersistenceV2.connect(AppState, 'appState', () => new AppState())!.loginState = false
-              // await preferencesUtils.put(StorageConstants.DEFAULT_PREF, 'loginState', false)
               this.appState.loginState = false
             })
         }
@@ -119,7 +110,7 @@ export struct Settings {
 
 @ComponentV2
 struct ItemCard {
-  @Param @Require text: string | ResourceStr;
+  @Param @Require text: ResourceStr;
   @Event action: () => void
 
   build() {

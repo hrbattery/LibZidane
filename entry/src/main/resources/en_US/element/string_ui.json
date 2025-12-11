@@ -1,0 +1,368 @@
+{
+  "string": [
+    {
+      "name": "ui_select_format",
+      "value": "hello"
+    },
+    {
+      "name": "ui_yearpicker_unlimited",
+      "value": "Unlimited"
+    },
+    {
+      "name": "ui_bookdetail_about",
+      "value": "About"
+    },
+    {
+      "name": "ui_bookdetail_description",
+      "value": "Description"
+    },
+    {
+      "name": "ui_bookdetail_about_year",
+      "value": "Year:"
+    },
+    {
+      "name": "ui_bookdetail_about_content_type",
+      "value": "Content Type:"
+    },
+    {
+      "name": "ui_bookdetail_about_volume",
+      "value": "Volume:"
+    },
+    {
+      "name": "ui_bookdetail_about_edition",
+      "value": "Edition:"
+    },
+    {
+      "name": "ui_bookdetail_about_publisher",
+      "value": "Publisher:"
+    },
+    {
+      "name": "ui_bookdetail_about_lang",
+      "value": "Language:"
+    },
+    {
+      "name": "ui_bookdetail_about_series",
+      "value": "Series:"
+    },
+    {
+      "name": "ui_bookdetail_about_pages",
+      "value": "Pages:"
+    },
+    {
+      "name": "ui_bookdetail_about_isbn10",
+      "value": "ISBN 10:"
+    },
+    {
+      "name": "ui_bookdetail_about_isbn13",
+      "value": "ISBN 13:"
+    },
+    {
+      "name": "ui_bookdetail_about_file",
+      "value": "File:"
+    },
+    {
+      "name": "ui_bookdetail_download_btn",
+      "value": "Download"
+    },
+    {
+      "name": "ui_bookdetail_downloadsheet_title",
+      "value": "Select format"
+    },
+    {
+      "name": "ui_bookdetail_downloadsheet_other_format",
+      "value": "Other formats"
+    },
+    {
+      "name": "ui_common_loading",
+      "value": "Loading..."
+    },
+    {
+      "name": "ui_bookinfo_downloaded",
+      "value": "Downloaded"
+    },
+    {
+      "name": "ui_placeholder_empty",
+      "value": "No relevant book data available now"
+    },
+    {
+      "name": "ui_placeholder_refresh_btn",
+      "value": "Refresh"
+    },
+    {
+      "name": "ui_placeholder_require_login",
+      "value": "Require to login first to view the content of your books"
+    },
+    {
+      "name": "ui_placeholder_login_btn",
+      "value": "Login"
+    },
+    {
+      "name": "ui_library_recommended_tab",
+      "value": "Recommended"
+    },
+    {
+      "name": "ui_library_most_popular_tab",
+      "value": "Most Popular"
+    },
+    {
+      "name": "ui_mybook_favorite_tab",
+      "value": "Favorite%s"
+    },
+    {
+      "name": "ui_mybook_downloaded_tab",
+      "value": "Downloaded%s"
+    },
+    {
+      "name": "ui_search_exact_match",
+      "value": "Exact matching"
+    },
+    {
+      "name": "ui_search_published_year",
+      "value": "Published year"
+    },
+    {
+      "name": "ui_search_published_year_from",
+      "value": "From"
+    },
+    {
+      "name": "ui_search_published_year_to",
+      "value": "To"
+    },
+    {
+      "name": "ui_search_language",
+      "value": "Language"
+    },
+    {
+      "name": "ui_search_extension",
+      "value": "Extension"
+    },
+    {
+      "name": "ui_search_clear_filter",
+      "value": "Clear filter"
+    },
+    {
+      "name": "ui_setting_general_dark_mode",
+      "value": "Dark Mode"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_dark",
+      "value": "Dark"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_light",
+      "value": "Light"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_auto",
+      "value": "Follow system"
+    },
+    {
+      "name": "ui_setting_general_language",
+      "value": "Language"
+    },
+    {
+      "name": "ui_setting_account_login",
+      "value": "Login (Account / Cookie)"
+    },
+    {
+      "name": "ui_setting_account_donation",
+      "value": "Donation & Records"
+    },
+    {
+      "name": "ui_setting_account",
+      "value": "Account"
+    },
+    {
+      "name": "ui_setting_general",
+      "value": "General"
+    },
+    {
+      "name": "ui_setting_general_about",
+      "value": "About"
+    },
+    {
+      "name": "ui_setting_general_custom_api",
+      "value": "Custom API"
+    },
+    {
+      "name": "ui_setting_logout",
+      "value": "Logout"
+    },
+    {
+      "name": "ui_bookdetail_menu_share",
+      "value": "Share"
+    },
+    {
+      "name": "ui_bookdetail_menu_favorite",
+      "value": "Favorite"
+    },
+    {
+      "name": "ui_bookdetail_recommended",
+      "value": "Recommended Books"
+    },
+    {
+      "name": "ui_home_library_tab",
+      "value": "Library"
+    },
+    {
+      "name": "ui_home_mybook_tab",
+      "value": "My Books"
+    },
+    {
+      "name": "ui_home_setting_tab",
+      "value": "Settings"
+    },
+    {
+      "name": "ui_home_menu_search",
+      "value": "Search"
+    },
+    {
+      "name": "ui_home_menu_sort",
+      "value": "Sort"
+    },
+    {
+      "name": "ui_home_menu_sort_by",
+      "value": "Sort by"
+    },
+    {
+      "name": "ui_search_menu_sort_by",
+      "value": "Sort by"
+    },
+    {
+      "name": "ui_search_placeholder",
+      "value": "Search for..."
+    },
+    {
+      "name": "ui_search_btn",
+      "value": "Search"
+    },
+    {
+      "name": "ui_search_menu_sort",
+      "value": "Sort"
+    },
+    {
+      "name": "ui_search_menu_filter",
+      "value": "Search filter"
+    },
+    {
+      "name": "ui_setting_general_about_version",
+      "value": "Version: %s"
+    },
+    {
+      "name": "ui_cookie_login_get_cookie_btn",
+      "value": "Get login cookie"
+    },
+    {
+      "name": "ui_cookie_login",
+      "value": "Cookie login"
+    },
+    {
+      "name": "ui_custom_api_declaimer",
+      "value": "Z-Library utilizes multiple potential API domain to deliver available services.\nIf services remain unavailable despite having a functional, trusted Z-Library domain, you may add a custom API domain. LibZidane will prioritize using the custom API domain.\nNote: Data such as user credentials will be sent to the custom API domain. Use custom API domain at your own risk."
+    },
+    {
+      "name": "ui_custom_api_current_active",
+      "value": "Active API domain:"
+    },
+    {
+      "name": "ui_donation_active_donations",
+      "value": "Active donations"
+    },
+    {
+      "name": "ui_donation_expiration_date",
+      "value": "Expiration Date"
+    },
+    {
+      "name": "ui_donation_no_records",
+      "value": "No valid historical donation records exist."
+    },
+    {
+      "name": "ui_login_title",
+      "value": "Login"
+    },
+    {
+      "name": "ui_login_account_placeholder",
+      "value": "Account"
+    },
+    {
+      "name": "ui_login_password_placeholder",
+      "value": "Password"
+    },
+    {
+      "name": "ui_login_btn",
+      "value": "Login"
+    },
+    {
+      "name": "ui_donation_not_existed",
+      "value": "Not existed"
+    },
+    {
+      "name": "ui_favorite_sort_key_saved_date",
+      "value": "Date saved ↓"
+    },
+    {
+      "name": "ui_favorite_sort_key_saved_date_A",
+      "value": "Date saved ↑"
+    },
+    {
+      "name": "ui_downloaded_sort_key_downloaded_date",
+      "value": "Date Downloaded ↓"
+    },
+    {
+      "name": "ui_downloaded_sort_key_downloaded_date_A",
+      "value": "Date Downloaded ↑"
+    },
+    {
+      "name": "ui_downloaded_sort_key_title_A",
+      "value": "Title (A-Z)"
+    },
+    {
+      "name": "ui_downloaded_sort_key_title",
+      "value": "Title (Z-A)"
+    },
+    {
+      "name": "ui_downloaded_sort_key_year",
+      "value": "Year"
+    },
+    {
+      "name": "ui_downloaded_sort_key_filesize",
+      "value": "File size ↓"
+    },
+    {
+      "name": "ui_downloaded_sort_key_filesize_A",
+      "value": "File size ↑"
+    },
+    {
+      "name": "ui_search_sort_key_popular",
+      "value": "Most popular"
+    },
+    {
+      "name": "ui_search_sort_key_best_match",
+      "value": "Best match"
+    },
+    {
+      "name": "ui_search_sort_key_recently_added",
+      "value": "Recently added"
+    },
+    {
+      "name": "ui_search_sort_key_title_A",
+      "value": "Title (A-Z)"
+    },
+    {
+      "name": "ui_search_sort_key_title",
+      "value": "Title (Z-A)"
+    },
+    {
+      "name": "ui_search_sort_key_year",
+      "value": "Year"
+    },
+    {
+      "name": "ui_search_sort_key_filesize",
+      "value": "File size ↓"
+    },
+    {
+      "name": "ui_search_sort_key_filesize_A",
+      "value": "File size ↑"
+    }
+  ]
+}

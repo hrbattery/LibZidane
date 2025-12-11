@@ -6,10 +6,6 @@
 @ComponentV2
 export struct ErrorStatePlaceholder {
   /**
-   * 提示文本
-   */
-  @Param message: string = '暂无相关书籍数据';
-  /**
    * 刷新按钮点击回调
    */
   @Event onRefreshClick: () => void;
@@ -24,13 +20,13 @@ export struct ErrorStatePlaceholder {
         .fillColor($r("sys.color.icon_primary"))
 
       // 提示文本
-      Text(this.message)
+      Text($r("app.string.ui_placeholder_empty"))
         .fontSize(16)
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
 
       // 操作按钮
-      Button('刷新页面')
+      Button($r("app.string.ui_placeholder_refresh_btn"))
         .width(180)
         .height(44)
         .fontSize(16)

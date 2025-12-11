@@ -1,0 +1,368 @@
+{
+  "string": [
+    {
+      "name": "ui_select_format",
+      "value": "hello"
+    },
+    {
+      "name": "ui_yearpicker_unlimited",
+      "value": "不限"
+    },
+    {
+      "name": "ui_bookdetail_about",
+      "value": "书"
+    },
+    {
+      "name": "ui_bookdetail_description",
+      "value": "描述"
+    },
+    {
+      "name": "ui_bookdetail_about_isbn10",
+      "value": "ISBN 10:"
+    },
+    {
+      "name": "ui_bookdetail_about_isbn13",
+      "value": "ISBN 13:"
+    },
+    {
+      "name": "ui_bookdetail_about_year",
+      "value": "年份："
+    },
+    {
+      "name": "ui_bookdetail_about_content_type",
+      "value": "内容类型："
+    },
+    {
+      "name": "ui_bookdetail_about_volume",
+      "value": "卷："
+    },
+    {
+      "name": "ui_bookdetail_about_edition",
+      "value": "版本："
+    },
+    {
+      "name": "ui_bookdetail_about_publisher",
+      "value": "出版社："
+    },
+    {
+      "name": "ui_bookdetail_about_lang",
+      "value": "语言："
+    },
+    {
+      "name": "ui_bookdetail_about_series",
+      "value": "系列："
+    },
+    {
+      "name": "ui_bookdetail_about_pages",
+      "value": "页数："
+    },
+    {
+      "name": "ui_bookdetail_about_file",
+      "value": "文件："
+    },
+    {
+      "name": "ui_bookdetail_download_btn",
+      "value": "下载"
+    },
+    {
+      "name": "ui_bookdetail_downloadsheet_title",
+      "value": "选择格式"
+    },
+    {
+      "name": "ui_bookdetail_downloadsheet_other_format",
+      "value": "其他格式"
+    },
+    {
+      "name": "ui_common_loading",
+      "value": "加载中..."
+    },
+    {
+      "name": "ui_bookinfo_downloaded",
+      "value": "下载"
+    },
+    {
+      "name": "ui_placeholder_empty",
+      "value": "暂无相关书籍数据'"
+    },
+    {
+      "name": "ui_placeholder_refresh_btn",
+      "value": "刷新页面"
+    },
+    {
+      "name": "ui_placeholder_require_login",
+      "value": "请先登录以查看您的书籍内容"
+    },
+    {
+      "name": "ui_placeholder_login_btn",
+      "value": "登录"
+    },
+    {
+      "name": "ui_library_recommended_tab",
+      "value": "推荐"
+    },
+    {
+      "name": "ui_library_most_popular_tab",
+      "value": "最受欢迎的"
+    },
+    {
+      "name": "ui_mybook_downloaded_tab",
+      "value": "已下载%s"
+    },
+    {
+      "name": "ui_mybook_favorite_tab",
+      "value": "选集%s"
+    },
+    {
+      "name": "ui_search_exact_match",
+      "value": "完全匹配"
+    },
+    {
+      "name": "ui_search_published_year",
+      "value": "出版年份"
+    },
+    {
+      "name": "ui_search_published_year_from",
+      "value": "开始年份"
+    },
+    {
+      "name": "ui_search_published_year_to",
+      "value": "结束年份"
+    },
+    {
+      "name": "ui_search_extension",
+      "value": "文件格式"
+    },
+    {
+      "name": "ui_search_language",
+      "value": "语言"
+    },
+    {
+      "name": "ui_search_clear_filter",
+      "value": "清空条件"
+    },
+    {
+      "name": "ui_setting_general_dark_mode",
+      "value": "深色模式"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_dark",
+      "value": "深色"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_light",
+      "value": "浅色"
+    },
+    {
+      "name": "ui_setting_general_dark_mode_auto",
+      "value": "跟随系统"
+    },
+    {
+      "name": "ui_setting_general_language",
+      "value": "语言设置"
+    },
+    {
+      "name": "ui_setting_account_login",
+      "value": "登录（账号 / cookie）"
+    },
+    {
+      "name": "ui_setting_account_donation",
+      "value": "捐赠和捐赠记录"
+    },
+    {
+      "name": "ui_setting_account",
+      "value": "账号"
+    },
+    {
+      "name": "ui_setting_general",
+      "value": "通用"
+    },
+    {
+      "name": "ui_setting_general_about",
+      "value": "关于应用"
+    },
+    {
+      "name": "ui_setting_general_custom_api",
+      "value": "自定义 API"
+    },
+    {
+      "name": "ui_setting_logout",
+      "value": "登出"
+    },
+    {
+      "name": "ui_bookdetail_recommended",
+      "value": "您可能对以下内容感兴趣"
+    },
+    {
+      "name": "ui_bookdetail_menu_favorite",
+      "value": "收藏"
+    },
+    {
+      "name": "ui_bookdetail_menu_share",
+      "value": "分享"
+    },
+    {
+      "name": "ui_search_btn",
+      "value": "搜索"
+    },
+    {
+      "name": "ui_home_menu_search",
+      "value": "搜索"
+    },
+    {
+      "name": "ui_home_menu_sort_by",
+      "value": "排序方式"
+    },
+    {
+      "name": "ui_home_menu_sort",
+      "value": "排序"
+    },
+    {
+      "name": "ui_home_setting_tab",
+      "value": "设置"
+    },
+    {
+      "name": "ui_home_mybook_tab",
+      "value": "我的书籍"
+    },
+    {
+      "name": "ui_home_library_tab",
+      "value": "图书馆"
+    },
+    {
+      "name": "ui_search_menu_sort_by",
+      "value": "排序方式"
+    },
+    {
+      "name": "ui_search_placeholder",
+      "value": "搜索内容"
+    },
+    {
+      "name": "ui_search_menu_sort",
+      "value": "排序"
+    },
+    {
+      "name": "ui_search_menu_filter",
+      "value": "搜索选项"
+    },
+    {
+      "name": "ui_setting_general_about_version",
+      "value": "版本：%s"
+    },
+    {
+      "name": "ui_cookie_login_get_cookie_btn",
+      "value": "获取登录Cookie"
+    },
+    {
+      "name": "ui_cookie_login",
+      "value": "Cookie 登录"
+    },
+    {
+      "name": "ui_custom_api_declaimer",
+      "value": "Z-Library 使用多个可能的 API 域名来提供可用的服务。\n如果仍然无法提供可用的服务，而您有可用、可信的 Z-Library 域名，可以添加自定义 API 域名。LibZidane 会优先使用自定义 API 域名。\n注意：用户凭证等数据会被发送到自定义 API 域名。请自行承担使用自定义 API 域名的风险。"
+    },
+    {
+      "name": "ui_custom_api_current_active",
+      "value": "当前正在使用："
+    },
+    {
+      "name": "ui_donation_active_donations",
+      "value": "有效捐赠"
+    },
+    {
+      "name": "ui_donation_expiration_date",
+      "value": "有效日期"
+    },
+    {
+      "name": "ui_donation_no_records",
+      "value": "没有有效的历史捐赠记录"
+    },
+    {
+      "name": "ui_login_title",
+      "value": "登录"
+    },
+    {
+      "name": "ui_login_account_placeholder",
+      "value": "请输入账号"
+    },
+    {
+      "name": "ui_login_password_placeholder",
+      "value": "请输入密码"
+    },
+    {
+      "name": "ui_login_btn",
+      "value": "登录"
+    },
+    {
+      "name": "ui_donation_not_existed",
+      "value": "不存在"
+    },
+    {
+      "name": "ui_favorite_sort_key_saved_date",
+      "value": "收藏日期（降序）"
+    },
+    {
+      "name": "ui_favorite_sort_key_saved_date_A",
+      "value": "收藏日期（升序）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_downloaded_date",
+      "value": "下载日期（降序）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_downloaded_date_A",
+      "value": "下载日期（升序）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_title_A",
+      "value": "名称（A-Z）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_title",
+      "value": "名称（Z-A）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_year",
+      "value": "年份"
+    },
+    {
+      "name": "ui_downloaded_sort_key_filesize",
+      "value": "文件大小（降序）"
+    },
+    {
+      "name": "ui_downloaded_sort_key_filesize_A",
+      "value": "文件大小（升序）"
+    },
+    {
+      "name": "ui_search_sort_key_popular",
+      "value": "最受欢迎"
+    },
+    {
+      "name": "ui_search_sort_key_best_match",
+      "value": "最佳匹配"
+    },
+    {
+      "name": "ui_search_sort_key_recently_added",
+      "value": "最近添加"
+    },
+    {
+      "name": "ui_search_sort_key_title_A",
+      "value": "名称（A-Z）"
+    },
+    {
+      "name": "ui_search_sort_key_title",
+      "value": "名称（Z-A）"
+    },
+    {
+      "name": "ui_search_sort_key_year",
+      "value": "年份"
+    },
+    {
+      "name": "ui_search_sort_key_filesize",
+      "value": "文件大小（降序）"
+    },
+    {
+      "name": "ui_search_sort_key_filesize_A",
+      "value": "文件大小（升序）"
+    }
+  ]
+}

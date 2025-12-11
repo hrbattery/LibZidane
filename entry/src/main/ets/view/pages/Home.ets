@@ -12,7 +12,11 @@ struct Home {
   @Local index: number = 0;
   @Local tabCurrentIndex: number = 0;
   @Local tabController: TabsController = new TabsController()
-  @Local titleMap: string[] = ["图书馆", "我的书籍", "设置"]
+  @Local titleMap: ResourceStr[] = [
+    $r("app.string.ui_home_library_tab"),
+    $r("app.string.ui_home_mybook_tab"),
+    $r("app.string.ui_home_setting_tab")
+  ]
   @Local navMenuItems: NavigationMenuItem[] = this.getMenuItems();
 
   @Local myBookTabIndex: number = 0;
@@ -28,7 +32,7 @@ struct Home {
         TabContent() {
           Library()
         }
-        .tabBar("图书馆")
+        .tabBar($r("app.string.ui_home_library_tab"))
 
         TabContent() {
           MyBook({
@@ -41,12 +45,12 @@ struct Home {
             }
           })
         }
-        .tabBar("我的书籍")
+        .tabBar($r("app.string.ui_home_mybook_tab"))
 
         TabContent() {
           Settings()
         }
-        .tabBar("设置")
+        .tabBar($r("app.string.ui_home_setting_tab"))
       }
       .height('100%')
       .width('100%')
@@ -97,7 +101,7 @@ struct Home {
     if (this.index === 0) {
       return [
         {
-          'value': "搜索",
+          'value': $r("app.string.ui_home_menu_search"),
           'icon': $r("app.media.search"),
           'action': () => this.gotoSearchPage()
         },
@@ -105,12 +109,12 @@ struct Home {
     } else if (this.index === 1) {
       return [
         {
-          'value': '排序',
+          'value': $r("app.string.ui_home_menu_sort"),
           'icon': $r("app.media.sort"),
           'action': () => this.handleSortClick()
         },
         {
-          'value': "搜索",
+          'value': $r("app.string.ui_home_menu_search"),
           'icon': $r("app.media.search"),
           'action': () => this.gotoSearchPage()
         },
@@ -142,8 +146,9 @@ struct Home {
   handleSortClick(): void {
     const dialogId = DialogHelper.showSelectDialog({
       selectedIndex: this.myBookTabIndex === 0 ? this.favoriteSortOrder : this.downloadedSortOrder,
-      title: "排序方式",
+      title: $r("app.string.ui_home_menu_sort_by"),
       radioContent: this.sortMenuItems,
+      confirm: $r("app.string.ui_common_cancel_btn"),
       onCheckedChanged: (index: number): void => {
         closeDialog()
         logger.debug(TAG, `onCheckedChanged: index=${index}`)

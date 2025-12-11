@@ -10,14 +10,18 @@ export struct DarkMode {
 
   build() {
     Row() {
-      Text("深色模式")
+      Text($r("app.string.ui_setting_general_dark_mode"))
         .fontSize(16)
         .fontWeight(FontWeight.Medium)
         .textAlign(TextAlign.Start)
         .layoutWeight(1)
-      Select([{ value: "浅色" }, { value: "深色" }, { value: "跟随系统" }])
+      Select([
+        { value: $r("app.string.ui_setting_general_dark_mode_light") },
+        { value: $r("app.string.ui_setting_general_dark_mode_dark") },
+        { value: $r("app.string.ui_setting_general_dark_mode_auto") }
+      ])
         .selected(this.selectedIndex!!)
-        .value(SettingsConstants.DARK_MODE[this.selectedIndex] ?? '跟随系统')
+        .value(SettingsConstants.DARK_MODE[this.selectedIndex] ?? $r("app.string.ui_setting_general_dark_mode_auto"))
         .constraintSize({
           minHeight: 0,
           maxHeight: '100%'

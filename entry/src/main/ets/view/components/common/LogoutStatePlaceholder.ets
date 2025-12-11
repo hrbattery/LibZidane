@@ -7,7 +7,6 @@
 @ComponentV2
 export struct LogoutStatePlaceholder {
   @Local isShowLoginSheet: boolean = false
-  @Param message: string = '请先登录以查看您的书籍内容';
   pathStack: NavPathStack | undefined = undefined;
 
   aboutToAppear(): void {
@@ -24,13 +23,13 @@ export struct LogoutStatePlaceholder {
         .fillColor($r("sys.color.icon_primary"))
 
       // 提示文本
-      Text(this.message)
+      Text($r("app.string.ui_placeholder_require_login"))
         .fontSize(16)
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 });
 
       // 操作按钮
-      Button('登录账号')
+      Button($r("app.string.ui_placeholder_login_btn"))
         .width(180)
         .height(44)
         .fontSize(16)

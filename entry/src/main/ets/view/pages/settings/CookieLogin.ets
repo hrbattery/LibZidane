@@ -2,8 +2,10 @@ import { PersistenceV2 } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 
 import { DialogUtil, LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
+import { StorageConstants } from '../../../common/const/StorageConstants';
 import { setCookie } from '../../../common/request/Request';
 import { AppState } from '../../../model/entities/AppState';
+import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
 
 @Builder
 export function CookieLoginBuilder() {
@@ -95,7 +97,7 @@ export struct CookieLogin {
       .width('100%')
     }
     .menus(this.menus)
-    .title('Cookie 登录')
+    .title($r("app.string.ui_cookie_login"))
   }
 
   getCookie(): boolean {
@@ -106,12 +108,15 @@ export struct CookieLogin {
         PersistenceV2.connect(AppState, 'appState', () => new AppState())!.loginState = true
         return true;
       } else {
-        ToastUtil.showToast('获取登录信息失败，请确认是否已在网页内登录！')
+        ToastUtil.showToast($r("app.string.notif_cookie_login_get_cookie_invalid"))
         return false
       }
     } catch (error) {
-      logger.error('获取Cookie失败', error.message)
-      ToastUtil.showToast('获取Cookie失败：' + error.message)
+      logger.error('Obtain cookie failed: ', error.message)
+      ToastUtil.showToast(this.getUIContext().getHostContext()!.resourceManager.getStringSync(
+        $r("app.string.notif_cookie_login_get_cookie_failed").id,
+        error.message
+      ))
       return false
     }
   }
@@ -146,30 +151,31 @@ export struct CookieLogin {
           Image($r('app.media.info_circle'))
             .height('80%')
             .fillColor($r("sys.color.icon_primary"))
-          Text('如何登录?')
+          Text($r("app.string.notif_cookie_login_howto"))
             .height('80%')
         }
-        .padding({ right: 10 })
+        .padding({ left: 10, right: 10 })
       }
       .height(40)
       .alignSelf(ItemAlign.End)
       .backgroundColor(Color.Transparent)
       .onClick(() => {
         DialogUtil.showConfirmDialog({
-          title: '如何登录',
-          message: '等待网页加载，之后在当前网页中登录你的账号\n' +
-            '待在网页中登录完成后，点击"获取登录Cookie"按钮，之后等待登录完成\n'
+          title: $r("app.string.notif_cookie_login_howto"),
+          message: $r("app.string.notif_cookie_login_howto_msg"),
+          alignment: DialogAlignment.Center,
+          confirm: $r("app.string.ui_common_confirm_btn")
         })
       })
 
-      Button('获取登录Cookie').onClick(() => {
+      Button($r("app.string.ui_cookie_login_get_cookie_btn")).onClick(() => {
         let result = this.getCookie()
         if (result) {
-          ToastUtil.showToast('登录成功!')
+          ToastUtil.showToast($r("app.string.notif_login_success"))
           webview.WebCookieManager.clearAllCookiesSync();
           this.pathStack?.clear(true)
         } else {
-          ToastUtil.showToast('登录失败')
+          ToastUtil.showToast($r("app.string.notif_login_failed"))
         }
       })
         .height(40)

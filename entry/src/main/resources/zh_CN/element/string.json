@@ -2,11 +2,11 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "A third-party Z-Library app for HarmonyOS."
+      "value": "为 HarmonyOS 开发的第三方 Z-Library 客户端。"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "A third-party Z-Library app for HarmonyOS."
+      "value": "为 HarmonyOS 开发的第三方 Z-Library 客户端。"
     },
     {
       "name": "EntryAbility_label",
@@ -14,11 +14,11 @@
     },
     {
       "name": "ui_common_confirm_btn",
-      "value": "Confirm"
+      "value": "确定"
     },
     {
       "name": "ui_common_cancel_btn",
-      "value": "Cancel"
+      "value": "取消"
     }
   ]
 }

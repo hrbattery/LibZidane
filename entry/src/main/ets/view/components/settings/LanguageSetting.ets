@@ -6,7 +6,7 @@ export struct LanguageSetting {
 
   build() {
     Row({ space: 10 }) {
-      Text("语言设置")
+      Text($r("app.string.ui_setting_general_language"))
         .fontSize(16)
         .textAlign(TextAlign.Center)
         .fontWeight(FontWeight.Medium)

@@ -11,11 +11,11 @@ export struct Library {
         TabContent() {
           RecommendedBooks()
         }
-        .tabBar('推荐的')
+        .tabBar($r("app.string.ui_library_recommended_tab"))
         TabContent() {
           MostPopularBooks()
         }
-        .tabBar('最受欢迎的')
+        .tabBar($r("app.string.ui_library_most_popular_tab"))
       }.barMode(BarMode.Fixed)
     }
   }

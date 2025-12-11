@@ -20,12 +20,12 @@ struct BookDetailPage {
     if (this.viewModel.isUserFavorite) {
       return [
         {
-          'value': "分享",
+          'value': $r("app.string.ui_bookdetail_menu_share"),
           'icon': $r("app.media.share"),
           'action': () => this.viewModel.shareBook(this.getUIContext().getHostContext() as common.UIAbilityContext)
         },
         {
-          'value': "收藏",
+          'value': $r("app.string.ui_bookdetail_menu_favorite"),
           'icon': $r("app.media.star_fill"),
           'action': () => this.viewModel.onClickStar()
         }
@@ -33,12 +33,12 @@ struct BookDetailPage {
     } else {
       return [
         {
-          'value': "分享",
+          'value': $r("app.string.ui_bookdetail_menu_share"),
           'icon': $r("app.media.share"),
           'action': () => this.viewModel.shareBook(this.getUIContext().getHostContext() as common.UIAbilityContext)
         },
         {
-          'value': "收藏",
+          'value': $r("app.string.ui_bookdetail_menu_favorite"),
           'icon': $r("app.media.star"),
           'action': () => this.viewModel.onClickStar()
         }
@@ -58,7 +58,7 @@ struct BookDetailPage {
 
             BookDetailDescription({ bookData: this.viewModel.bookData })
 
-            Text("您可能对以下内容感兴趣")
+            Text($r("app.string.ui_bookdetail_recommended"))
               .fontSize(18)
               .margin({ top: 15, bottom: 4, left: 10 })
               .alignSelf(ItemAlign.Start)

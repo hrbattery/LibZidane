@@ -1,3 +1,5 @@
+import { common } from "@kit.AbilityKit";
+
 /**
  * 年份选择器组件
  */
@@ -5,7 +7,7 @@
 export struct YearPicker {
   @Param @Require years: string[]
   @Param @Require currentValue: string;
-  @Event onValueChange: (year: string) => void;
+  @Event onValueChange: (year: string | undefined) => void;
 
   // 只显示非空标签
   build() {
@@ -15,14 +17,13 @@ export struct YearPicker {
     })
       .onChange((value: string | string[], index: number | number[]) => {
         if (typeof index === 'number') {
-          this.onValueChange(this.years[index]);
+          this.onValueChange(index === 0 ? undefined : this.years[index]);
         }
       })
       .width('100%')
-      .height(100) // 降低高度使界面更紧凑
-      // .backgroundColor('#FFFFFF') // 设置为白色背景
-      .borderRadius(10) // 保持圆角设计
-      .padding({ top: 5, bottom: 5 }); // 保持内边距
+      .height(100)
+      .borderRadius(10)
+      .padding({ top: 5, bottom: 5 })
   }
 
 }
@@ -31,8 +32,9 @@ export struct YearPicker {
  * 生成年份范围数组
  * @returns 年份数组，包含"不限"选项
  */
-export function generateYearRange(): string[] {
-  const years: string[] = ['不限'];
+export function generateYearRange(context: common.UIAbilityContext): string[] {
+  const defaultYearOption = context.resourceManager.getStringSync($r("app.string.ui_yearpicker_unlimited").id)
+  const years: string[] = [defaultYearOption];
   const currentYear = new Date().getFullYear();
   for (let year = 1800; year <= currentYear; year++) {
     years.push(year.toString());
@@ -47,7 +49,7 @@ export function generateYearRange(): string[] {
 function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: string, value: boolean) => void) {
   List({
     initialIndex: 0,
-    space: 4, // 增加列表项间距
+    space: 4
   }) {
     ForEach(items, (item: string) => {
       ListItem() {
@@ -77,14 +79,8 @@ function MultiSelect(items: string[], selectedItems: string[], onToggle: (item: 
       }
     });
   }
-  .height(190) // 略微增加高度
+  .height(190)
   .width('100%')
-  // .divider({
-  //   strokeWidth: 1,
-  //   color: $r("sys.color.font_tertiary"),
-  //   startMargin: 16,
-  //   endMargin: 16
-  // }) // 恢复分隔线
   .scrollBar(BarState.Off)
 }
 

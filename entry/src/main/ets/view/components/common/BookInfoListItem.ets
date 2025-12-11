@@ -77,7 +77,10 @@ export struct BookInfoListItem {
           }
 
           if (this.bookData.date_download) {
-            Text(`下载 ${new Date(this.bookData.date_download).toLocaleDateString()}`)
+            Text() {
+              Span($r("app.string.ui_bookinfo_downloaded"))
+              Span(` ${new Date(this.bookData.date_download).toLocaleDateString()}`)
+            }
               .alignSelf(ItemAlign.Start)
               .fontSize(12)
               .fontColor($r("sys.color.font_secondary"))

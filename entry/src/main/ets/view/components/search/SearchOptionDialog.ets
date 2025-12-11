@@ -1,5 +1,6 @@
 import { SearchFilterOptions } from '../../../model/entities/SearchFilterOptionModel';
 import { ExtensionSelector, generateYearRange, LanguageSelector, YearPicker } from './SearchOptionBuilders';
+import { common } from '@kit.AbilityKit';
 
 /**
  * 搜索选项对话框组件
@@ -12,14 +13,16 @@ export struct SearchOptionDialog {
    */
   @Param @Require options: SearchFilterOptions
   @Local exactMatch: boolean = this.options.exactMatch;
-  @Local startYear: string = this.options.startYear;
-  @Local endYear: string = this.options.endYear;
+  @Local startYear: string | undefined = this.options.startYear;
+  @Local endYear: string | undefined = this.options.endYear;
   @Local selectedLanguages: string[] = Array.from(this.options.selectedLanguages);
   @Local selectedExtensions: string[] = Array.from(this.options.selectedExtensions);
+
   // 展开/收起状态变量 - 默认收起
   @Local isYearExpanded: boolean = false;
   @Local isLanguageExpanded: boolean = false;
   @Local isExtensionExpanded: boolean = false;
+
 
   @Monitor('exactMatch')
   syncExactMatch() {
@@ -77,8 +80,8 @@ export struct SearchOptionDialog {
    */
   private clearAllFilters(): void {
     this.exactMatch = false;
-    this.startYear = '不限';
-    this.endYear = '不限';
+    this.startYear = undefined;
+    this.endYear = undefined;
     this.selectedLanguages.splice(0, this.selectedLanguages.length);
     this.selectedExtensions.splice(0, this.selectedExtensions.length);
   }
@@ -97,7 +100,7 @@ export struct SearchOptionDialog {
       Column({ space: 18 }) {
         // 完全匹配选项
         Row() {
-          Text('完全匹配')
+          Text($r("app.string.ui_search_exact_match"))
             .fontWeight(FontWeight.Medium)
             .fontSize(16)
             .flexGrow(1)
@@ -122,14 +125,15 @@ export struct SearchOptionDialog {
         // 出版年份标题 - 可点击展开/收起
         Column({ space: 18 }) {
           Row() {
-            Text('出版年份')
+            Text($r("app.string.ui_search_published_year"))
               .fontSize(16)
               .fontWeight(FontWeight.Medium)
               .flexGrow(1)
               .textAlign(TextAlign.Start);
             // 展开/收起图标
-            Text(this.isYearExpanded ? '▼' : '▶')
-              .fontSize(16)
+            Text() {
+              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
+            }.fontSize(16)
           }
           .width('100%')
           .padding({
@@ -148,14 +152,14 @@ export struct SearchOptionDialog {
             Row() {
               // 开始年份选择
               Column() {
-                Text('开始年份')
+                Text($r("app.string.ui_search_published_year_from"))
                   .fontSize(14)
                   .fontWeight(FontWeight.Medium)
                   .margin({ bottom: 8 });
                 YearPicker({
-                  years: generateYearRange(),
+                  years: generateYearRange(this.getUIContext().getHostContext() as common.UIAbilityContext),
                   currentValue: this.startYear,
-                  onValueChange: (year: string) => {
+                  onValueChange: (year: string | undefined) => {
                     this.startYear = year;
                   }
                 });
@@ -172,14 +176,14 @@ export struct SearchOptionDialog {
 
               // 结束年份选择
               Column() {
-                Text('结束年份')
+                Text($r("app.string.ui_search_published_year_to"))
                   .fontSize(14)
                   .fontWeight(FontWeight.Medium)
                   .margin({ bottom: 8 });
                 YearPicker({
-                  years: generateYearRange(),
+                  years: generateYearRange(this.getUIContext().getHostContext() as common.UIAbilityContext),
                   currentValue: this.endYear,
-                  onValueChange: (year: string) => {
+                  onValueChange: (year: string | undefined) => {
                     this.endYear = year;
                   }
                 });
@@ -196,14 +200,14 @@ export struct SearchOptionDialog {
         Column({ space: 18 }) {
           // 语言标题 - 可点击展开/收起
           Row() {
-            Text('语言')
+            Text($r("app.string.ui_search_language"))
               .fontSize(16)
               .fontWeight(FontWeight.Medium)
               .flexGrow(1)
               .textAlign(TextAlign.Start);
-            // 展开/收起图标
-            Text(this.isLanguageExpanded ? '▼' : '▶')
-              .fontSize(14)
+            Text() {
+              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
+            }.fontSize(16)
           }
           .width('100%')
           .padding({
@@ -230,14 +234,14 @@ export struct SearchOptionDialog {
         Column({ space: 18 }) {
           // 文件格式标题 - 可点击展开/收起
           Row() {
-            Text('文件格式')
+            Text($r("app.string.ui_search_extension"))
               .fontSize(16)
               .fontWeight(FontWeight.Medium)
               .flexGrow(1)
               .textAlign(TextAlign.Start);
-            // 展开/收起图标
-            Text(this.isExtensionExpanded ? '▼' : '▶')
-              .fontSize(14)
+            Text() {
+              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
+            }.fontSize(16)
           }
           .width('100%')
           .padding({
@@ -262,8 +266,9 @@ export struct SearchOptionDialog {
           }
         }
 
-        Button('清空条件')
+        Button($r("app.string.ui_search_clear_filter"))
           .onClick(() => this.clearAllFilters())
+          .width("60%")
       }
       .width('100%')
       .padding({

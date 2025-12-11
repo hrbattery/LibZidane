@@ -12,15 +12,14 @@ export struct BookFormatSheet {
   @Param @Require onClose: () => void;
 
   build() {
-    Column() {
+    Column({ space: 10 }) {
       this.BookFormatItem(this.mainBookData)
-      Divider()
-        .margin({ top: 10, bottom: 10 })
-        .width("90%")
-      Text("其他格式")
+      Divider().width("100%")
+        // .margin({ top: 10, bottom: 10 })
+      Text($r("app.string.ui_bookdetail_downloadsheet_other_format"))
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
-        .margin({ left: 20, top: 10, bottom: 10 })
+        .margin({ top: 10 })
         .alignSelf(ItemAlign.Start)
       List({ space: 10 }) {
         Repeat(this.formats)
@@ -37,8 +36,8 @@ export struct BookFormatSheet {
       })
       .alignListItem(ListItemAlign.Center)
       .width('100%')
-      .height('100%')
     }
+    .padding({ left: 16, right: 16 })
     .width('100%')
     .height('100%')
   }
@@ -55,7 +54,7 @@ export struct BookFormatSheet {
     .backgroundColor(Color.Transparent)
     .width("100%")
     .height('40vp')
-    .padding({ left: 20, right: 20 })
+    .borderRadius(10)
     .onClick(async () => {
       // todo: bg color
       if (this.mainBookData) {
@@ -64,7 +63,7 @@ export struct BookFormatSheet {
         // query download url
         const downloadInfo = await getBookDownloadUrl(item.id, item.hash)
         if (!downloadInfo) {
-          ToastUtil.showToast("下载失败：获取下载地址失败")
+          ToastUtil.showToast($r("app.string.notif_download_get_url_failed"))
           return
         } else {
           const decodedUrl = decodeURI(downloadInfo.downloadLink);

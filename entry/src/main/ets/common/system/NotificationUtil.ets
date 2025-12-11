@@ -11,7 +11,7 @@ class NotificationUtil {
     const currentTime = Date.now();
 
     if (currentTime - lastTime < this.THROTTLE_DELAY) {
-      logger.debug(TAG, `通知${id}触发频率限制`);
+      logger.debug(TAG, `Notification ${id} triggered frequency limit.`);
       return true;
     }
 
@@ -32,9 +32,9 @@ class NotificationUtil {
     }
 
     notificationManager.publish(notificationRequest)
-      .then(() => logger.debug(TAG, '发送通知成功：' + title))
+      .then(() => logger.debug(TAG, 'Send notification success. ' + title))
       .catch((err:Error) => {
-        logger.error(TAG, '发送通知失败' + err.message)
+        logger.error(TAG, 'Send notification failed. ' + err.message)
       });
   }
 
@@ -56,9 +56,9 @@ class NotificationUtil {
     }
 
     notificationManager.publish(notificationRequest)
-      .then(() => logger.debug(TAG, '发送通知成功：进度' + progress))
+      .then(() => logger.debug(TAG, 'Send notification success. Progress: ' + progress))
       .catch((err:Error) => {
-        logger.error(TAG, '发送通知失败：' + err.message)
+        logger.error(TAG, 'Send notification failed. Reason: ' + err.message)
       });
   }
 
@@ -68,7 +68,7 @@ class NotificationUtil {
    */
   cancel(id: number) {
     notificationManager.cancel(id, (err: Error) => {
-      logger.error(TAG, '取消通知失败：' + err.message)
+      logger.error(TAG, 'Cancel notification failed. Reason: ' + err.message)
     })
   }
 
@@ -77,7 +77,7 @@ class NotificationUtil {
    */
   cancelAll() {
     notificationManager.cancelAll((err: Error) => {
-      logger.error(TAG, '取消通知失败' + err.message)
+      logger.error(TAG, 'Cancel notification failed. Reason: ' + err.message)
     })
   }
 }

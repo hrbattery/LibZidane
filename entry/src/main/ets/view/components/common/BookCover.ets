@@ -11,7 +11,7 @@ export struct BookCover {
   build() {
     Row() {
       if (!this.isLoaded || this.loadError) {
-        Text(this.coverData.title ?? '加载中...')
+        Text(this.coverData.title ?? $r("app.string.ui_common_loading"))
           .fontSize("14vp")
           .width("100%")
           .constraintSize({

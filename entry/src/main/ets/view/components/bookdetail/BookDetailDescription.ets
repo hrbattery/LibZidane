@@ -1,5 +1,7 @@
 import { webview } from '@kit.ArkWeb';
+import { StorageConstants } from '../../../common/const/StorageConstants';
 import { FullBookData } from "../../../model/entities/BookModel"
+import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
 
 @ComponentV2
 export struct BookDetailDescription {
@@ -12,16 +14,16 @@ export struct BookDetailDescription {
   build() {
     Tabs() {
       TabContent() {
-        this.BookInfomationTab(this.bookData)
+        this.BookAboutTab(this.bookData)
       }
       .height("auto")
-      .tabBar('书');
+      .tabBar($r("app.string.ui_bookdetail_about"));
 
       TabContent() {
         this.BookDescriptionTab(this.bookData)
       }
       .height("auto")
-      .tabBar('描述');
+      .tabBar($r("app.string.ui_bookdetail_description"));
     }
     .height("auto")
     .barMode(BarMode.Fixed)
@@ -44,50 +46,50 @@ export struct BookDetailDescription {
   }
 
   @Builder
-  BookInfomationTab(bookData: FullBookData) {
+  BookAboutTab(bookData: FullBookData) {
     Grid() {
       if (bookData.year !== undefined && bookData.year !== 0) {
-        this.BookInfoKeyGridItem("年份：");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_year"));
         this.BookInfoValueGridItem(`${bookData.year}`);
       }
       if (bookData.content_type) {
-        this.BookInfoKeyGridItem("内容类型:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_content_type"));
         this.BookInfoValueGridItem(`${bookData.content_type}`);
       }
       if (bookData.volume) {
-        this.BookInfoKeyGridItem("卷:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_volume"));
         this.BookInfoValueGridItem(`${bookData.volume}`);
       }
       if (bookData.edition) {
-        this.BookInfoKeyGridItem("版本:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_edition"));
         this.BookInfoValueGridItem(`${bookData.edition}`);
       }
       if (bookData.publisher) {
-        this.BookInfoKeyGridItem("出版社:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_publisher"));
         this.BookInfoValueGridItem(`${bookData.publisher}`);
       }
       if (bookData.language) {
-        this.BookInfoKeyGridItem("语言:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_lang"));
         this.BookInfoValueGridItem(`${bookData.language}`);
       }
       if (bookData.pages) {
-        this.BookInfoKeyGridItem("页数:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_pages"));
         this.BookInfoValueGridItem(`${bookData.pages}`);
       }
       if (bookData.isbn10 && bookData.isbn10.length > 0) {
-        this.BookInfoKeyGridItem("ISBN 10:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_isbn10"));
         this.BookInfoValueGridItem(`${bookData.isbn10.join(",")}`);
       }
       if (bookData.isbn13 && bookData.isbn13.length > 0) {
-        this.BookInfoKeyGridItem("ISBN 13:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_isbn13"));
         this.BookInfoValueGridItem(`${bookData.isbn13.join(",")}`);
       }
       if (bookData.series) {
-        this.BookInfoKeyGridItem("系列:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_series"));
         this.BookInfoValueGridItem(`${bookData.series}`);
       }
       if (bookData.extension && bookData.filesizeString) {
-        this.BookInfoKeyGridItem("文件:");
+        this.BookInfoKeyGridItem($r("app.string.ui_bookdetail_about_file"));
         this.BookInfoValueGridItem(`${bookData.extension}, ${bookData.filesizeString}`);
         // fixme: 考虑只有ext或只有filesize的情况
       }
@@ -95,25 +97,25 @@ export struct BookDetailDescription {
     .columnsGap(10)
     .rowsGap(15)
     .margin({ left: 10, right: 10 })
-    .columnsTemplate('1fr 3fr')
+    .columnsTemplate('2fr 3fr')
     .enableScrollInteraction(false)
     .supportAnimation(false)
   }
 
   @Builder
-  BookInfoKeyGridItem(text: string) {
+  BookInfoKeyGridItem(text: ResourceStr) {
     GridItem() {
       Text(text)
-        .textAlign(TextAlign.Center)
+        .textAlign(TextAlign.Start)
         .fontColor($r("sys.color.font_secondary"))
     }.align(Alignment.Start)
   }
 
   @Builder
-  BookInfoValueGridItem(text: string) {
+  BookInfoValueGridItem(text: ResourceStr) {
     GridItem() {
       Text(text)
-        .textAlign(TextAlign.Center)
+        .textAlign(TextAlign.Start)
     }.align(Alignment.Start)
   }
 }

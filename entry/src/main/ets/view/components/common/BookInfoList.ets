@@ -48,14 +48,11 @@ export struct BookInfoList {
     .divider({
       color: $r("sys.color.font_tertiary"),
       strokeWidth: "1px",
-      // startMargin: 10,
-      // endMargin: 10
     })
     .lanes(new WidthBreakpointType(1, 2, 3, 4).getValue(this.windowInfo.widthBp), 10)
     .width("100%")
     .height("100%")
     .onScrollIndex(async (start: number, end: number) => {
-      // 当达到列表末尾时，触发新数据加载。
       await this.onEndOfList(end);
     })
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
