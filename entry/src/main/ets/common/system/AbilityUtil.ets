@@ -1,12 +1,13 @@
 import { common, ConfigurationConstant } from '@kit.AbilityKit';
-import { BusinessError } from '@kit.BasicServicesKit';
+import { BusinessError, commonEventManager } from '@kit.BasicServicesKit';
 import { notificationManager } from '@kit.NotificationKit';
 import { LogUtil as logger } from '@pura/harmony-utils';
 
 import { getExtensions, getLanguages } from '../../model/api/InfoApi';
 import { preferencesUtils } from '../../model/storage/PreferencesUtils';
-import { DarkModeEnum } from '../const/SettingsConstants';
+import { DarkModeEnum, SettingsConstants } from '../const/SettingsConstants';
 import { StorageConstants } from '../const/StorageConstants';
+import { i18n } from '@kit.LocalizationKit';
 
 const TAG = '[AbilityUtil] '
 
@@ -60,4 +61,36 @@ export function setColorMode(context: common.ApplicationContext, index: DarkMode
   } catch (err) {
     logger.error(TAG, `Failed to set colorMode. Cause: ${JSON.stringify(err)}`);
   }
+}
+
+export function setLanguage(language: string) {
+  try {
+    if (language === 'default') {
+      // 因为设置偏好语言为'default'后，应用语言将跟随系统语言，应用冷启动才能生效
+      // 因此先获取当前系统语言、强制设置一次后再设置成default、保证之后也生效
+      // 但实际上现在在设置为default后切换系统语言，依然无法自动变更
+      const systemLang = i18n.System.getFirstPreferredLanguage()
+      i18n.System.setAppPreferredLanguage(systemLang)
+    }
+    i18n.System.setAppPreferredLanguage(language)
+  } catch (err) {
+    logger.error(TAG, `Failed to set colorMode. Cause: ${JSON.stringify(err)}`);
+  }
+}
+
+export function listenSystemLanguageChange() {
+  let subscribeInfo: commonEventManager.CommonEventSubscribeInfo = {
+    events: [commonEventManager.Support.COMMON_EVENT_LOCALE_CHANGED]
+  };
+  // 创建订阅者
+  commonEventManager.createSubscriber(subscribeInfo)
+    .then((commonEventSubscriber: commonEventManager.CommonEventSubscriber) => {
+      commonEventManager.subscribe(commonEventSubscriber, () => {
+        const languageSetting = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', -1)
+
+        if (languageSetting === 0) {
+          setLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
+        }
+      })
+    })
 }

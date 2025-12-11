@@ -161,6 +161,10 @@
       "value": "语言设置"
     },
     {
+      "name": "ui_setting_general_language_auto",
+      "value": "跟随系统"
+    },
+    {
       "name": "ui_setting_account_login",
       "value": "登录（账号 / cookie）"
     },

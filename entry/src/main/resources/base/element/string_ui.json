@@ -161,6 +161,10 @@
       "value": "Language"
     },
     {
+      "name": "ui_setting_general_language_auto",
+      "value": "Follow system"
+    },
+    {
       "name": "ui_setting_account_login",
       "value": "Login (Account / Cookie)"
     },

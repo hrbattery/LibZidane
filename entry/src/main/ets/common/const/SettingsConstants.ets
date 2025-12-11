@@ -11,7 +11,8 @@ export class SettingsConstants {
    * LANGUAGE
    * 语言设置项
    */
-  static readonly LANGUAGE: string[] = ["中文", "English"]
+  static readonly LANGUAGE_KEY: ResourceStr[] = [$r("app.string.ui_setting_general_language_auto"), "简体中文", "English"]
+  static readonly LANGUAGE_VALUE: string[] = ['default', 'zh-Hans', 'en-Latn-US']
 }
 
 export enum DarkModeEnum {

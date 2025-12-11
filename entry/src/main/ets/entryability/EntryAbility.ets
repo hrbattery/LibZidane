@@ -1,9 +1,11 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { DarkModeEnum } from '../common/const/SettingsConstants';
+import { DarkModeEnum, SettingsConstants } from '../common/const/SettingsConstants';
 import { StorageConstants } from '../common/const/StorageConstants';
-import { appInit, initPreferences, setColorMode } from '../common/system/AbilityUtil';
+import { appInit, initPreferences,
+  listenSystemLanguageChange,
+  setColorMode, setLanguage } from '../common/system/AbilityUtil';
 import { windowUtil } from '../common/system/WindowUtil';
 import { preferencesUtils } from '../model/storage/PreferencesUtils';
 
@@ -14,7 +16,14 @@ export default class EntryAbility extends UIAbility {
     initPreferences(this.context);
     const darkModeSetting =
       preferencesUtils.getSync<DarkModeEnum>(StorageConstants.DEFAULT_PREF, 'dark_mode', DarkModeEnum.AUTO)
+    const languageSetting = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', -1)
+
     setColorMode(this.context.getApplicationContext(), darkModeSetting)
+    if (languageSetting !== 0) {
+      setLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
+    }
+    listenSystemLanguageChange()
+
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
   }
 
