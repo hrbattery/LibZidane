@@ -16,6 +16,8 @@ export function CookieLoginBuilder() {
 @ComponentV2
 export struct CookieLogin {
   @Local isLoading: boolean = true
+  @Local darkMode: WebDarkMode = preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto)
+
   private userAgent: string =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
   private pathStack: NavPathStack | undefined = undefined;
@@ -63,6 +65,8 @@ export struct CookieLogin {
             .overScrollMode(OverScrollMode.ALWAYS)
             .width('100%')
             .height('100%')
+            .darkMode(this.darkMode)
+            .forceDarkAccess(true)
             .onProgressChange((e) => {
               if (e.newProgress == 100) {
                 this.isLoading = false

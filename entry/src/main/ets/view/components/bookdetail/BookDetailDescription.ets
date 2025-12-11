@@ -4,6 +4,7 @@ import { FullBookData } from "../../../model/entities/BookModel"
 @ComponentV2
 export struct BookDetailDescription {
   @Param @Require bookData: FullBookData
+  @Local darkMode: WebDarkMode = preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto)
 
   webController: webview.WebviewController = new webview.WebviewController()
   richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
@@ -38,6 +39,8 @@ export struct BookDetailDescription {
       .zoomAccess(false)
       .minFontSize(14)
       .javaScriptAccess(false)
+      .darkMode(this.darkMode)
+      .forceDarkAccess(true)
   }
 
   @Builder
