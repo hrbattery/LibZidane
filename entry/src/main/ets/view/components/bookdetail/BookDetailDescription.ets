@@ -2,14 +2,21 @@ import { webview } from '@kit.ArkWeb';
 import { StorageConstants } from '../../../common/const/StorageConstants';
 import { FullBookData } from "../../../model/entities/BookModel"
 import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
+import { createNWeb, disposeNWeb, getNWeb } from '../common/PrebuildWeb';
+import { bookDescriptionTabWrap } from './BookDescriptionTab';
 
 @ComponentV2
 export struct BookDetailDescription {
   @Param @Require bookData: FullBookData
   @Local darkMode: WebDarkMode = preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto)
 
-  webController: webview.WebviewController = new webview.WebviewController()
-  richStrHead: string = '<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
+  aboutToAppear(): void {
+    createNWeb(bookDescriptionTabWrap, this.bookData.description, this.getUIContext());
+  }
+
+  aboutToDisappear(): void {
+    disposeNWeb(this.bookData.description)
+  }
 
   build() {
     Tabs() {
@@ -31,18 +38,8 @@ export struct BookDetailDescription {
 
   @Builder
   BookDescriptionTab(bookData: FullBookData) {
-    Web({ src: '', controller: this.webController, renderMode: RenderMode.SYNC_RENDER })
-      .onControllerAttached(() => {
-        this.webController.loadData(this.richStrHead + bookData?.description, 'text/html', 'UTF-8', ' ', ' ');
-      })
-      .width('100%')
-      .layoutMode(WebLayoutMode.FIT_CONTENT)
-      .overScrollMode(OverScrollMode.NEVER)
-      .zoomAccess(false)
-      .minFontSize(14)
-      .javaScriptAccess(false)
-      .darkMode(this.darkMode)
-      .forceDarkAccess(true)
+    NodeContainer(getNWeb(bookData.description))
+      .width("100%")
   }
 
   @Builder

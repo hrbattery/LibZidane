@@ -6,6 +6,8 @@ import { StorageConstants } from '../../../common/const/StorageConstants';
 import { setCookie } from '../../../common/request/Request';
 import { AppState } from '../../../model/entities/AppState';
 import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
+import { createNWeb, disposeNWeb, getNWeb, getNWebController } from '../../components/common/PrebuildWeb';
+import { cookieLoginPageWrap } from '../../components/settings/CookieLoginWebpage';
 
 @Builder
 export function CookieLoginBuilder() {
@@ -17,81 +19,44 @@ export function CookieLoginBuilder() {
  */
 @ComponentV2
 export struct CookieLogin {
-  @Local isLoading: boolean = true
-  @Local darkMode: WebDarkMode = preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto)
-
   private userAgent: string =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
   private pathStack: NavPathStack | undefined = undefined;
   private baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
-  controller: webview.WebviewController = new webview.WebviewController()
+  controller: webview.WebviewController | undefined
   menus: NavigationMenuItem[] = [
     {
       value: 'refresh',
       icon: $r('app.media.refresh'),
       action: () => {
-        this.controller.removeCache(true)
+        this.controller?.removeCache(true)
         this.loadUrl()
       }
     }
   ]
 
   private loadUrl() {
-    this.isLoading = true
-    this.controller.setCustomUserAgent(this.userAgent)
-    this.controller.loadUrl(this.baseUrl)
+    this.controller?.setCustomUserAgent(this.userAgent)
+    this.controller?.loadUrl(this.baseUrl)
+  }
+
+  aboutToDisappear(): void {
+    disposeNWeb(this.baseUrl)
+    this.controller = undefined
   }
 
   aboutToAppear(): void {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
+    createNWeb(cookieLoginPageWrap, this.baseUrl, this.getUIContext());
+    this.controller = getNWebController(this.baseUrl);
   }
 
   build() {
     NavDestination() {
       Column() {
         this.Bar()
-        Stack() {
-          Web({
-            src: '',
-            controller: this.controller
-          })
-            .allowWindowOpenMethod(true)
-            .databaseAccess(true)
-            .horizontalScrollBarAccess(true)
-            .verticalScrollBarAccess(true)
-            .fileAccess(true)
-            .domStorageAccess(true)
-            .javaScriptAccess(true)
-            .imageAccess(true)
-            .onlineImageAccess(true)
-            .overScrollMode(OverScrollMode.ALWAYS)
-            .width('100%')
-            .height('100%')
-            .darkMode(this.darkMode)
-            .forceDarkAccess(true)
-            .onProgressChange((e) => {
-              if (e.newProgress == 100) {
-                this.isLoading = false
-              }
-            })
-            .onControllerAttached(() => {
-              try {
-                this.loadUrl()
-              } catch (error) {
-                console.error('Login Web Error: ' + error.message)
-              }
-            })
-
-          if (this.isLoading) {
-            Stack({ alignContent: Alignment.Center }) {
-              this.Loading()
-            }
-            .height('100%')
-            .width('100%')
-          }
-        }
-        .width('100%')
-        .height('100%')
+        NodeContainer(getNWeb(this.baseUrl))
+          .width("100%")
       }
       .height('100%')
       .width('100%')
@@ -128,20 +93,20 @@ export struct CookieLogin {
     return hasUserKey && hasUserID
   }
 
-  @Builder
-  Loading() {
-    Column() {
-      LoadingProgress()
-        .width(40)
-    }
-    .backgroundColor(Color.Transparent)
-    .padding({
-      left: 15,
-      right: 15,
-      bottom: 10,
-      top: 10
-    })
-  }
+  // @Builder
+  // Loading() {
+  //   Column() {
+  //     LoadingProgress()
+  //       .width(40)
+  //   }
+  //   .backgroundColor(Color.Transparent)
+  //   .padding({
+  //     left: 15,
+  //     right: 15,
+  //     bottom: 10,
+  //     top: 10
+  //   })
+  // }
 
   @Builder
   Bar() {
