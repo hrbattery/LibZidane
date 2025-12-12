@@ -22,7 +22,7 @@ export interface BookCommonDataSource extends CoverDataSource {
   year: number, // 年份
   edition: string, // 版本
   publisher: string, // 出版社
-  identifier: string, // ISBN码
+  identifier: string | null, // ISBN码
   language: string, // 语言
   pages: number, // 页数
   series: string, // 系列

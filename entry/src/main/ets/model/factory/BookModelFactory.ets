@@ -83,7 +83,7 @@ export class FullBookDataFactory {
     param.date_saved = FullBookDataFactory.getField(data, "date_saved");
     param._isFavorite = FullBookDataFactory.getField(data, "_isUserSavedBook") ?? (param.date_saved ? true : undefined)
 
-    if (data.identifier !== undefined) {
+    if (data.identifier && typeof data.identifier === 'string') {
       FullBookDataFactory.parseIdentifier(data.identifier, param);
     }
 

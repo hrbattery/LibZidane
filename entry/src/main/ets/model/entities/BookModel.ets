@@ -51,7 +51,7 @@ export class FullBookData extends BookData {
   @Trace content_type: string
   @Trace volume?: string
   @Trace edition?: string
-  @Trace identifier?: string
+  @Trace identifier: string | null
   @Trace pages?: number
   @Trace series?: string
   @Trace deleted: number
@@ -105,7 +105,7 @@ export interface FullBookDataType extends BookDataType, BookFormatType {
   content_type: string,
   volume?: string,
   edition?: string,
-  identifier?: string,
+  identifier: string | null,
   pages?: number,
   series?: string,
   deleted: number,
