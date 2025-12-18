@@ -1,4 +1,5 @@
-import { CustomApiViewModel } from '../../../viewModel/settings/CustomApiViewModel'
+import { ToastUtil } from '@pura/harmony-utils';
+import { CustomApiViewModel } from '../../../viewModel/settings/CustomApiViewModel';
 
 @Builder
 export function CustomApiBuilder() {
@@ -15,7 +16,9 @@ struct CustomApi {
       Column() {
         Column() {
           Text($r("app.string.ui_custom_api_declaimer"))
-          Text($r("app.string.ui_custom_api_current_active"))
+          Text() {
+            Span($r("app.string.ui_custom_api_current_active"))
+          }
         }
         .alignItems(HorizontalAlign.Start)
         .alignSelf(ItemAlign.Start)
@@ -34,13 +37,18 @@ struct CustomApi {
   CustomApiContainer() {
     List() {
       ListItem() {
-        this.AddNewEntry(this.viewModel.newApi, (): void => this.viewModel.addApi())
+        AddNewEntry({
+          cb: async (text: string): Promise<void> => await this.viewModel.addApi(text)
+        })
       }
 
       Repeat(this.viewModel.customApis)
         .each((ri) => {
           ListItem() {
-            this.ApiEntry(ri, (index): void => this.viewModel.removeApi(index))
+            ApiEntry({
+              ri: ri,
+              cb: (index): void => this.viewModel.removeApi(index)
+            })
           }
         })
     }
@@ -50,14 +58,20 @@ struct CustomApi {
     .margin({ top: 20 })
     .backgroundColor($r("sys.color.comp_background_primary"))
   }
+}
 
-  @Builder
-  ApiEntry(ri: RepeatItem<string>, onClick: (index: number) => void) {
+
+@ComponentV2
+struct ApiEntry {
+  @Param @Require ri: RepeatItem<string>
+  @Event cb: (index: number) => void
+
+  build() {
     Row({ space: 2 }) {
       Image($r("app.media.list_item_drag"))
         .height(15)
         .fillColor($r("sys.color.icon_primary"))
-      Text(ri.item)
+      Text(this.ri.item)
       Button() {
         Image($r("app.media.subtract"))
           .height(20)
@@ -65,7 +79,7 @@ struct CustomApi {
       }
       .backgroundColor(Color.Transparent)
       .type(ButtonType.Circle)
-      .onClick(() => onClick(ri.index))
+      .onClick(() => this.cb(this.ri.index))
     }
     .height(40)
     .alignItems(VerticalAlign.Center)
@@ -73,11 +87,16 @@ struct CustomApi {
     .width("100%")
     .padding(2)
   }
+}
 
-  @Builder
-  AddNewEntry(newApiText: string, onClick: () => void) {
+@ComponentV2
+struct AddNewEntry {
+  @Local newApiText: string = ""
+  @Event cb: (text: string) => Promise<void>
+
+  build() {
     Row({ space: 2 }) {
-      TextInput({ text: newApiText })
+      TextInput({ text: this.newApiText!! })
         .showUnderline(true)
         .underlineColor(Color.Gray)
         .width("90%")
@@ -86,7 +105,14 @@ struct CustomApi {
           .height(20)
           .width(20)
       }
-      .onClick(() => onClick())
+      .onClick(async () => {
+        try {
+          await this.cb(this.newApiText)
+          this.newApiText = "";
+        } catch (e) {
+
+        }
+      })
       .backgroundColor(Color.Transparent)
       .type(ButtonType.Circle)
     }

@@ -67,6 +67,14 @@
     {
       "name": "notif_login_empty_input",
       "value": "Please enter your username and password."
+    },
+    {
+      "name": "notif_custom_api_existed",
+      "value": "API domain already existed."
+    },
+    {
+      "name": "notif_custom_api_unavailable",
+      "value": "This API domain is unavailable. Please check if the input is correct or try again later."
     }
   ]
 }

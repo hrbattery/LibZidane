@@ -67,6 +67,14 @@
     {
       "name": "notif_login_empty_input",
       "value": "请输入账号和密码"
+    },
+    {
+      "name": "notif_custom_api_existed",
+      "value": "该 API 域名已存在。"
+    },
+    {
+      "name": "notif_custom_api_unavailable",
+      "value": "该 API 域名不可用。请检查输入是否正确或稍后再试。"
     }
   ]
 }

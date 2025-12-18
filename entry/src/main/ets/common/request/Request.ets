@@ -14,7 +14,9 @@ let reqInst = axios.create({
 AppStorage.setOrCreate('cookie', {})
 
 reqInst.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
-  request.baseURL = baseUrl;
+  if (request.baseURL === undefined) {
+    request.baseURL = baseUrl;
+  }
   // post请求需要执行contentType
   if (request.method === 'post' || request.method === 'POST') {
     request.headers.setContentType("application/x-www-form-urlencoded");

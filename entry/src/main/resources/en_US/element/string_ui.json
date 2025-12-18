@@ -266,7 +266,7 @@
     },
     {
       "name": "ui_custom_api_current_active",
-      "value": "Active API domain:"
+      "value": "Active API domain: "
     },
     {
       "name": "ui_donation_active_donations",

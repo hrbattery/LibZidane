@@ -101,27 +101,28 @@ export interface DomainDataSource {
 
 // Response types
 
+export interface BaseResponse {
+  success: number
+}
+
 /**
  * eapi/book/most-popular
  */
-export interface MostPopularResponse {
-  success: number,
+export interface MostPopularResponse extends BaseResponse {
   books: CoverDataSource[]
 }
 
 /**
  * eapi/book/{bookId}/{hash}
  */
-export interface BookInfoResponse {
-  success: number,
+export interface BookInfoResponse extends BaseResponse {
   book: BookInfoDataSource
 }
 
 /**
  * eapi/book/search
  */
-export interface SearchInfoResponse {
-  success: number,
+export interface SearchInfoResponse extends BaseResponse {
   books: BookInfoDataSource[],
   exactBooksCount: number,
   pagination: PaginationDataSource
@@ -135,16 +136,14 @@ export type SimilarResponse = MostPopularResponse;
 /**
  * eapi/book/{bookId}/{hash}/file
  */
-export interface DownloadFileResponse {
-  success: number,
+export interface DownloadFileResponse extends BaseResponse {
   file: DownloadFileDataSource
 }
 
 /**
  * eapi/book/{bookId}/{hash}/formats
  */
-export interface FormatsResponse {
-  success: number,
+export interface FormatsResponse extends BaseResponse {
   books: FormatsDataSource[]
 }
 
@@ -156,8 +155,7 @@ export type RecommendedResponse = MostPopularResponse;
 /**
  * eapi/user/book/downloaded
  */
-export interface DownloadedResponse {
-  success: number,
+export interface DownloadedResponse extends BaseResponse {
   books: DownloadedDataSource[],
   pagination: PaginationDataSource
 }
@@ -165,8 +163,7 @@ export interface DownloadedResponse {
 /**
  * eapi/user/book/saved
  */
-export interface FavoriteResponse {
-  success: number,
+export interface FavoriteResponse extends BaseResponse {
   books: FavoriteDataSource[],
   pagination: PaginationDataSource
 }
@@ -174,53 +171,44 @@ export interface FavoriteResponse {
 /**
  * eapi/user/book/{bookId}/save
  */
-export interface SaveBookResponse {
-  success: number
-}
+export type SaveBookResponse = BaseResponse
 
 /**
  * eapi/user/book/{bookId}/unsave
  */
-export interface UnsaveBookResponse {
-  success: number
-}
+export type UnsaveBookResponse = BaseResponse
 
 /**
  * eapi/user/profile
  */
-export interface UserProfileResponse {
-  success: number,
+export interface UserProfileResponse extends BaseResponse {
   user: UserProfileDataSource
 }
 
 /**
  * eapi/user/donations
  */
-export interface DonationResponse {
-  success: number,
+export interface DonationResponse extends BaseResponse {
   donations: DonationDataSource[]
 }
 
 /**
  * eapi/info/languages
  */
-export interface LanguagesResponse {
-  success: number,
+export interface LanguagesResponse extends BaseResponse {
   languages: Record<string, string>
 }
 
 /**
  * eapi/info/extensions
  */
-export interface ExtensionsResponse {
-  success: number,
+export interface ExtensionsResponse extends BaseResponse {
   extensions: string[]
 }
 
 /**
  * eapi/info/domains
  */
-export interface DomainsResponse {
-  success: number,
+export interface DomainsResponse extends BaseResponse {
   domains: DomainDataSource[]
 }
