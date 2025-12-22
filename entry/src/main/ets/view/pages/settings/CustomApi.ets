@@ -51,6 +51,7 @@ struct CustomApi {
             })
           }
         })
+        .onMove((from: number, to: number) => this.viewModel.onMove(from, to));
     }
     .width("100%")
     .borderRadius(20)
@@ -71,17 +72,19 @@ struct ApiEntry {
       Image($r("app.media.list_item_drag"))
         .height(15)
         .fillColor($r("sys.color.icon_primary"))
+        .draggable(false)
       Text(this.ri.item)
       Button() {
         Image($r("app.media.subtract"))
           .height(20)
           .width(20)
+          .draggable(false)
       }
       .backgroundColor(Color.Transparent)
       .type(ButtonType.Circle)
       .onClick(() => this.cb(this.ri.index))
     }
-    .height(40)
+    .height(44)
     .alignItems(VerticalAlign.Center)
     .justifyContent(FlexAlign.SpaceBetween)
     .width("100%")
@@ -92,18 +95,21 @@ struct ApiEntry {
 @ComponentV2
 struct AddNewEntry {
   @Local newApiText: string = ""
+  @Event $newApiText: (val: string) => void = (val: string) => { this.newApiText = val; }
   @Event cb: (text: string) => Promise<void>
 
   build() {
     Row({ space: 2 }) {
-      TextInput({ text: this.newApiText!! })
+      TextInput({ text: this.newApiText })
         .showUnderline(true)
-        .underlineColor(Color.Gray)
         .width("90%")
+        .height(40)
+        .onChange((val) => this.$newApiText(val))
       Button() {
         Image($r("app.media.add"))
           .height(20)
           .width(20)
+          .draggable(false)
       }
       .onClick(async () => {
         try {
@@ -119,7 +125,7 @@ struct AddNewEntry {
     .alignItems(VerticalAlign.Center)
     .justifyContent(FlexAlign.SpaceBetween)
     .width("100%")
-    .height(40)
+    .height(44)
     .padding(2)
   }
 }

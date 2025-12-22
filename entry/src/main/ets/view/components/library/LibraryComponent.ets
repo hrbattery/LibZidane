@@ -47,7 +47,7 @@ export struct LibraryComponent {
   }
 
   build() {
-    Refresh({ refreshing: this.viewModel.isRefreshing!! }) {
+    Refresh({ refreshing: this.viewModel.isRefreshing }) {
       if (this.showNormal) {
         BookCoverWaterFlow({
           coverDataSource: this.viewModel.coverDataSource

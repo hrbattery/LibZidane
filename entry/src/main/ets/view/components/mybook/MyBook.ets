@@ -32,7 +32,7 @@ export struct MyBook {
 
   build() {
     Column() {
-      Tabs({ index: this.tabCurrentIndex!! }) {
+      Tabs({ index: this.tabCurrentIndex }) {
         TabContent() {
           FavoriteBooks({
             sortOrder: this.favoriteOrderStr,

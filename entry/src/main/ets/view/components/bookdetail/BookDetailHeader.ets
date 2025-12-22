@@ -75,7 +75,7 @@ export struct BookDetailHeader {
     Button($r("app.string.ui_bookdetail_download_btn"))
       .width("90%")
       .onClick(() => this.showSelectFormatSheet())
-      .bindSheet(this.isShowSelectFormatSheet!!, this.BookFormatSheetBuilder(
+      .bindSheet(this.isShowSelectFormatSheet, this.BookFormatSheetBuilder(
         this.bookData,
         this.bookFormats,
         () => this.handleSelectFormatSheet()

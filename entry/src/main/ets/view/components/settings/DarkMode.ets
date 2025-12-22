@@ -20,7 +20,7 @@ export struct DarkMode {
         { value: $r("app.string.ui_setting_general_dark_mode_dark") },
         { value: $r("app.string.ui_setting_general_dark_mode_auto") }
       ])
-        .selected(this.selectedIndex!!)
+        .selected(this.selectedIndex)
         .value(SettingsConstants.DARK_MODE[this.selectedIndex] ?? $r("app.string.ui_setting_general_dark_mode_auto"))
         .constraintSize({
           minHeight: 0,
@@ -28,6 +28,7 @@ export struct DarkMode {
         })
         .height(32)
         .onSelect((index: number) => {
+          this.selectedIndex = index;
           setColorMode(this.getUIContext().getHostContext()!.getApplicationContext(), index as DarkModeEnum)
           preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, 'dark_mode', index as DarkModeEnum)
         })

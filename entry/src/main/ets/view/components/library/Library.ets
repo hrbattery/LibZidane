@@ -7,7 +7,7 @@ export struct Library {
 
   build() {
     Column() {
-      Tabs({ index: this.tabCurrentIndex!! }) {
+      Tabs({ index: this.tabCurrentIndex }) {
         TabContent() {
           RecommendedBooks()
         }

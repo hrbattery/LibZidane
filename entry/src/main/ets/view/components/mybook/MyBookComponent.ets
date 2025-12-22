@@ -52,7 +52,7 @@ export struct MyBookComponent {
   }
 
   build() {
-    Refresh({ refreshing: this.viewModel.isRefreshing!! }) {
+    Refresh({ refreshing: this.viewModel.isRefreshing }) {
       if (this.showNormal) {
         BookInfoList({
           bookDataSource: this.viewModel.bookDataSource,

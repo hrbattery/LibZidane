@@ -28,7 +28,7 @@ struct Home {
 
   build() {
     Navigation(this.navPathStack) {
-      Tabs({ controller: this.tabController, index: this.tabCurrentIndex!! }) {
+      Tabs({ controller: this.tabController, index: this.tabCurrentIndex }) {
         TabContent() {
           Library()
         }

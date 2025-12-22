@@ -19,7 +19,7 @@ export struct LanguageSetting {
       Select(this.langList.map((key): SelectOption => {
         return { value: key }
       }))
-        .selected(this.selected!!)
+        .selected(this.selected)
         .value(this.langList[this.selected] ?? $r("app.string.ui_setting_general_language_auto"))
         .constraintSize({
           minHeight: 0,
@@ -27,6 +27,7 @@ export struct LanguageSetting {
         })
         .height(32)
         .onSelect((index: number) => {
+          this.selected = index;
           const currentLangIndex = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', 0)
           if (index !== currentLangIndex) {
             setLanguage(SettingsConstants.LANGUAGE_VALUE[index])
