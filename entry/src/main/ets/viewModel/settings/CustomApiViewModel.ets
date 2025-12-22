@@ -47,7 +47,13 @@ export class CustomApiViewModel {
       throw new Error("This API domain is unavailable. Please check if the input is correct or try again later.")
     }
 
-    this.customApis.push(normalizedURl)
+    this.customApis.unshift(normalizedURl)
+    preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
+  }
+
+  onMove(from: number, to:number) {
+    const temp = this.customApis.splice(from, 1);
+    this.customApis.splice(to, 0, temp[0]);
     preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
   }
 
