@@ -291,17 +291,6 @@ export function validateApiDomain(
     parsedUrl = url.URL.parseURL(finalUrl);
   }
 
-  // 移除尾部斜杠
-  if (opts.removeTrailingSlash) {
-    if (parsedUrl.pathname.endsWith('/')) {
-      parsedUrl.pathname = parsedUrl.pathname.slice(0, -1);
-    }
-  } else {
-    if (!parsedUrl.pathname.endsWith('/')) {
-      parsedUrl.pathname += '/';
-    }
-  }
-
   // 移除默认端口
   if (opts.removeDefaultPort) {
     if ((protocol === 'https' && port === '443') ||
@@ -316,6 +305,17 @@ export function validateApiDomain(
   // 如果路径为空，确保至少有一个斜杠
   if (parsedUrl.pathname === '') {
     finalUrl += '/';
+  }
+
+  // 移除尾部斜杠
+  if (opts.removeTrailingSlash) {
+    if (finalUrl.endsWith('/')) {
+      finalUrl = finalUrl.slice(0, -1);
+    }
+  } else {
+    if (!finalUrl.endsWith('/')) {
+      finalUrl += '/';
+    }
   }
 
   // 返回结果

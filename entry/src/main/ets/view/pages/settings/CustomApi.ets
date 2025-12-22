@@ -70,11 +70,9 @@ struct ApiEntry {
 
   build() {
     Row({ space: 2 }) {
-      Image($r("app.media.list_item_drag"))
-        .height(15)
-        .fillColor($r("sys.color.icon_primary"))
-        .draggable(false)
       Text(this.ri.item)
+        .width("90%")
+        .textAlign(TextAlign.Center)
       Button() {
         Image($r("app.media.subtract"))
           .height(20)
@@ -103,8 +101,12 @@ struct AddNewEntry {
     Row({ space: 2 }) {
       TextInput({ text: this.newApiText })
         .showUnderline(true)
+        .textAlign(TextAlign.Center)
         .width("90%")
-        .height(40)
+        .height(44)
+        .borderRadius(8)
+        .lineHeight(20)
+        .padding({ top: 6, bottom: 6})
         .onChange((val) => this.$newApiText(val))
       Button() {
         Image($r("app.media.add"))

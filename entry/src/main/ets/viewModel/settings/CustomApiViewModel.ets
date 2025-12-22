@@ -59,6 +59,7 @@ export class CustomApiViewModel {
     const temp = this.customApis.splice(from, 1);
     this.customApis.splice(to, 0, temp[0]);
     preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
+    this.updateCurActiveApi()
   }
 
   private isApiAlreadyExisted(newApi: string): boolean {
