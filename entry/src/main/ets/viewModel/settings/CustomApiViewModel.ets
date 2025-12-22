@@ -13,6 +13,9 @@ export class CustomApiViewModel {
    */
   @Trace customApis: string[] =
     preferencesUtils.getSync<string[]>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, [])
+  @Trace curActiveApi: string =
+    preferencesUtils.getSync<string>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+    Constants.DEFAULT_ZLIB_DOMAIN)
 
   @Monitor('customApis.0, customApis.length')
   updateCurActiveApi() {
@@ -21,6 +24,7 @@ export class CustomApiViewModel {
       StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
       this.customApis.length > 0 ? this.customApis[0] : Constants.DEFAULT_ZLIB_DOMAIN
     )
+    this.curActiveApi = this.customApis.length > 0 ? this.customApis[0] : Constants.DEFAULT_ZLIB_DOMAIN
   }
 
   removeApi(index: number) {

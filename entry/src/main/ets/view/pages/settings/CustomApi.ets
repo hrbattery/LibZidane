@@ -18,6 +18,7 @@ struct CustomApi {
           Text($r("app.string.ui_custom_api_declaimer"))
           Text() {
             Span($r("app.string.ui_custom_api_current_active"))
+            Span(this.viewModel.curActiveApi)
           }
         }
         .alignItems(HorizontalAlign.Start)
