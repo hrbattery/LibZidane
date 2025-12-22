@@ -1,4 +1,4 @@
-import { ToastUtil } from '@pura/harmony-utils';
+import { LogUtil as logger } from '@pura/harmony-utils';
 import { CustomApiViewModel } from '../../../viewModel/settings/CustomApiViewModel';
 
 @Builder
@@ -110,7 +110,7 @@ struct AddNewEntry {
           await this.cb(this.newApiText)
           this.newApiText = "";
         } catch (e) {
-
+          logger.error(e.message)
         }
       })
       .backgroundColor(Color.Transparent)

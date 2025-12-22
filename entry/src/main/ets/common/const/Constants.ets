@@ -34,4 +34,9 @@ export class Constants {
     { "key": $r("app.string.ui_search_sort_key_filesize"), "value": "filesize" },
     { "key": $r("app.string.ui_search_sort_key_filesize_A"), "value": "filesizeA" }
   ]
+  /**
+   * DEFAULT_ZLIB_DOMAIN
+   * 缺省的Z-Library域名
+   */
+  static readonly DEFAULT_ZLIB_DOMAIN: string = "https://z-library.sk"
 }

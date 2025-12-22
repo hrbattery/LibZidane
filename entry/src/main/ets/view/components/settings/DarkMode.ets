@@ -6,7 +6,7 @@ import { preferencesUtils } from '../../../model/storage/PreferencesUtils'
 @ComponentV2
 export struct DarkMode {
   @Local selectedIndex: number =
-    preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'dark_mode', 2)
+    preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE, 2)
 
   build() {
     Row() {

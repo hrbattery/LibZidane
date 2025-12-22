@@ -1,7 +1,7 @@
 /**
  * API 域名验证和标准化工具
  */
-import { url } from "@kit.ArkTS";
+import { url } from '@kit.ArkTS';
 
 /**
  * 域名验证选项接口
@@ -102,7 +102,7 @@ const DEFAULT_OPTIONS: DomainValidationOptions = {
   allowQuery: false,
   defaultProtocol: 'https',
   forceLowercase: true,
-  removeTrailingSlash: false,
+  removeTrailingSlash: true,
   removeDefaultPort: true,
   allowedTlds: []
 };
@@ -384,7 +384,8 @@ export function extractApiDomains(
   text: string,
   options: DomainValidationOptions = {}
 ): string[] {
-  const urlPattern = /(https?:\/\/[^\s"'<>()]+|(?:www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+)/gi;
+  const urlPattern =
+    /(https?:\/\/[^\s"'<>()]+|(?:www\.)?[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+)/gi;
   const matches: RegExpMatchArray | string[] = text.match(urlPattern) || [];
 
   return matches

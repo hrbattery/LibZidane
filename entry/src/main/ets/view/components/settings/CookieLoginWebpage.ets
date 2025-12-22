@@ -1,10 +1,11 @@
-import { StorageConstants } from "../../../common/const/StorageConstants";
-import { preferencesUtils } from "../../../model/storage/PreferencesUtils";
-import { PrebuildWebCompData } from "../common/PrebuildWeb";
+import { StorageConstants } from '../../../common/const/StorageConstants';
+import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
+import { PrebuildWebCompData } from '../common/PrebuildWeb';
 
 let isLoading: boolean = false;
 let userAgent: string =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+
 @Builder
 function CookieLoginPageBuilder(data: PrebuildWebCompData) {
   Stack() {
@@ -47,7 +48,8 @@ function CookieLoginPageBuilder(data: PrebuildWebCompData) {
       .overScrollMode(OverScrollMode.ALWAYS)
       .width('100%')
       .height('100%')
-      .darkMode(preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto))
+      .darkMode(preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE,
+        WebDarkMode.Auto))
       .forceDarkAccess(true)
 
     if (isLoading) {

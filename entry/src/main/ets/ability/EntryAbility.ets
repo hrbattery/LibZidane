@@ -15,8 +15,16 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     initPreferences(this.context);
     const darkModeSetting =
-      preferencesUtils.getSync<DarkModeEnum>(StorageConstants.DEFAULT_PREF, 'dark_mode', DarkModeEnum.AUTO)
-    const languageSetting = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', -1)
+      preferencesUtils.getSync<DarkModeEnum>(
+        StorageConstants.DEFAULT_PREF,
+        StorageConstants.PREFKEY_DARK_MODE,
+        DarkModeEnum.AUTO
+      )
+    const languageSetting = preferencesUtils.getSync<number>(
+      StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_LANGUAGE,
+      -1
+    )
 
     setColorMode(this.context.getApplicationContext(), darkModeSetting)
     if (languageSetting !== 0) {

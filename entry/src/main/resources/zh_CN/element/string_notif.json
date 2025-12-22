@@ -75,6 +75,10 @@
     {
       "name": "notif_custom_api_unavailable",
       "value": "该 API 域名不可用。请检查输入是否正确或稍后再试。"
+    },
+    {
+      "name": "notif_custom_api_invalid",
+      "value": "该 API 域名不是合法 URL 。请检查输入是否正确。"
     }
   ]
 }

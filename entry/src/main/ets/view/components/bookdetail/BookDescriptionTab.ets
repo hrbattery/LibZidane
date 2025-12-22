@@ -29,7 +29,8 @@ function BookDescriptionTabBuilder(data: PrebuildWebCompData) {
       .zoomAccess(false)
       .minFontSize(14)
       .javaScriptAccess(false)
-      .darkMode(preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto))
+      .darkMode(preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE,
+        WebDarkMode.Auto))
       .forceDarkAccess(true)
       .width("100%")
       .height("100%")

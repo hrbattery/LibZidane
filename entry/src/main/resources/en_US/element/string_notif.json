@@ -75,6 +75,10 @@
     {
       "name": "notif_custom_api_unavailable",
       "value": "This API domain is unavailable. Please check if the input is correct or try again later."
+    },
+    {
+      "name": "notif_custom_api_invalid",
+      "value": "This API domain is not a valid URL. Please check if the input is correct or not."
     }
   ]
 }

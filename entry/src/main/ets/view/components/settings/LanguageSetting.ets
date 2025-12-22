@@ -5,7 +5,8 @@ import { preferencesUtils } from '../../../model/storage/PreferencesUtils'
 
 @ComponentV2
 export struct LanguageSetting {
-  @Local selected: number = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', 0)
+  @Local selected: number =
+    preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_LANGUAGE, 0)
   private langList: ResourceStr[] = SettingsConstants.LANGUAGE_KEY
 
   build() {

@@ -1,6 +1,5 @@
-import { webview } from '@kit.ArkWeb';
 import { StorageConstants } from '../../../common/const/StorageConstants';
-import { FullBookData } from "../../../model/entities/BookModel"
+import { FullBookData } from '../../../model/entities/BookModel';
 import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
 import { createNWeb, disposeNWeb, getNWeb } from '../common/PrebuildWeb';
 import { bookDescriptionTabWrap } from './BookDescriptionTab';
@@ -8,7 +7,8 @@ import { bookDescriptionTabWrap } from './BookDescriptionTab';
 @ComponentV2
 export struct BookDetailDescription {
   @Param @Require bookData: FullBookData
-  @Local darkMode: WebDarkMode = preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, 'dark_mode', WebDarkMode.Auto)
+  @Local darkMode: WebDarkMode =
+    preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE, WebDarkMode.Auto)
 
   aboutToAppear(): void {
     createNWeb(bookDescriptionTabWrap, this.bookData.description, this.getUIContext());

@@ -1,17 +1,31 @@
-import { ToastUtil } from "@pura/harmony-utils";
-import { normalizeApiDomain } from "../../common/request/DomainValidation";
-import ReqInst from "../../common/request/Request";
-import { BaseResponse } from "../../common/types/ResponseTypes";
+import { ToastUtil } from '@pura/harmony-utils';
+import { Constants } from '../../common/const/Constants';
+import { StorageConstants } from '../../common/const/StorageConstants';
+import { normalizeApiDomain } from '../../common/request/DomainValidation';
+import ReqInst from '../../common/request/Request';
+import { BaseResponse } from '../../common/types/ResponseTypes';
+import { preferencesUtils } from '../../model/storage/PreferencesUtils';
 
 @ObservedV2
 export class CustomApiViewModel {
   /**
    * Current used custom API list
    */
-  @Trace customApis: string[] = []
+  @Trace customApis: string[] =
+    preferencesUtils.getSync<string[]>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, [])
+
+  @Monitor('customApis.0, customApis.length')
+  updateCurActiveApi() {
+    preferencesUtils.putSync(
+      StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+      this.customApis.length > 0 ? this.customApis[0] : Constants.DEFAULT_ZLIB_DOMAIN
+    )
+  }
 
   removeApi(index: number) {
     this.customApis.splice(index, 1);
+    preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
   }
 
   async addApi(newApi: string) {
@@ -19,19 +33,22 @@ export class CustomApiViewModel {
     try {
       normalizedURl = normalizeApiDomain(newApi);
     } catch (e) {
-      ToastUtil.showToast($r("app.string.notif_custom_api_unavailable"))
-      throw new Error("This API domain is unavailable. Please check if the input is correct or try again later.")
+      ToastUtil.showToast($r("app.string.notif_custom_api_invalid"))
+      throw new Error("This API domain is not a valid URL. Please check if the input is correct or not.")
     }
 
     if (this.isApiAlreadyExisted(normalizedURl)) {
       ToastUtil.showToast($r("app.string.notif_custom_api_existed"))
       throw new Error("API domain already existed.")
     }
+
     if (!await this.isUsableApiDomain(normalizedURl)) {
       ToastUtil.showToast($r("app.string.notif_custom_api_unavailable"))
       throw new Error("This API domain is unavailable. Please check if the input is correct or try again later.")
     }
-    this.customApis.push(normalizedURl);
+
+    this.customApis.push(normalizedURl)
+    preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
   }
 
   private isApiAlreadyExisted(newApi: string): boolean {

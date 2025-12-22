@@ -1,13 +1,15 @@
 import { common, ConfigurationConstant } from '@kit.AbilityKit';
 import { BusinessError, commonEventManager } from '@kit.BasicServicesKit';
+import { i18n } from '@kit.LocalizationKit';
 import { notificationManager } from '@kit.NotificationKit';
 import { LogUtil as logger } from '@pura/harmony-utils';
 
-import { getExtensions, getLanguages } from '../../model/api/InfoApi';
+import { getDomains, getExtensions, getLanguages } from '../../model/api/InfoApi';
 import { preferencesUtils } from '../../model/storage/PreferencesUtils';
 import { DarkModeEnum, SettingsConstants } from '../const/SettingsConstants';
 import { StorageConstants } from '../const/StorageConstants';
-import { i18n } from '@kit.LocalizationKit';
+import { normalizeApiDomain } from '../request/DomainValidation';
+import { DomainDataSource } from '../types/ResponseTypes';
 
 const TAG = '[AbilityUtil] '
 
@@ -16,9 +18,20 @@ export async function appInit(context: common.UIAbilityContext) {
 
   notificationManager.requestEnableNotification(context).catch((reason: BusinessError) => {
     console.log(reason.message)
-  }).then(() => {})
+  }).then(() => {
+  })
 
-  // await initAppStorage()
+  getDomains().then((domains: DomainDataSource[]) => {
+    const officialApis: string[] = [];
+    for (const domain of domains) {
+      if (domain.contentAvailable && !domain.isRedirector) {
+        officialApis.push(normalizeApiDomain(domain.domain))
+      }
+    }
+    if (officialApis.length > 0) {
+      preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_OFFICIAL_APIS, officialApis);
+    }
+  })
 
   // get languages options
   // todo: 获取语言与header中的app language键值挂钩，等设置项做了之后作为preference存储、添加到header后再获取语言选项
@@ -38,11 +51,6 @@ export async function appInit(context: common.UIAbilityContext) {
 export function initPreferences(context: common.UIAbilityContext) {
   preferencesUtils.loadPreferenceSync(context, StorageConstants.DEFAULT_PREF)
 }
-
-// async function initAppStorage() {
-//   let settingsModel = AppStorageV2.connect(SettingsModel, "settingsModel", () => new SettingsModel())!
-//   settingsModel.loginState = await preferencesUtils.has(StorageConstants.DEFAULT_PREF, "cookie")
-// }
 
 export function setColorMode(context: common.ApplicationContext, index: DarkModeEnum) {
   try {
@@ -86,7 +94,8 @@ export function listenSystemLanguageChange() {
   commonEventManager.createSubscriber(subscribeInfo)
     .then((commonEventSubscriber: commonEventManager.CommonEventSubscriber) => {
       commonEventManager.subscribe(commonEventSubscriber, () => {
-        const languageSetting = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', -1)
+        const languageSetting =
+          preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_LANGUAGE, -1)
 
         if (languageSetting === 0) {
           setLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
