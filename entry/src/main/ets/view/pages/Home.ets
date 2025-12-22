@@ -60,6 +60,9 @@ struct Home {
         this.index = target;
         this.navMenuItems = this.getMenuItems();
       })
+      .onChange((index) => {
+        this.tabCurrentIndex = index;
+      })
       // .onChange((index) => {
       //   this.menuItems = this.getMenuItems();
       // })

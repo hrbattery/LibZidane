@@ -58,9 +58,9 @@ export struct MyBook {
         // .tabBar('已下载' + (this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''))
       }
       .barMode(BarMode.Fixed)
-      // .onChange((index: number) => {
-      //   this.tabCurrentIndex = index;
-      // })
+      .onChange((index: number) => {
+        this.tabCurrentIndex = index;
+      })
     }
   }
 }

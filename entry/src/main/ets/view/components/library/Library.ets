@@ -16,7 +16,11 @@ export struct Library {
           MostPopularBooks()
         }
         .tabBar($r("app.string.ui_library_most_popular_tab"))
-      }.barMode(BarMode.Fixed)
+      }
+      .barMode(BarMode.Fixed)
+      .onChange((index) => {
+        this.tabCurrentIndex = index;
+      })
     }
   }
 }
