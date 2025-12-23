@@ -17,7 +17,7 @@ export class CustomApiViewModel {
     preferencesUtils.getSync<string>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
     Constants.DEFAULT_ZLIB_DOMAIN)
 
-  @Monitor('customApis.0, customApis.length')
+  @Monitor('customApis.0', 'customApis.length')
   updateCurActiveApi() {
     preferencesUtils.putSync(
       StorageConstants.DEFAULT_PREF,
@@ -59,7 +59,6 @@ export class CustomApiViewModel {
     const temp = this.customApis.splice(from, 1);
     this.customApis.splice(to, 0, temp[0]);
     preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, this.customApis)
-    this.updateCurActiveApi()
   }
 
   private isApiAlreadyExisted(newApi: string): boolean {

@@ -14,8 +14,6 @@ import { DomainDataSource } from '../types/ResponseTypes';
 const TAG = '[AbilityUtil] '
 
 export async function appInit(context: common.UIAbilityContext) {
-  AppStorage.setOrCreate("base_url", "https://z-library.sk");
-
   notificationManager.requestEnableNotification(context).catch((reason: BusinessError) => {
     console.log(reason.message)
   }).then(() => {

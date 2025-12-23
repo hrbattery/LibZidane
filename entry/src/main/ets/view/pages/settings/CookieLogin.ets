@@ -2,6 +2,7 @@ import { PersistenceV2 } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 
 import { DialogUtil, LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
+import { Constants } from '../../../common/const/Constants';
 import { StorageConstants } from '../../../common/const/StorageConstants';
 import { setCookie } from '../../../common/request/Request';
 import { AppState } from '../../../model/entities/AppState';
@@ -22,7 +23,11 @@ export struct CookieLogin {
   private userAgent: string =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
   private pathStack: NavPathStack | undefined = undefined;
-  private baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
+  private baseUrl = preferencesUtils.getSync<string>(
+    StorageConstants.DEFAULT_PREF,
+    StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+    Constants.DEFAULT_ZLIB_DOMAIN
+  );
   controller: webview.WebviewController | undefined
   menus: NavigationMenuItem[] = [
     {

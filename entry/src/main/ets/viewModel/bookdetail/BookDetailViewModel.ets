@@ -6,10 +6,13 @@ import { systemShare } from '@kit.ShareKit';
 
 import { LogUtil as logger } from '@pura/harmony-utils';
 import { bookDataCache } from '../../common/cache/BookDataCache';
+import { Constants } from '../../common/const/Constants';
+import { StorageConstants } from '../../common/const/StorageConstants';
 import { getBookFormat, getBookInfo, getSimilar } from '../../model/api/BookApi';
 import { saveBook, unsaveBook } from '../../model/api/UserApi';
 import { BookFormatType, CoverData, FullBookData } from '../../model/entities/BookModel';
 import { CoverDataFactory, FullBookDataFactory } from '../../model/factory/BookModelFactory';
+import { preferencesUtils } from '../../model/storage/PreferencesUtils';
 import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
 
 
@@ -91,7 +94,11 @@ export class BookDetailViewModel extends NetworkRequestViewModel {
   }
 
   shareBook(context: common.UIAbilityContext) {
-    const baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
+    const baseUrl = preferencesUtils.getSync<string>(
+      StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+      Constants.DEFAULT_ZLIB_DOMAIN
+    );
 
     if (this.bookData) {
       let shareData: systemShare.SharedData = new systemShare.SharedData({
