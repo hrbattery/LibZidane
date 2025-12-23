@@ -38,7 +38,7 @@ export struct SearchResults {
   }
 
   build() {
-    Refresh({ refreshing: this.viewModel.isRefreshing }) {
+    Refresh({ refreshing: this.viewModel.isRefreshing!! }) {
       if (this.showNormal) {
         this.NormalContent()
       } else if (this.showSkeleton) {

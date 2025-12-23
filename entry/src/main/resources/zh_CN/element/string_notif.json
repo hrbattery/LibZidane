@@ -79,6 +79,14 @@
     {
       "name": "notif_custom_api_invalid",
       "value": "该 API 域名不是合法 URL 。请检查输入是否正确。"
+    },
+    {
+      "name": "notif_remove_book_success",
+      "value": "移除书本成功"
+    },
+    {
+      "name": "notif_remove_book_failed",
+      "value": "移除书本失败"
     }
   ]
 }

@@ -1,5 +1,6 @@
 import {
   CoverDataSource,
+  DeleteBookResponse,
   DonationDataSource,
   DonationResponse,
   DownloadedResponse,
@@ -86,4 +87,13 @@ export async function getDonations(): Promise<DonationDataSource[]> {
     return response.donations
   }
   return []
+}
+
+export async function deleteBook(bookId: number): Promise<boolean> {
+  let response = await ReqInst.get<DeleteBookResponse>(`/eapi/user/book/${bookId}/delete`);
+  logger.debug(response)
+  if (response.success === 1) {
+    return true
+  }
+  return false
 }

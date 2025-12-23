@@ -1,5 +1,7 @@
-import { LogUtil as logger } from '@pura/harmony-utils';
-import { getDownloaded } from '../../model/api/UserApi';
+import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
+import { deepCopy } from '../../common/CommonUtils';
+import { PaginationDataSource } from '../../common/types/ResponseTypes';
+import { deleteBook, getDownloaded } from '../../model/api/UserApi';
 import { BookData, BookDataType } from '../../model/entities/BookModel';
 import { BookDataFactory } from '../../model/factory/BookModelFactory';
 import { MyBookComponentViewModel } from './MyBookComponentViewModel';
@@ -55,6 +57,25 @@ export class DownloadedViewModel extends MyBookComponentViewModel {
       this.isLoadingNew = true
       await this.loadNewDownloaded(sortOrder)
       this.isLoadingNew = false
+    }
+  }
+
+  public async onRemove(index: number): Promise<void> {
+    const bookData = this.bookDataSource[index];
+    try {
+      const response = await deleteBook(bookData.id)
+      if (response) {
+        ToastUtil.showToast($r("app.string.notif_remove_book_success"))
+        this.bookDataSource.splice(index, 1);
+        if (this.pagination !== undefined) {
+          const newPagination = deepCopy(this.pagination) as PaginationDataSource
+          newPagination.total_items -= 1;
+          this.pagination = newPagination;
+        }
+      }
+    } catch (e) {
+      logger.error(e)
+      ToastUtil.showToast($r("app.string.notif_remove_book_failed"))
     }
   }
 }

@@ -14,7 +14,7 @@ export struct FavoriteBooks {
     this.viewModel.pagination = undefined
   }
 
-  @Monitor("viewModel.pagination")
+  @Monitor("viewModel.pagination", "viewModel.pagination.total_items")
   onUpdatePagination() {
     this.updateEntriesAmount(this.viewModel.pagination?.total_items ?? 0)
   }

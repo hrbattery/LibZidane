@@ -10,8 +10,9 @@ export struct BookInfoList {
   @Param bookDataSource: BookData[] = []
   @Param pagination: PaginationDataSource | undefined = undefined;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
-  @Event onLoadNewData: () => Promise<void> = async () => {
-  }
+  @Event onLoadNewData: () => Promise<void> = async () => {}
+  @Event onRemove?: (index: number) => Promise<void> = undefined
+
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -37,7 +38,10 @@ export struct BookInfoList {
       Repeat(this.bookDataSource)
         .each((ri) => {
           ListItem() {
-            BookInfoListItem({ bookData: ri.item })
+            BookInfoListItem({
+              bookDataItem: ri,
+              onRemove: this.onRemove === undefined ? undefined: async (index: number) => await this.onRemove!(index)
+            })
               .onClick(() => {
                 this.gotoBookDetail(ri.item.id, ri.item.hash)
               })
@@ -56,7 +60,7 @@ export struct BookInfoList {
       await this.onEndOfList(end);
     })
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-    .padding({ left: "10vp", right: "10vp" })
+    // .padding({ left: 10, right: 10 })
   }
 
   private async onEndOfList(end: number) {

@@ -16,4 +16,6 @@ export abstract class MyBookComponentViewModel extends NetworkRequestViewModel {
   public abstract loadDataSource(sortOrder: string): Promise<void>
 
   public abstract loadNewData(sortOrder: string): Promise<void>
+
+  public abstract onRemove(index: number): Promise<void>
 }

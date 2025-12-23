@@ -5,16 +5,18 @@ import { BookCover } from './BookCover';
 
 @ComponentV2
 export struct BookInfoListItem {
-  @Require @Param bookData: BookData;
+  @Require @Param bookDataItem: RepeatItem<BookData>;
+  @Local showMenu: boolean = false;
+  @Event onRemove?: (index: number) => Promise<void> = undefined
 
   async onClickStar(): Promise<void> {
     try {
       // todo: 总之改改这段
-      this.bookData._isFavorite = !this.bookData._isFavorite
-      !this.bookData._isFavorite ? await unsaveBook(this.bookData.id) : await saveBook(this.bookData.id);
+      this.bookDataItem.item._isFavorite = !this.bookDataItem.item._isFavorite
+      !this.bookDataItem.item._isFavorite ? await unsaveBook(this.bookDataItem.item.id) : await saveBook(this.bookDataItem.item.id);
     } catch (e) {
       logger.error(e)
-      this.bookData._isFavorite = !this.bookData._isFavorite
+      this.bookDataItem.item._isFavorite = !this.bookDataItem.item._isFavorite
       // todo: toast error or use a 404 page
     }
   }
@@ -22,7 +24,7 @@ export struct BookInfoListItem {
   build() {
     Column({ space: 8 }) {
       Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Start }) {
-        BookCover({ coverData: this.bookData, altHeight: 120 })
+        BookCover({ coverData: this.bookDataItem.item, altHeight: 120 })
           .width("40%")
           .alignSelf(ItemAlign.Center)
           .constraintSize({
@@ -32,20 +34,20 @@ export struct BookInfoListItem {
         Column() {
           Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween }) {
             Column({ space: 2 }) {
-              Text(this.bookData.title)
+              Text(this.bookDataItem.item.title)
                 .fontSize(14)
                 .fontWeight(FontWeight.Bold)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .wordBreak(WordBreak.BREAK_ALL)
                 .maxLines(2)
-              Text(this.bookData.author)
+              Text(this.bookDataItem.item.author)
                 .fontSize(14)
                 .fontColor($r("sys.color.font_emphasize"))
                 .wordBreak(WordBreak.BREAK_ALL)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
                 .maxLines(1)
-              if (this.bookData.publisher) {
-                Text(this.bookData.publisher)
+              if (this.bookDataItem.item.publisher) {
+                Text(this.bookDataItem.item.publisher)
                   .fontSize(12)
                   .fontColor($r("sys.color.font_secondary"))
                   .wordBreak(WordBreak.BREAK_ALL)
@@ -55,8 +57,8 @@ export struct BookInfoListItem {
             }
             .alignItems(HorizontalAlign.Start)
 
-            if (this.bookData._isFavorite !== undefined) {
-              if (this.bookData._isFavorite) {
+            if (this.bookDataItem.item._isFavorite !== undefined) {
+              if (this.bookDataItem.item._isFavorite) {
                 Image($r("app.media.star_fill"))
                   .height(24)
                   .width(24)
@@ -76,10 +78,10 @@ export struct BookInfoListItem {
             }
           }
 
-          if (this.bookData.date_download) {
+          if (this.bookDataItem.item.date_download) {
             Text() {
               Span($r("app.string.ui_bookinfo_downloaded"))
-              Span(` ${new Date(this.bookData.date_download).toLocaleDateString()}`)
+              Span(` ${new Date(this.bookDataItem.item.date_download).toLocaleDateString()}`)
             }
               .alignSelf(ItemAlign.Start)
               .fontSize(12)
@@ -97,27 +99,54 @@ export struct BookInfoListItem {
 
       this.SubBookInfo(12, $r("sys.color.font_secondary"))
     }
-    .margin({ top: 8, bottom: 8 })
+    .backgroundColor($r("sys.color.background_primary"))
+    .padding({ top: 8, bottom: 8, left: 10, right: 10 })
+    .bindContextMenu(this.showMenu, this.BookInfoMenu, {
+      preview: MenuPreviewMode.IMAGE,
+      previewAnimationOptions: {
+        hoverScale: [0.9, 1.2]
+      },
+      aboutToDisappear: () => this.showMenu = false
+    })
+    .gesture(
+      LongPressGesture({ repeat: false })
+        .onAction(() => {
+          if (this.onRemove !== undefined) {
+            this.showMenu = true
+          }
+        }),
+      GestureMask.IgnoreInternal
+    )
+  }
+
+  @Builder
+  BookInfoMenu() {
+    Menu() {
+      MenuItem({ content: "删除" })
+        .onClick(async () => {
+          await this.onRemove!(this.bookDataItem.index)
+        })
+    }
   }
 
   @Builder
   SubBookInfo(fontSize: number, color: ResourceColor) {
     Row({ space: 8 }) {
-      if (this.bookData.year !== 0) {
-        Text(`${this.bookData.year}`).fontSize(fontSize).fontColor(color);
+      if (this.bookDataItem.item.year !== 0) {
+        Text(`${this.bookDataItem.item.year}`).fontSize(fontSize).fontColor(color);
         Divider().vertical(true);
       }
       Text() {
         SymbolSpan($r("sys.symbol.worldclock"));
       }.fontSize(fontSize).fontColor(color);
 
-      Text(this.bookData.language).fontSize(fontSize).fontColor(color);
+      Text(this.bookDataItem.item.language).fontSize(fontSize).fontColor(color);
       Divider().vertical(true);
       Text() {
         SymbolSpan($r("sys.symbol.doc_text"));
       }.fontSize(fontSize).fontColor(color);
 
-      Text(`${this.bookData.extension}, ${this.bookData.filesizeString}`).fontSize(fontSize).fontColor(color);
+      Text(`${this.bookDataItem.item.extension}, ${this.bookDataItem.item.filesizeString}`).fontSize(fontSize).fontColor(color);
     }
     .height(fontSize)
     .width("100%")

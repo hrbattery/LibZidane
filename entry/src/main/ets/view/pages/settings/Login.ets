@@ -61,6 +61,7 @@ export struct SettingsLogin {
         .fontSize(16)
         .onChange(value => this.username = value)
         .margin({ top: 20, bottom: 20 })
+        .contentType(ContentType.USER_NAME)
 
       TextInput({ placeholder: $r("app.string.ui_login_password_placeholder") })
         .width('90%')
@@ -68,6 +69,7 @@ export struct SettingsLogin {
         .type(InputType.Password)
         .onChange(value => this.password = value)
         .margin({ bottom: 20 })
+        .contentType(ContentType.PASSWORD)
 
       Flex({ direction: FlexDirection.Row }) {
         // 登录按钮

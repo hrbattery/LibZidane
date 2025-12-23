@@ -79,6 +79,14 @@
     {
       "name": "notif_custom_api_invalid",
       "value": "This API domain is not a valid URL. Please check if the input is correct or not."
+    },
+    {
+      "name": "notif_remove_book_success",
+      "value": "Remove book from book list success."
+    },
+    {
+      "name": "notif_remove_book_failed",
+      "value": "Remove book from book list failed."
     }
   ]
 }

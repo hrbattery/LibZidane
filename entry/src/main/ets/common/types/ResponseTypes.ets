@@ -193,6 +193,12 @@ export interface DonationResponse extends BaseResponse {
 }
 
 /**
+ * eapi/user/book/{bookId}/delete
+ */
+export type DeleteBookResponse = BaseResponse
+
+
+/**
  * eapi/info/languages
  */
 export interface LanguagesResponse extends BaseResponse {
