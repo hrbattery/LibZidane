@@ -6,8 +6,7 @@ import { Constants } from '../const/Constants'
 import { StorageConstants } from '../const/StorageConstants'
 import { qpsController } from './RequestQueue'
 
-const TAG = '[Request]'
-const baseUrl = AppStorage.get("base_url") as string ?? "https://z-library.sk"
+const TAG = '[Request] '
 
 let reqInst = axios.create({
   timeout: 15000
@@ -17,7 +16,11 @@ AppStorage.setOrCreate('cookie', {})
 
 reqInst.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
   if (request.baseURL === undefined) {
-    request.baseURL = baseUrl;
+    request.baseURL = preferencesUtils.getSync(
+      StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+      Constants.DEFAULT_ZLIB_DOMAIN
+    );
   }
   // post请求需要执行contentType
   if (request.method === 'post' || request.method === 'POST') {
@@ -66,7 +69,7 @@ class Request {
   public async post<R, D>(url: string, data?: D, config?: AxiosRequestConfig): Promise<R> {
     // const response = await reqInst.post(url, data, config) as ApiResponse<R>
     const _config: AxiosRequestConfig = deepCopy(config ?? {} as AxiosRequestConfig);
-    _config.method = "put";
+    _config.method = "post";
     _config.data = data;
     _config.url = url;
     const response = await this.requestWithFallback<R>(_config);
