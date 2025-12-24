@@ -2,6 +2,7 @@ import { LogUtil as logger } from '@pura/harmony-utils';
 import { saveBook, unsaveBook } from '../../../model/api/UserApi';
 import { BookData } from '../../../model/entities/BookModel';
 import { BookCover } from './BookCover';
+import { i18n } from '@kit.LocalizationKit';
 
 @ComponentV2
 export struct BookInfoListItem {
@@ -81,7 +82,7 @@ export struct BookInfoListItem {
           if (this.bookDataItem.item.date_download) {
             Text() {
               Span($r("app.string.ui_bookinfo_downloaded"))
-              Span(` ${new Date(this.bookDataItem.item.date_download).toLocaleDateString()}`)
+              Span(` ${new Date(this.bookDataItem.item.date_download).toLocaleDateString(i18n.System.getAppPreferredLanguage())}`)
             }
               .alignSelf(ItemAlign.Start)
               .fontSize(12)

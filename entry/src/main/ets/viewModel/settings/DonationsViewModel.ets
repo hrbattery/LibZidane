@@ -3,6 +3,7 @@ import { LogUtil as logger } from '@pura/harmony-utils';
 import { DonationDataSource } from "../../common/types/ResponseTypes";
 import { getDonations, getProfile } from "../../model/api/UserApi";
 import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
+import { i18n } from '@kit.LocalizationKit';
 
 @ObservedV2
 export class DonationViewModel extends NetworkRequestViewModel {
@@ -33,7 +34,7 @@ export class DonationViewModel extends NetworkRequestViewModel {
     if (this.donationExpire === null) {
       return $r("app.string.ui_donation_not_existed")
     } else {
-      return new Date(this.donationExpire).toLocaleDateString()
+      return new Date(this.donationExpire).toLocaleDateString(i18n.System.getAppPreferredLanguage())
     }
   }
 

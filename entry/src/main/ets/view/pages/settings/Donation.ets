@@ -1,4 +1,5 @@
 import { DonationViewModel } from '../../../viewModel/settings/DonationsViewModel'
+import { i18n } from '@kit.LocalizationKit'
 
 @Builder
 export function DonationBuilder() {
@@ -45,7 +46,7 @@ struct Donation {
                 .each(ri => {
                   InfoCard({
                     title: `$${ri.item.amount}`,
-                    content: new Date(ri.item.date).toLocaleDateString()
+                    content: new Date(ri.item.date).toLocaleDateString(i18n.System.getAppPreferredLanguage())
                   })
                 })
             }
