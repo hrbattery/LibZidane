@@ -1,14 +1,16 @@
 import { LogUtil as logger } from '@pura/harmony-utils';
 import { saveBook, unsaveBook } from '../../../model/api/UserApi';
-import { BookData } from '../../../model/entities/BookModel';
+import { BookData, BookDetailParam } from '../../../model/entities/BookModel';
 import { BookCover } from './BookCover';
 import { i18n } from '@kit.LocalizationKit';
+import { AnimateType, SkeletonTheme, UISkeleton } from '@hw-agconnect/ui-skeleton';
 
 @ComponentV2
 export struct BookInfoListItem {
   @Require @Param bookDataItem: RepeatItem<BookData>;
   @Local showMenu: boolean = false;
   @Consumer() onRemove?: (index: number) => Promise<void> = undefined
+  @Consumer() showSkeleton: boolean = false;
 
   async onClickStar(): Promise<void> {
     try {
@@ -26,7 +28,7 @@ export struct BookInfoListItem {
     Column({ space: 8 }) {
       Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.Start }) {
         BookCover({ coverData: this.bookDataItem.item, altHeight: 120 })
-          .width("40%")
+          .width("35.4%")
           .alignSelf(ItemAlign.Center)
           .constraintSize({
             maxHeight: 120
@@ -35,30 +37,45 @@ export struct BookInfoListItem {
         Column() {
           Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween }) {
             Column({ space: 2 }) {
-              Text(this.bookDataItem.item.title)
-                .fontSize(14)
-                .fontWeight(FontWeight.Bold)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
-                .wordBreak(WordBreak.BREAK_ALL)
-                .maxLines(2)
-              Text(this.bookDataItem.item.author)
-                .fontSize(14)
-                .fontColor($r("sys.color.font_emphasize"))
-                .wordBreak(WordBreak.BREAK_ALL)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
-                .maxLines(1)
-              if (this.bookDataItem.item.publisher) {
-                Text(this.bookDataItem.item.publisher)
-                  .fontSize(12)
-                  .fontColor($r("sys.color.font_secondary"))
+              if (this.showSkeleton) {
+                Column() {
+                  UISkeleton({
+                    options: [
+                      { height: 14, width: "80%" },
+                      { height: 14, width: "50%" },
+                      { height: 12, width: "50%" }
+                    ],
+                    theme: SkeletonTheme.PARAGRAPH,
+                  })
+                }.constraintSize({
+                  maxWidth: 180
+                })
+              } else {
+                Text(this.bookDataItem.item.title)
+                  .fontSize(14)
+                  .fontWeight(FontWeight.Bold)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  .wordBreak(WordBreak.BREAK_ALL)
+                  .maxLines(2)
+                Text(this.bookDataItem.item.author)
+                  .fontSize(14)
+                  .fontColor($r("sys.color.font_emphasize"))
                   .wordBreak(WordBreak.BREAK_ALL)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .maxLines(1)
+                if (this.bookDataItem.item.publisher) {
+                  Text(this.bookDataItem.item.publisher)
+                    .fontSize(12)
+                    .fontColor($r("sys.color.font_secondary"))
+                    .wordBreak(WordBreak.BREAK_ALL)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+                    .maxLines(1)
+                }
               }
             }
             .alignItems(HorizontalAlign.Start)
 
-            if (this.bookDataItem.item._isFavorite !== undefined) {
+            if (this.bookDataItem.item !== null && this.bookDataItem.item._isFavorite !== undefined) {
               if (this.bookDataItem.item._isFavorite) {
                 Image($r("app.media.star_fill"))
                   .height(24)
@@ -79,7 +96,7 @@ export struct BookInfoListItem {
             }
           }
 
-          if (this.bookDataItem.item.date_download) {
+          if (this.bookDataItem.item !== null && this.bookDataItem.item.date_download) {
             Text() {
               Span($r("app.string.ui_bookinfo_downloaded"))
               Span(` ${new Date(this.bookDataItem.item.date_download).toLocaleDateString(i18n.System.getAppPreferredLanguage())}`)
@@ -98,7 +115,19 @@ export struct BookInfoListItem {
       .height(120)
       .width("100%")
 
-      this.SubBookInfo(12, $r("sys.color.font_secondary"))
+      if (this.showSkeleton) {
+        Column() {
+          UISkeleton({
+            options: [
+              { height: 12, width: "50%" }
+            ],
+            theme: SkeletonTheme.TEXT,
+          })
+        }
+        .height(12)
+      } else {
+        this.SubBookInfo(12, $r("sys.color.font_secondary"))
+      }
     }
     .backgroundColor($r("sys.color.background_primary"))
     .padding({ top: 8, bottom: 8, left: 10, right: 10 })
@@ -112,7 +141,7 @@ export struct BookInfoListItem {
     .gesture(
       LongPressGesture({ repeat: false })
         .onAction(() => {
-          if (this.onRemove !== undefined) {
+          if (this.onRemove !== undefined && !this.showSkeleton) {
             this.showMenu = true
           }
         }),

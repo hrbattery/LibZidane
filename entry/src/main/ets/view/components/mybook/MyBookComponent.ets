@@ -13,6 +13,12 @@ export struct MyBookComponent {
   @Param @Require sortOrder: string;
   @Param @Require viewModel: MyBookComponentViewModel;
   @Provider() onRemove: (index: number) => Promise<void> = async (index: number) => await this.viewModel.onRemove(index)
+  @Provider() showSkeleton: boolean = this.viewModel.isLoading
+
+  @Monitor("viewModel.isLoading")
+  setShowSkeleton() {
+    this.showSkeleton = this.viewModel.isLoading && this.viewModel.bookDataSource.length === 0
+  }
 
   @Monitor('sortOrder')
   onSortOrderChange(): void {
@@ -28,10 +34,10 @@ export struct MyBookComponent {
     return this.viewModel.bookDataSource.length > 0
   }
 
-  @Computed
-  get showSkeleton() {
-    return this.viewModel.isLoading
-  }
+  // @Computed
+  // get showSkeleton() {
+  //   return this.viewModel.isLoading
+  // }
 
   @Computed
   get showErrorPlaceholder() {
@@ -61,8 +67,6 @@ export struct MyBookComponent {
           onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder)
         })
         Footer(this.viewModel.isLoadingNew)
-      } else if (this.showSkeleton) {
-        // todo: skeleton impl
       } else if (this.showLogoutPlaceholder) {
         LogoutStatePlaceholder()
       } else if (this.showErrorPlaceholder) {

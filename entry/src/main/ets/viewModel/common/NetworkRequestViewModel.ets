@@ -8,7 +8,7 @@ export abstract class NetworkRequestViewModel extends AppViewModel {
   /**
    * state to determine show skeleton or not
    */
-  @Trace isLoading: boolean = true
+  @Trace isLoading: boolean = false
   /**
    * state to determine show error placeholder or empty placeholder
    */

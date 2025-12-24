@@ -10,19 +10,16 @@ export struct SearchResults {
    * view model of component
    */
   @Param @Require viewModel: SearchViewModel;
+  @Provider() showSkeleton: boolean = this.viewModel.isLoading
 
-  async aboutToAppear(): Promise<void> {
-    await this.viewModel.loadDataSource()
+  @Monitor("viewModel.isLoading")
+  setShowSkeleton() {
+    this.showSkeleton = this.viewModel.isLoading && this.viewModel.bookDataSource.length === 0
   }
 
   @Computed
   get showNormal() {
     return this.viewModel.bookDataSource.length > 0
-  }
-
-  @Computed
-  get showSkeleton() {
-    return this.viewModel.isLoading
   }
 
   @Computed
@@ -35,14 +32,13 @@ export struct SearchResults {
   get showEmptyPlaceholder() {
     return !this.viewModel.isLoading
       && this.viewModel.bookDataSource.length === 0
+      && this.viewModel.searchKeyword
   }
 
   build() {
     Refresh({ refreshing: $$this.viewModel.isRefreshing }) {
       if (this.showNormal) {
         this.NormalContent()
-      } else if (this.showSkeleton) {
-        // todo: skeleton impl
       } else if (this.showErrorPlaceholder) {
         ErrorStatePlaceholder({
           onRefreshClick: async () => {
@@ -74,8 +70,6 @@ export struct SearchResults {
     })
     Footer(this.viewModel.isLoadingNew)
   }
-
-
 }
 
 @Builder

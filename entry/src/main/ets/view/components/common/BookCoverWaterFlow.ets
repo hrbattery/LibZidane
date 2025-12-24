@@ -9,9 +9,11 @@ import { BookCover } from './BookCover';
  * Receive an array of CoverData.
  */
 
+@Preview
 @ComponentV2
 export struct BookCoverWaterFlow {
   @Param coverDataSource: CoverData[] = []
+  @Consumer() showSkeleton: boolean = true;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
   pathStack: NavPathStack | undefined = undefined;
 
@@ -33,7 +35,7 @@ export struct BookCoverWaterFlow {
 
   build() {
     WaterFlow() {
-      Repeat(this.coverDataSource)
+      Repeat(this.showSkeleton ? (Array(20).fill(0) as CoverData[]) : this.coverDataSource)
         .each((ri) => {
           BookCover({ coverData: ri.item })
             .border({
@@ -46,7 +48,6 @@ export struct BookCoverWaterFlow {
         })
         .key((item, index) => `${index}:${item.title}`)
     }
-    // .columnsTemplate('1fr 1fr 1fr')
     .columnsTemplate(`repeat(${new WidthBreakpointType(3, 4, 6, 8).getValue(this.windowInfo.widthBp)}, 1fr)`)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
     .nestedScroll({

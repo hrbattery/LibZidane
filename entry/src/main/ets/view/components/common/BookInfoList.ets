@@ -11,7 +11,7 @@ export struct BookInfoList {
   @Param pagination: PaginationDataSource | undefined = undefined;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
   @Event onLoadNewData: () => Promise<void> = async () => {}
-
+  @Consumer() showSkeleton: boolean = true;
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -34,18 +34,20 @@ export struct BookInfoList {
 
   build() {
     List() {
-      Repeat(this.bookDataSource)
+      Repeat(this.showSkeleton ? (Array(20).fill(null) as BookData[]) : this.bookDataSource)
         .each((ri) => {
           ListItem() {
             BookInfoListItem({
               bookDataItem: ri
             })
               .onClick(() => {
-                this.gotoBookDetail(ri.item.id, ri.item.hash)
+                if (ri !== null) {
+                  this.gotoBookDetail(ri.item.id, ri.item.hash)
+                }
               })
           }
         })
-        .key((item, index) => `${index}:${item.title}:${item._isFavorite}`)
+        .key((item, index) => item === null ? index.toString() : `${index}:${item.title}:${item._isFavorite}`)
     }
     .divider({
       color: $r("sys.color.font_tertiary"),
@@ -60,7 +62,6 @@ export struct BookInfoList {
       await this.onEndOfList(end);
     })
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-    // .padding({ left: 10, right: 10 })
   }
 
   private async onEndOfList(end: number) {

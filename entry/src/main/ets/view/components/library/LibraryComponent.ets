@@ -11,6 +11,12 @@ export struct LibraryComponent {
    * view model of component
    */
   @Param @Require viewModel: LibraryComponentViewModel;
+  @Provider() showSkeleton: boolean = this.viewModel.isLoading
+
+  @Monitor("viewModel.isLoading")
+  setShowSkeleton() {
+    this.showSkeleton = this.viewModel.isLoading && this.viewModel.coverDataSource.length === 0
+  }
 
   async aboutToAppear(): Promise<void> {
     await this.viewModel.loadDataSource()
@@ -21,10 +27,10 @@ export struct LibraryComponent {
     return this.viewModel.coverDataSource.length > 0
   }
 
-  @Computed
-  get showSkeleton() {
-    return this.viewModel.isLoading
-  }
+  // @Provider() @Computed
+  // get showSkeleton() {
+  //   return this.viewModel.isLoading
+  // }
 
   @Computed
   get showErrorPlaceholder() {
@@ -52,8 +58,6 @@ export struct LibraryComponent {
         BookCoverWaterFlow({
           coverDataSource: this.viewModel.coverDataSource
         }).padding({ left: 5, right: 5 })
-      } else if (this.showSkeleton) {
-        // todo: skeleton impl
       } else if (this.showLogoutPlaceholder) {
         LogoutStatePlaceholder()
       } else if (this.showErrorPlaceholder) {

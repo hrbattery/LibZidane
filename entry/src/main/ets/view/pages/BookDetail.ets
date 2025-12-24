@@ -14,6 +14,12 @@ export function BookDetailBuilder() {
 @ComponentV2
 struct BookDetailPage {
   @Local viewModel: BookDetailViewModel = new BookDetailViewModel()
+  @Provider() showSkeleton: boolean = this.viewModel.isLoading
+
+  @Monitor("viewModel.isLoading")
+  setShowSkeleton() {
+    this.showSkeleton = this.viewModel.isLoading
+  }
 
   @Computed
   get navMenu(): NavigationMenuItem[] {
