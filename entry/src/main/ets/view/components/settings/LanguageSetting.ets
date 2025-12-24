@@ -1,6 +1,6 @@
 import { SettingsConstants } from '../../../common/const/SettingsConstants'
 import { StorageConstants } from '../../../common/const/StorageConstants'
-import { setLanguage } from '../../../common/system/AbilityUtil'
+import { setAppPreferLanguage } from '../../../common/system/AbilityUtil'
 import { preferencesUtils } from '../../../model/storage/PreferencesUtils'
 
 @ComponentV2
@@ -30,7 +30,7 @@ export struct LanguageSetting {
           this.selected = index;
           const currentLangIndex = preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, 'language', 0)
           if (index !== currentLangIndex) {
-            setLanguage(SettingsConstants.LANGUAGE_VALUE[index])
+            setAppPreferLanguage(SettingsConstants.LANGUAGE_VALUE[index])
             preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, 'language', index)
           }
         })

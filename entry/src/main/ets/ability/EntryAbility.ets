@@ -5,7 +5,7 @@ import { DarkModeEnum, SettingsConstants } from '../common/const/SettingsConstan
 import { StorageConstants } from '../common/const/StorageConstants';
 import { appInit, initPreferences,
   listenSystemLanguageChange,
-  setColorMode, setLanguage } from '../common/system/AbilityUtil';
+  setColorMode, setAppPreferLanguage } from '../common/system/AbilityUtil';
 import { windowUtil } from '../common/system/WindowUtil';
 import { preferencesUtils } from '../model/storage/PreferencesUtils';
 
@@ -28,7 +28,7 @@ export default class EntryAbility extends UIAbility {
 
     setColorMode(this.context.getApplicationContext(), darkModeSetting)
     if (languageSetting !== 0) {
-      setLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
+      setAppPreferLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
     }
     listenSystemLanguageChange()
 

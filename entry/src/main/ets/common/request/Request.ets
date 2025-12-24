@@ -5,14 +5,13 @@ import { deepCopy } from '../CommonUtils'
 import { Constants } from '../const/Constants'
 import { StorageConstants } from '../const/StorageConstants'
 import { qpsController } from './RequestQueue'
+import { i18n } from '@kit.LocalizationKit'
 
 const TAG = '[Request] '
 
 let reqInst = axios.create({
   timeout: 15000
 })
-
-AppStorage.setOrCreate('cookie', {})
 
 reqInst.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
   if (request.baseURL === undefined) {
@@ -22,6 +21,14 @@ reqInst.interceptors.request.use(async (request: InternalAxiosRequestConfig) => 
       Constants.DEFAULT_ZLIB_DOMAIN
     );
   }
+  try {
+    const curPreferLang = i18n.System.getSimplifiedLanguage(i18n.System.getAppPreferredLanguage())
+    request.headers.set({
+      "ANDROID-APP-LANGUAGE": curPreferLang,
+      "source": "android"
+    })
+  } catch  {}
+
   // post请求需要执行contentType
   if (request.method === 'post' || request.method === 'POST') {
     request.headers.setContentType("application/x-www-form-urlencoded");

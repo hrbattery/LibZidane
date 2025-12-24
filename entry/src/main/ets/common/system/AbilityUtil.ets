@@ -32,18 +32,25 @@ export async function appInit(context: common.UIAbilityContext) {
   })
 
   // get languages options
-  // todo: 获取语言与header中的app language键值挂钩，等设置项做了之后作为preference存储、添加到header后再获取语言选项
+  setLanguages();
+
+  setExtensions();
+}
+
+function setExtensions() {
+  getExtensions().then((extensions: string[]) => {
+    AppStorage.setOrCreate("extension_options", extensions);
+  });
+}
+
+function setLanguages() {
   getLanguages().then((languages: Record<string, string>) => {
     let reverseLanguages: Record<string, string> = {};
     for (const entry of Object.entries(languages)) {
-      reverseLanguages[entry[1]] = entry[0]
+      reverseLanguages[entry[1]] = entry[0];
     }
     AppStorage.setOrCreate("language_options", reverseLanguages);
-  })
-
-  getExtensions().then((extensions: string[]) => {
-    AppStorage.setOrCreate("extension_options", extensions);
-  })
+  });
 }
 
 export function initPreferences(context: common.UIAbilityContext) {
@@ -69,7 +76,7 @@ export function setColorMode(context: common.ApplicationContext, index: DarkMode
   }
 }
 
-export function setLanguage(language: string) {
+export function setAppPreferLanguage(language: string) {
   try {
     if (language === 'default') {
       // 因为设置偏好语言为'default'后，应用语言将跟随系统语言，应用冷启动才能生效
@@ -80,8 +87,9 @@ export function setLanguage(language: string) {
     }
     i18n.System.setAppPreferredLanguage(language)
   } catch (err) {
-    logger.error(TAG, `Failed to set colorMode. Cause: ${JSON.stringify(err)}`);
+    logger.error(TAG, `Failed to set app prefer language. Cause: ${JSON.stringify(err)}`);
   }
+  setLanguages()
 }
 
 export function listenSystemLanguageChange() {
@@ -96,7 +104,7 @@ export function listenSystemLanguageChange() {
           preferencesUtils.getSync<number>(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_LANGUAGE, -1)
 
         if (languageSetting === 0) {
-          setLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
+          setAppPreferLanguage(SettingsConstants.LANGUAGE_VALUE[languageSetting])
         }
       })
     })
