@@ -367,6 +367,10 @@
     {
       "name": "ui_search_sort_key_filesize_A",
       "value": "文件大小（升序）"
+    },
+    {
+      "name": "ui_downloaded_download_limited",
+      "value": "下载限制将在 %1$d 小时 %2$d 分后重置"
     }
   ]
 }

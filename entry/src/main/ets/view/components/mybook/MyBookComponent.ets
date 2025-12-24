@@ -12,6 +12,7 @@ export struct MyBookComponent {
    */
   @Param @Require sortOrder: string;
   @Param @Require viewModel: MyBookComponentViewModel;
+  @Provider() onRemove: (index: number) => Promise<void> = async (index: number) => await this.viewModel.onRemove(index)
 
   @Monitor('sortOrder')
   onSortOrderChange(): void {
@@ -57,8 +58,7 @@ export struct MyBookComponent {
         BookInfoList({
           bookDataSource: this.viewModel.bookDataSource,
           pagination: this.viewModel.pagination,
-          onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder),
-          onRemove: async (index: number) => await this.viewModel.onRemove(index)
+          onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder)
         })
         Footer(this.viewModel.isLoadingNew)
       } else if (this.showSkeleton) {
@@ -81,8 +81,7 @@ export struct MyBookComponent {
         BookInfoList({
           bookDataSource: this.viewModel.bookDataSource,
           pagination: this.viewModel.pagination,
-          onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder),
-          onRemove: async (index: number) => await this.viewModel.onRemove(index)
+          onLoadNewData: () => this.viewModel.loadNewData(this.sortOrder)
         })
         Footer(this.viewModel.isLoadingNew)
       }
@@ -90,9 +89,6 @@ export struct MyBookComponent {
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource(this.sortOrder)
       this.viewModel.isRefreshing = false
-    })
-    .onStateChange((state) => {
-      console.log(state.toString())
     })
     .width("100%")
     .height("100%")

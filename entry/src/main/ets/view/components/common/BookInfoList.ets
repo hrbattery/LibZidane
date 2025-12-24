@@ -11,7 +11,6 @@ export struct BookInfoList {
   @Param pagination: PaginationDataSource | undefined = undefined;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
   @Event onLoadNewData: () => Promise<void> = async () => {}
-  @Event onRemove?: (index: number) => Promise<void> = undefined
 
   pathStack: NavPathStack | undefined = undefined;
 
@@ -39,8 +38,7 @@ export struct BookInfoList {
         .each((ri) => {
           ListItem() {
             BookInfoListItem({
-              bookDataItem: ri,
-              onRemove: this.onRemove === undefined ? undefined: async (index: number) => await this.onRemove!(index)
+              bookDataItem: ri
             })
               .onClick(() => {
                 this.gotoBookDetail(ri.item.id, ri.item.hash)
@@ -52,6 +50,8 @@ export struct BookInfoList {
     .divider({
       color: $r("sys.color.font_tertiary"),
       strokeWidth: "1px",
+      startMargin: 10,
+      endMargin: 10
     })
     .lanes(new WidthBreakpointType(1, 2, 3, 4).getValue(this.windowInfo.widthBp), 10)
     .width("100%")

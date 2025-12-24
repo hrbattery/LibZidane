@@ -367,6 +367,10 @@
     {
       "name": "ui_search_sort_key_filesize_A",
       "value": "File size ↑"
+    },
+    {
+      "name": "ui_downloaded_download_limited",
+      "value": "Limit will be reset in %1$dh %2$dm"
     }
   ]
 }

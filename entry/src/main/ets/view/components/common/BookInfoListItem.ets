@@ -7,7 +7,7 @@ import { BookCover } from './BookCover';
 export struct BookInfoListItem {
   @Require @Param bookDataItem: RepeatItem<BookData>;
   @Local showMenu: boolean = false;
-  @Event onRemove?: (index: number) => Promise<void> = undefined
+  @Consumer() onRemove?: (index: number) => Promise<void> = undefined
 
   async onClickStar(): Promise<void> {
     try {
