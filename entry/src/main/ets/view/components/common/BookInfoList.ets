@@ -41,7 +41,7 @@ export struct BookInfoList {
               bookDataItem: ri
             })
               .onClick(() => {
-                if (ri !== null) {
+                if (ri.item !== null) {
                   this.gotoBookDetail(ri.item.id, ri.item.hash)
                 }
               })

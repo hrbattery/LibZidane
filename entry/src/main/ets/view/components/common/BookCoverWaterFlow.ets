@@ -35,7 +35,7 @@ export struct BookCoverWaterFlow {
 
   build() {
     WaterFlow() {
-      Repeat(this.showSkeleton ? (Array(20).fill(0) as CoverData[]) : this.coverDataSource)
+      Repeat(this.showSkeleton ? Array(20).fill(null) as CoverData[] : this.coverDataSource)
         .each((ri) => {
           BookCover({ coverData: ri.item })
             .border({
@@ -43,10 +43,12 @@ export struct BookCoverWaterFlow {
               color: Color.Transparent
             })
             .onClick(() => {
-              this.gotoBookDetail(ri.item.id, ri.item.hash)
+              if (ri.item !== null) {
+                this.gotoBookDetail(ri.item.id, ri.item.hash)
+              }
             })
         })
-        .key((item, index) => `${index}:${item.title}`)
+        .key((item, index) => item === null ? index.toString() : `${index}:${item.title}`)
     }
     .columnsTemplate(`repeat(${new WidthBreakpointType(3, 4, 6, 8).getValue(this.windowInfo.widthBp)}, 1fr)`)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
