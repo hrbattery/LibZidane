@@ -1,3 +1,4 @@
+import { UISkeleton, SkeletonTheme } from '@hw-agconnect/ui-skeleton';
 import { StorageConstants } from '../../../common/const/StorageConstants';
 import { FullBookData } from '../../../model/entities/BookModel';
 import { preferencesUtils } from '../../../model/storage/PreferencesUtils';
@@ -9,9 +10,13 @@ export struct BookDetailDescription {
   @Param @Require bookData: FullBookData
   @Local darkMode: WebDarkMode =
     preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE, WebDarkMode.Auto)
+  @Consumer() showSkeleton: boolean = false
 
-  aboutToAppear(): void {
-    createNWeb(bookDescriptionTabWrap, this.bookData.description, this.getUIContext());
+  @Monitor("bookData")
+  onBookDataLoad(): void {
+    if (this.bookData?.description) {
+      createNWeb(bookDescriptionTabWrap, this.bookData.description, this.getUIContext());
+    }
   }
 
   aboutToDisappear(): void {
@@ -21,13 +26,64 @@ export struct BookDetailDescription {
   build() {
     Tabs() {
       TabContent() {
-        this.BookAboutTab(this.bookData)
+        if (this.showSkeleton) {
+          Grid() {
+            Repeat(Array(5).fill(null))
+              .each(() => {
+                GridItem() {
+                  UISkeleton({
+                    options: [
+                      {
+                        height: 16,
+                        width: "90%"
+                      }
+                    ],
+                    theme: SkeletonTheme.TEXT
+                  })
+                }.align(Alignment.Start)
+                .height(24)
+                GridItem() {
+                  UISkeleton({
+                    options: [
+                      {
+                        height: 16,
+                        width: "90%"
+                      }
+                    ],
+                    theme: SkeletonTheme.TEXT
+                  })
+                }.align(Alignment.Start)
+                .height(24)
+              })
+              .key((item: null, index) => index.toString())
+          }
+          .GridExtend()
+        } else {
+          this.BookAboutTab(this.bookData)
+        }
       }
       .height("auto")
       .tabBar($r("app.string.ui_bookdetail_about"));
 
       TabContent() {
-        this.BookDescriptionTab(this.bookData)
+        if (this.showSkeleton) {
+          Column() {
+            UISkeleton({
+              options: [
+                { height: 16, width: "90%" },
+                { height: 16, width: "90%" },
+                { height: 16, width: "90%" }
+              ],
+              theme: SkeletonTheme.PARAGRAPH,
+              alignCol: FlexAlign.Center,
+              alignRow: FlexAlign.Center
+            })
+              .align(Alignment.Center)
+              .height(64)
+          }
+        } else {
+          this.BookDescriptionTab(this.bookData)
+        }
       }
       .height("auto")
       .tabBar($r("app.string.ui_bookdetail_description"));
@@ -91,12 +147,7 @@ export struct BookDetailDescription {
         // fixme: 考虑只有ext或只有filesize的情况
       }
     }
-    .columnsGap(10)
-    .rowsGap(15)
-    .margin({ left: 10, right: 10 })
-    .columnsTemplate('2fr 3fr')
-    .enableScrollInteraction(false)
-    .supportAnimation(false)
+    .GridExtend()
   }
 
   @Builder
@@ -115,4 +166,14 @@ export struct BookDetailDescription {
         .textAlign(TextAlign.Start)
     }.align(Alignment.Start)
   }
+}
+
+@Extend(Grid)
+function GridExtend() {
+  .columnsGap(10)
+  .rowsGap(15)
+  .margin({ left: 10, right: 10 })
+  .columnsTemplate('2fr 3fr')
+  .enableScrollInteraction(false)
+  .supportAnimation(false)
 }

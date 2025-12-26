@@ -1,3 +1,4 @@
+import { UISkeleton, SkeletonTheme } from '@hw-agconnect/ui-skeleton'
 import { windowUtil } from '../../../common/system/WindowUtil'
 import { BookFormatType, FullBookData } from '../../../model/entities/BookModel'
 import { BookCover } from '../common/BookCover'
@@ -8,6 +9,7 @@ export struct BookDetailHeader {
   @Param @Require bookData: FullBookData
   @Param @Require bookFormats: BookFormatType[]
   @Local isShowSelectFormatSheet: boolean = false
+  @Consumer() showSkeleton: boolean = false
   pathStack: NavPathStack | undefined = undefined;
 
   aboutToAppear(): void {
@@ -59,32 +61,51 @@ export struct BookDetailHeader {
 
   @Builder
   BookMainInfos() {
-    Text(this.bookData.title)
-      .fontSize(18)
-      .fontWeight(FontWeight.Bold)
-      .textAlign(TextAlign.Center)
-    Text(this.bookData.author)
-      .fontSize(16)
-      .fontColor($r("sys.color.font_secondary"))
-      .textAlign(TextAlign.Center)
-      .onClick(() => {
-        this.pathStack?.pushPathByName("Search", this.bookData.author)
-      })
-    this.BookSubInfos(this.bookData, 16, $r("sys.color.font_primary"))
+    if (this.showSkeleton) {
+      Column() {
+        UISkeleton({
+          options: [
+            { height: 18, width: "80%" },
+            { height: 18, width: "80%" },
+            { height: 18, width: "80%", margin: { bottom: windowUtil.mainWindowInfo.widthBp <= WidthBreakpoint.WIDTH_SM ? 24: 32 } },
+            { height: 16, width: "60%", margin: { bottom: windowUtil.mainWindowInfo.widthBp <= WidthBreakpoint.WIDTH_SM ? 24: 32 } },
+            { height: 16, width: "80%" }
+          ],
+          theme: SkeletonTheme.TEXT,
+          alignCol: FlexAlign.Center,
+          alignRow: FlexAlign.Center
+        })
+      }
+      .height(160)
 
-    Button($r("app.string.ui_bookdetail_download_btn"))
-      .width("90%")
-      .onClick(() => this.showSelectFormatSheet())
-      .bindSheet(this.isShowSelectFormatSheet, this.BookFormatSheetBuilder(
-        this.bookData,
-        this.bookFormats,
-        () => this.handleSelectFormatSheet()
-      ), {
-        detents: [SheetSize.MEDIUM, SheetSize.LARGE, 600],
-        preferType: SheetType.BOTTOM,
-        title: { title: $r("app.string.ui_bookdetail_downloadsheet_title") },
-        scrollSizeMode: ScrollSizeMode.CONTINUOUS
-      })
+    } else {
+      Text(this.bookData.title)
+        .fontSize(18)
+        .fontWeight(FontWeight.Bold)
+        .textAlign(TextAlign.Center)
+      Text(this.bookData.author)
+        .fontSize(16)
+        .fontColor($r("sys.color.font_secondary"))
+        .textAlign(TextAlign.Center)
+        .onClick(() => {
+          this.pathStack?.pushPathByName("Search", this.bookData.author)
+        })
+      this.BookSubInfos(this.bookData, 16, $r("sys.color.font_primary"))
+
+      Button($r("app.string.ui_bookdetail_download_btn"))
+        .width("90%")
+        .onClick(() => this.showSelectFormatSheet())
+        .bindSheet(this.isShowSelectFormatSheet, this.BookFormatSheetBuilder(
+          this.bookData,
+          this.bookFormats,
+          () => this.handleSelectFormatSheet()
+        ), {
+          detents: [SheetSize.MEDIUM, SheetSize.LARGE, 600],
+          preferType: SheetType.BOTTOM,
+          title: { title: $r("app.string.ui_bookdetail_downloadsheet_title") },
+          scrollSizeMode: ScrollSizeMode.CONTINUOUS
+        })
+    }
   }
 
   @Builder

@@ -27,11 +27,6 @@ export struct LibraryComponent {
     return this.viewModel.coverDataSource.length > 0
   }
 
-  // @Provider() @Computed
-  // get showSkeleton() {
-  //   return this.viewModel.isLoading
-  // }
-
   @Computed
   get showErrorPlaceholder() {
     return !this.viewModel.isLoading

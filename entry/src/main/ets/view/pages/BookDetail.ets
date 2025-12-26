@@ -23,6 +23,9 @@ struct BookDetailPage {
 
   @Computed
   get navMenu(): NavigationMenuItem[] {
+    if (this.showSkeleton) {
+      return []
+    }
     if (this.viewModel.isUserFavorite) {
       return [
         {
@@ -56,24 +59,22 @@ struct BookDetailPage {
     NavDestination() {
       Scroll() {
         Column() {
-          if (this.viewModel.bookData !== undefined) {
-            BookDetailHeader({
-              bookData: this.viewModel.bookData,
-              bookFormats: this.viewModel.bookFormats
-            })
+          BookDetailHeader({
+            bookData: this.viewModel.bookData,
+            bookFormats: this.viewModel.bookFormats
+          })
 
-            BookDetailDescription({ bookData: this.viewModel.bookData })
+          BookDetailDescription({ bookData: this.viewModel.bookData })
 
-            Text($r("app.string.ui_bookdetail_recommended"))
-              .fontSize(18)
-              .margin({ top: 15, bottom: 4, left: 10 })
-              .alignSelf(ItemAlign.Start)
+          Text($r("app.string.ui_bookdetail_recommended"))
+            .fontSize(18)
+            .margin({ top: 15, bottom: 4, left: 10 })
+            .alignSelf(ItemAlign.Start)
 
-            BookCoverWaterFlow({
-              coverDataSource: this.viewModel.similarBookCoverDataSource
-            })
-              .padding({ left: 5, right: 5 })
-          }
+          BookCoverWaterFlow({
+            coverDataSource: this.viewModel.similarBookCoverDataSource
+          })
+            .padding({ left: 5, right: 5 })
         }
       }
     }

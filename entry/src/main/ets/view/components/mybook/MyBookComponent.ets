@@ -34,11 +34,6 @@ export struct MyBookComponent {
     return this.viewModel.bookDataSource.length > 0
   }
 
-  // @Computed
-  // get showSkeleton() {
-  //   return this.viewModel.isLoading
-  // }
-
   @Computed
   get showErrorPlaceholder() {
     return !this.viewModel.isLoading

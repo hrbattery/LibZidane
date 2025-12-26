@@ -50,10 +50,10 @@ export class BookDetailViewModel extends NetworkRequestViewModel {
         this.isLoading = true;
         let bookData = await getBookInfo(this.bookId, this.hash);
         if (bookData) {
-          this.isLoadFailed = false;
-          this.isLoading = false;
           this.bookData = FullBookDataFactory.fromBookCommonDataSource(bookData);
           bookDataCache.setCache(`${this.bookId}_${this.hash}`, this.bookData)
+          this.isLoadFailed = false;
+          this.isLoading = false;
         }
       } catch (e) {
         logger.error(e)

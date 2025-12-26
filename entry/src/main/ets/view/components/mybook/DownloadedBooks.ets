@@ -46,6 +46,7 @@ export struct DownloadedBooks {
             type: ProgressType.Linear
           })
         }
+        .padding({ top: 4, bottom: 4 })
         .alignItems(HorizontalAlign.Center)
         .layoutWeight(1)
       }
