@@ -20,6 +20,7 @@ export struct BookCover {
             theme: SkeletonTheme.IMAGE,
           })
         }
+          .transition(TransitionEffect.OPACITY.animation({duration: 500}))
           .constraintSize({
             maxHeight: this.altHeight ?? Infinity
           })
@@ -40,6 +41,7 @@ export struct BookCover {
             .maxLines(6)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
             .wordBreak(WordBreak.BREAK_ALL)
+            .transition(TransitionEffect.OPACITY.animation({duration: 500}))
         }
 
         Image(this.coverData.cover)
@@ -59,6 +61,7 @@ export struct BookCover {
           .constraintSize({
             maxHeight: this.altHeight ?? Infinity
           })
+          .transition(TransitionEffect.OPACITY.animation({duration: 500}))
           .width("100%")
       }
     }

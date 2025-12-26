@@ -40,6 +40,7 @@ export struct BookInfoList {
             BookInfoListItem({
               bookDataItem: ri
             })
+              .transition(TransitionEffect.OPACITY.animation({duration: 500}))
               .onClick(() => {
                 if (ri.item !== null) {
                   this.gotoBookDetail(ri.item.id, ri.item.hash)

@@ -33,7 +33,8 @@ export struct BookDetailHeader {
           .width("30%")
           .constraintSize({
             maxWidth: 120
-          });
+          })
+          .transition(TransitionEffect.OPACITY.animation({duration: 500}))
         this.BookMainInfos()
       }
       .headerFancy()
@@ -46,7 +47,7 @@ export struct BookDetailHeader {
           .width("50%")
           .constraintSize({
             maxWidth: 200
-          });
+          })
         Column({ space: 32 }) {
           this.BookMainInfos()
         }
@@ -76,6 +77,7 @@ export struct BookDetailHeader {
           alignRow: FlexAlign.Center
         })
       }
+      .transition(TransitionEffect.OPACITY.animation({duration: 500}))
       .height(160)
 
     } else {
@@ -83,10 +85,12 @@ export struct BookDetailHeader {
         .fontSize(18)
         .fontWeight(FontWeight.Bold)
         .textAlign(TextAlign.Center)
+        .transition(TransitionEffect.OPACITY.animation({duration: 500}))
       Text(this.bookData.author)
         .fontSize(16)
         .fontColor($r("sys.color.font_secondary"))
         .textAlign(TextAlign.Center)
+        .transition(TransitionEffect.OPACITY.animation({duration: 500}))
         .onClick(() => {
           this.pathStack?.pushPathByName("Search", this.bookData.author)
         })
@@ -105,6 +109,7 @@ export struct BookDetailHeader {
           title: { title: $r("app.string.ui_bookdetail_downloadsheet_title") },
           scrollSizeMode: ScrollSizeMode.CONTINUOUS
         })
+        .transition(TransitionEffect.OPACITY.animation({duration: 500}))
     }
   }
 
@@ -127,6 +132,7 @@ export struct BookDetailHeader {
 
       Text(`${bookData.extension}, ${bookData.filesizeString}`).fontSize(fontSize).fontColor(color);
     }
+    .transition(TransitionEffect.OPACITY.animation({duration: 500}))
     .justifyContent(FlexAlign.Center)
     .height(fontSize)
     .width("100%")
@@ -153,4 +159,5 @@ function headerFancy() {
   })
   .margin({ left: 16, right: 16 })
   .backgroundColor($r("sys.color.background_secondary"))
+  .transition(TransitionEffect.OPACITY.animation({duration: 500}))
 }

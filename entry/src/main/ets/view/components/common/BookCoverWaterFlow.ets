@@ -38,6 +38,7 @@ export struct BookCoverWaterFlow {
       Repeat(this.showSkeleton ? Array(20).fill(null) as CoverData[] : this.coverDataSource)
         .each((ri) => {
           BookCover({ coverData: ri.item })
+            .transition(TransitionEffect.OPACITY.animation({duration: 500}))
             .border({
               width: 5,
               color: Color.Transparent

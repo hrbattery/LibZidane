@@ -157,6 +157,7 @@ export struct BookDetailDescription {
         .textAlign(TextAlign.Start)
         .fontColor($r("sys.color.font_secondary"))
     }.align(Alignment.Start)
+    .transition(TransitionEffect.OPACITY.animation({duration: 500}))
   }
 
   @Builder
@@ -165,6 +166,7 @@ export struct BookDetailDescription {
       Text(text)
         .textAlign(TextAlign.Start)
     }.align(Alignment.Start)
+    .transition(TransitionEffect.OPACITY.animation({duration: 500}))
   }
 }
 
