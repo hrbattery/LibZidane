@@ -58,7 +58,7 @@ export struct BookDetailDescription {
               .key((item: null, index) => index.toString())
           }
           .GridExtend()
-        } else {
+        } else if (this.bookData) {
           this.BookAboutTab(this.bookData)
         }
       }
@@ -81,7 +81,7 @@ export struct BookDetailDescription {
               .align(Alignment.Center)
               .height(64)
           }
-        } else {
+        } else if (this.bookData) {
           this.BookDescriptionTab(this.bookData)
         }
       }

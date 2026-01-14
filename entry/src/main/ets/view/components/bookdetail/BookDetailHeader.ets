@@ -80,7 +80,7 @@ export struct BookDetailHeader {
       .transition(TransitionEffect.OPACITY.animation({duration: 500}))
       .height(160)
 
-    } else {
+    } else if (this.bookData) {
       Text(this.bookData.title)
         .fontSize(18)
         .fontWeight(FontWeight.Bold)

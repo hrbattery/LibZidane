@@ -26,8 +26,7 @@ export struct BookCover {
           })
           .width("100%")
           .aspectRatio(this.imgRatio)
-      }
-      else {
+      } else if (this.coverData) {
         if (!this.isLoaded || this.loadError) {
           Text(this.coverData.title ?? $r("app.string.ui_common_loading"))
             .fontSize("14vp")
@@ -44,7 +43,7 @@ export struct BookCover {
             .transition(TransitionEffect.OPACITY.animation({duration: 500}))
         }
 
-        Image(this.coverData.cover)
+        Image(this.coverData?.cover)
           .objectFit(ImageFit.Contain)
           .visibility(this.isLoaded && !this.loadError ? Visibility.Visible : Visibility.None)
           .onComplete(event => {
