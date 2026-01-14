@@ -1,4 +1,4 @@
-import { DialogHelper } from '@pura/harmony-dialog';
+import { DialogAction, DialogHelper } from '@pura/harmony-dialog';
 import { SearchViewModel } from '../../../viewModel/search/SearchResultViewModel';
 import { Chip, ChipSize, ChipGroup } from '@kit.ArkUI';
 
@@ -24,10 +24,10 @@ export struct SearchHistory {
     DialogHelper.showAlertDialog({
       title: $r("app.string.ui_search_history_clear_title"),
       content: $r("app.string.ui_search_history_clear_message"),
-      primaryButton: $r("app.string.ui_common_confirm_btn"),
-      secondaryButton: $r("app.string.ui_common_cancel_btn"),
-      onAction: (action: number) => {
-        if (action === 0) {
+      primaryButton: $r("app.string.ui_common_cancel_btn"),
+      secondaryButton: $r("app.string.ui_common_confirm_btn"),
+      onAction: (action: DialogAction) => {
+        if (action === DialogAction.TWO) {
           // User confirmed, clear all history
           this.viewModel.clearSearchHistory();
         }
