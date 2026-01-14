@@ -75,8 +75,9 @@ export struct SearchHistory {
           }
           .justifyContent(FlexAlign.Start)
           .alignSelf(ItemAlign.Start)
-          .width("100%")
+          // .width("100%")
         }
+        .align(Alignment.Start)
         .scrollable(ScrollDirection.Horizontal)
         .scrollBar(BarState.Off)
         .width("100%")
