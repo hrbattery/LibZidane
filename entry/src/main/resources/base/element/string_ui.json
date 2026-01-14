@@ -369,8 +369,32 @@
       "value": "File size ↑"
     },
     {
-      "name": "ui_downloaded_download_limited",
-      "value": "Limit will be reset in %1$dh %2$dm"
-    }
+    "name": "ui_downloaded_download_limited",
+    "value": "Limit will be reset in %1$dh %2$dm"
+  },
+  {
+    "name": "ui_search_history_title",
+    "value": "Recent Searches"
+  },
+  {
+    "name": "ui_search_history_expand",
+    "value": "Show more"
+  },
+  {
+    "name": "ui_search_history_collapse",
+    "value": "Show less"
+  },
+  {
+    "name": "ui_search_history_clear_all",
+    "value": "Clear all"
+  },
+  {
+    "name": "ui_search_history_clear_title",
+    "value": "Clear Search History"
+  },
+  {
+    "name": "ui_search_history_clear_message",
+    "value": "Are you sure you want to clear all search history?"
+  }
   ]
 }

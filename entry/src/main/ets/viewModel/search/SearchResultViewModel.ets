@@ -1,10 +1,12 @@
-import { LogUtil as logger } from '@pura/harmony-utils';
+import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
+import { PersistenceV2 } from '@kit.ArkUI';
 
 import { Constants } from '../../common/const/Constants';
 import { PaginationDataSource } from '../../common/types/ResponseTypes';
 import { getSearch } from '../../model/api/BookApi';
 import { BookData, BookDataType } from '../../model/entities/BookModel';
 import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel';
+import { SearchHistoryState } from '../../model/entities/SearchHistoryState';
 import { BookDataFactory } from '../../model/factory/BookModelFactory';
 import { NetworkRequestViewModel } from '../common/NetworkRequestViewModel';
 
@@ -30,6 +32,14 @@ export class SearchViewModel extends NetworkRequestViewModel {
    * data source for pagination data of book info list
    */
   @Trace pagination: PaginationDataSource | undefined = undefined;
+  /**
+   * search history state managed by PersistenceV2
+   */
+  @Trace searchHistoryState: SearchHistoryState = PersistenceV2.connect(SearchHistoryState, 'searchHistoryState', () => new SearchHistoryState())!
+  /**
+   * flag to control search history expansion state
+   */
+  @Trace isHistoryExpanded: boolean = false;
 
   private _languageOptions: Record<string, string> = AppStorage.get("language_options") ?? {}
 
@@ -102,6 +112,72 @@ export class SearchViewModel extends NetworkRequestViewModel {
       this.isLoadingNew = true
       await this.loadNewSearchData()
       this.isLoadingNew = false
+    }
+  }
+
+  async onSubmitSearch(value: string) {
+    if (!value) {
+      ToastUtil.showToast($r("app.string.notif_search_empty_content"))
+    } else {
+      this.searchKeyword = value
+      await this.loadDataSource()
+    }
+  }
+
+  /**
+   * Add a new search keyword to history with LRU logic
+   * @param keyword - The search keyword to add
+   */
+  addSearchHistory(keyword: string): void {
+    if (!keyword || keyword.trim() === '') return;
+
+    try {
+      const trimmedKeyword = keyword.trim();
+      const maxHistoryItems = 30;
+
+      // Remove if already exists (to move to front)
+      const existingIndex = this.searchHistoryState.searchHistory.indexOf(trimmedKeyword);
+      if (existingIndex > -1) {
+        this.searchHistoryState.searchHistory.splice(existingIndex, 1);
+      }
+
+      // Add to front
+      this.searchHistoryState.searchHistory.unshift(trimmedKeyword);
+
+      // Limit to max items
+      if (this.searchHistoryState.searchHistory.length > maxHistoryItems) {
+        this.searchHistoryState.searchHistory = this.searchHistoryState.searchHistory.slice(0, maxHistoryItems);
+      }
+    } catch (e) {
+      logger.error(`Error adding search history: ${JSON.stringify(e)}`);
+      // Continue execution even if storage fails
+    }
+  }
+
+  /**
+   * Delete a search history item by index
+   * @param index - The index of the item to delete
+   */
+  deleteSearchHistory(index: number): void {
+    try {
+      if (index >= 0 && index < this.searchHistoryState.searchHistory.length) {
+        this.searchHistoryState.searchHistory.splice(index, 1);
+      }
+    } catch (e) {
+      logger.error(`Error deleting search history: ${JSON.stringify(e)}`);
+      // Continue execution even if storage fails
+    }
+  }
+
+  /**
+   * Clear all search history
+   */
+  clearSearchHistory(): void {
+    try {
+      this.searchHistoryState.searchHistory = [];
+    } catch (e) {
+      logger.error(`Error clearing search history: ${JSON.stringify(e)}`);
+      // Continue execution even if storage fails
     }
   }
 }

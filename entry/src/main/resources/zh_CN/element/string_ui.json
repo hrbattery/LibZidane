@@ -371,6 +371,30 @@
     {
       "name": "ui_downloaded_download_limited",
       "value": "下载限制将在 %1$d 小时 %2$d 分后重置"
+    },
+    {
+      "name": "ui_search_history_title",
+      "value": "最近搜索"
+    },
+    {
+      "name": "ui_search_history_expand",
+      "value": "显示更多"
+    },
+    {
+      "name": "ui_search_history_collapse",
+      "value": "显示更少"
+    },
+    {
+      "name": "ui_search_history_clear_all",
+      "value": "清空全部"
+    },
+    {
+      "name": "ui_search_history_clear_title",
+      "value": "清空搜索历史"
+    },
+    {
+      "name": "ui_search_history_clear_message",
+      "value": "确定要清空所有搜索历史吗？"
     }
   ]
 }

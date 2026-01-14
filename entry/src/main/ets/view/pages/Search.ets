@@ -2,6 +2,7 @@ import { DialogHelper } from '@pura/harmony-dialog'
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils'
 import { Constants } from '../../common/const/Constants'
 import { SearchViewModel } from '../../viewModel/search/SearchResultViewModel'
+import { SearchHistory } from '../components/search/SearchHistory'
 import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
 import { SearchResults } from '../components/search/SearchResults'
 
@@ -13,6 +14,7 @@ export function SearchPageBuilder() {
 @ComponentV2
 struct SearchPage {
   @Local viewModel: SearchViewModel = new SearchViewModel()
+  @Local isSearchFocused: boolean = false
 
   getSortMenuItems(): SheetInfo[] {
     return Constants.SEARCH_SORT_KEY.map((value, index) => {
@@ -84,12 +86,14 @@ struct SearchPage {
           }
         })
         .onSubmit(async (value) => {
-          if (!value) {
-            ToastUtil.showToast($r("app.string.notif_search_empty_content"))
-          } else {
-            this.viewModel.searchKeyword = value
-            this.viewModel.loadDataSource()
-          }
+          await this.viewModel.onSubmitSearch(value)
+          this.viewModel.addSearchHistory(value)
+        })
+        .onFocus(() => {
+          this.isSearchFocused = true
+        })
+        .onBlur(() => {
+          this.isSearchFocused = false
         })
     }
     .margin({ left: 10, right: 10 })
@@ -113,10 +117,25 @@ struct SearchPage {
   build() {
     NavDestination() {
       Column() {
-        this.SearchResultAmount()
-        SearchResults({
-          viewModel: this.viewModel
-        })
+        if (this.isSearchFocused) {
+          SearchHistory({
+            viewModel: this.viewModel,
+            onHistoryItemClick: async (keyword: string) => {
+              this.getUIContext().getFocusController().clearFocus();
+              await this.viewModel.onSubmitSearch(keyword)
+            }
+          })
+        } else {
+          // Search results section
+          Column() {
+            this.SearchResultAmount()
+            SearchResults({
+              viewModel: this.viewModel
+            })
+          }
+          .width("100%")
+          .margin({ top: 10 })
+        }
       }
       .width("100%")
     }
