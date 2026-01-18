@@ -395,6 +395,10 @@
   {
     "name": "ui_search_history_clear_message",
     "value": "Are you sure you want to clear all search history?"
+  },
+  {
+    "name": "ui_donation_menu_donate",
+    "value": "Donate"
   }
   ]
 }

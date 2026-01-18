@@ -1,5 +1,10 @@
 import { DonationViewModel } from '../../../viewModel/settings/DonationsViewModel'
 import { i18n } from '@kit.LocalizationKit'
+import { common } from '@kit.AbilityKit'
+import { ToastUtil } from '@pura/harmony-utils'
+import { preferencesUtils } from '../../../model/storage/PreferencesUtils'
+import { StorageConstants } from '../../../common/const/StorageConstants'
+import { Constants } from '../../../common/const/Constants'
 
 @Builder
 export function DonationBuilder() {
@@ -12,11 +17,40 @@ export function DonationBuilder() {
 struct Donation {
   @Local viewModel: DonationViewModel = new DonationViewModel()
 
+  @Computed
+  get navMenu(): NavigationMenuItem[] {
+    return [
+      {
+        'value': $r("app.string.ui_donation_menu_donate"),
+        'icon': $r("app.media.donation"),
+        'action': () => this.openDonationPage()
+      }
+    ]
+  }
+
   async aboutToAppear(): Promise<void> {
     await Promise.all([
       this.viewModel.loadDonationRecords(),
       this.viewModel.loadDonationProfile()
     ])
+  }
+
+  openDonationPage() {
+    const activeApi = preferencesUtils.getSync<string>(
+      StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
+      Constants.DEFAULT_ZLIB_DOMAIN
+    )
+    const donationUrl = `${activeApi}/how-to-donate`
+    const context = this.getUIContext().getHostContext() as common.UIAbilityContext
+    context.openLink(donationUrl, { appLinkingOnly: false })
+      .catch(() => {
+        ToastUtil.showToast(
+          this.getUIContext().getHostContext()!.resourceManager.getStringSync(
+            $r("app.string.notif_open_link_failed").id,
+            donationUrl
+          ), { duration: 2000 });
+      });
   }
 
   build() {
@@ -70,6 +104,7 @@ struct Donation {
       .width("100%")
     }
     .title($r("app.string.ui_setting_account_donation"))
+    .menus(this.navMenu)
   }
 }
 
