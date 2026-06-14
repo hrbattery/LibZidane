@@ -5,7 +5,7 @@
 
 ## 📖 Software Features
 
-Emm...This is just a simple (WIP) replacement of Z-Library Android App for HarmonyOS now. 
+A simple replacement of Z-Library Android App for HarmonyOS. 
 
 - [x] Login to Z-Library (Account / Cookie)
 - [x] Recommended / Most Popular
@@ -15,8 +15,8 @@ Emm...This is just a simple (WIP) replacement of Z-Library Android App for Harmo
 - [x] Download books
 - [x] i18n (zh-hans & en-us)
 - [x] Dark mode
-- [ ] Custom Api
-- [ ] Donation page to original Z-Library (not to me)
+- [x] Custom Api
+- [x] Donation page to original Z-Library (not to me)
 - [x] Multi-device adaption (Tablet, 2in1, PC)
 
 ## 🛠️ System Require
