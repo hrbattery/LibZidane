@@ -88,34 +88,46 @@ class Request {
     maxAttempts?: number,
     onError?: (endpoint: string, error: Error) => void
   ): Promise<R> {
-    const customApis: string[] =
-      preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, []);
-    const officialApis: string[] =
-      preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_OFFICIAL_APIS, []);
     const curActiveApi: string =
       preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CURRENT_ACTIVE_API,
         Constants.DEFAULT_ZLIB_DOMAIN);
-    const endpoints: string[] = Array.from(new Set([
-      curActiveApi,
-      ...customApis,
-      ...officialApis
-    ]));
+    const allowFallback: boolean = config.baseURL === undefined;
+    let endpoints: string[] = [];
+
+    if (allowFallback) {
+      const customApis: string[] =
+        preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CUSTOM_APIS, []);
+      const officialApis: string[] =
+        preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_OFFICIAL_APIS, []);
+
+      endpoints = Array.from(new Set([
+        curActiveApi,
+        ...customApis,
+        ...officialApis
+      ]));
+    } else {
+      endpoints = [config.baseURL as string];
+    }
 
     const _maxAttempts = maxAttempts ?? endpoints.length
-    let _config: AxiosRequestConfig = deepCopy(config);
+    const attemptLimit = Math.min(_maxAttempts, endpoints.length);
     let attempts = 0;
     let lastError: Error | null = null;
+    const triedEndpoints: string[] = [];
 
-    for (let i = 0; i < Math.min(_maxAttempts, endpoints.length); i++) {
+    for (let i = 0; i < attemptLimit; i++) {
       attempts++;
       const endpoint = endpoints[i];
-      if (config.baseURL === undefined) {
+      const _config: AxiosRequestConfig = deepCopy(config) as AxiosRequestConfig;
+      triedEndpoints.push(endpoint);
+
+      if (allowFallback) {
         _config.baseURL = endpoint;
       }
 
       try {
         const data = await this.request<R>(_config);
-        if (endpoint != curActiveApi) {
+        if (allowFallback && endpoint != curActiveApi) {
           preferencesUtils.putSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_CURRENT_ACTIVE_API, endpoint)
         }
         return data;
@@ -123,19 +135,13 @@ class Request {
         lastError = error as Error;
         onError?.(endpoint, error as Error);
 
-        if (config.baseURL === undefined) {
-          break;
-        }
-
-        // 如果不是最后一次尝试，继续下一个
-        if (i < _maxAttempts - 1) {
-          logger.debug(`Try next endpoint: ${endpoints[i + 1]}`);
-          continue;
+        if (i < attemptLimit - 1) {
+          logger.debug(TAG, `Try next endpoint: ${endpoints[i + 1]}`);
         }
       }
     }
 
-    throw new Error(`所有端点都失败 (尝试了 ${attempts} 次): ${lastError?.message}`);
+    throw new Error(`所有端点都失败 (尝试了 ${attempts} 次: ${triedEndpoints.join(', ')}): ${lastError?.message}`);
   }
 }
 
