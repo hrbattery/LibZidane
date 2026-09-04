@@ -75,6 +75,14 @@
     {
       "name": "local_books_save_failed",
       "value": "下载或保存失败，请重试。"
+    },
+    {
+      "name": "local_books_downloaded_on",
+      "value": "下载于 %s"
+    },
+    {
+      "name": "local_books_file_info",
+      "value": "%s，%s"
     }
   ]
 }

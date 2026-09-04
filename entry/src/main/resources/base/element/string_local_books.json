@@ -75,6 +75,14 @@
     {
       "name": "local_books_save_failed",
       "value": "Download or save failed. Please retry."
+    },
+    {
+      "name": "local_books_downloaded_on",
+      "value": "Downloaded %s"
+    },
+    {
+      "name": "local_books_file_info",
+      "value": "%s, %s"
     }
   ]
 }

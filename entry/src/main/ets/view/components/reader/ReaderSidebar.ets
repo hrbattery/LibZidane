@@ -154,7 +154,7 @@ export struct ReaderSidebar {
       .offset({ x: 14, y: -14 })
       .backgroundColor(Color.Transparent)
       .clip(false)
-      .accessibilityText($r('app.string.ui_reader_close'))
+      .accessibilityText($r('app.string.ui_reader_remove_recent'))
       .onClick(() => this.onCloseBook(session))
     }
     .width('100%')

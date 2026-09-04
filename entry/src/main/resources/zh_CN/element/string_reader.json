@@ -31,6 +31,10 @@
     {
       "name": "ui_reader_sidebar_empty",
       "value": "暂无最近在读书籍"
+    },
+    {
+      "name": "ui_reader_remove_recent",
+      "value": "从最近在读移除"
     }
   ]
 }

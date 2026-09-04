@@ -70,10 +70,8 @@ export struct LocalBooks {
               .wordBreak(WordBreak.BREAK_ALL)
           }
           .alignItems(HorizontalAlign.Start)
-          Text() {
-            Span($r('app.string.ui_bookinfo_downloaded'))
-            Span(` ${new Date(entry.record.downloadedAt).toLocaleDateString(i18n.System.getAppPreferredLanguage())}`)
-          }
+          Text($r('app.string.local_books_downloaded_on',
+            new Date(entry.record.downloadedAt).toLocaleDateString(i18n.System.getAppPreferredLanguage())))
             .fontSize(12)
             .fontColor($r('sys.color.font_secondary'))
         }
@@ -89,7 +87,7 @@ export struct LocalBooks {
         Text() {
           SymbolSpan($r('sys.symbol.doc_text'))
         }.fontSize(12).fontColor($r('sys.color.font_secondary'))
-        Text(`${entry.record.extension}, ${filesize(entry.record.size)}`)
+        Text($r('app.string.local_books_file_info', entry.record.extension, filesize(entry.record.size)))
           .fontSize(12)
           .fontColor($r('sys.color.font_secondary'))
         if (!entry.available) {
