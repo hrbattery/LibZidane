@@ -167,17 +167,23 @@ struct Home {
     .hitTestBehavior(HitTestMode.Transparent)
   }
 
-  /** Native floating tabs retain the app's compact text labels. */
+  /** Pair system symbols with compact labels and highlight the active tab. */
   @Builder
-  RootTabLabel(index: number) {
-    Text(this.titleMap[index])
-      .fontSize(14)
-      .fontWeight(this.index === index ? FontWeight.Bold : FontWeight.Medium)
-      .fontColor(this.index === index ? $r('sys.color.font_emphasize') : $r('sys.color.font_secondary'))
-      .maxLines(1)
-      .height(48)
-      .width('100%')
-      .textAlign(TextAlign.Center)
+  RootTabLabel(index: number, icon: Resource) {
+    Column({ space: 2 }) {
+      SymbolGlyph(icon)
+        .fontSize(24)
+        .fontColor([this.index === index ? $r('sys.color.icon_emphasize') : $r('sys.color.icon_secondary')])
+      Text(this.titleMap[index])
+        .fontSize(12)
+        .fontWeight(this.index === index ? FontWeight.Bold : FontWeight.Medium)
+        .fontColor(this.index === index ? $r('sys.color.font_emphasize') : $r('sys.color.font_secondary'))
+        .maxLines(1)
+        .textAlign(TextAlign.Center)
+    }
+    .height(48)
+    .width('100%')
+    .justifyContent(FlexAlign.Center)
   }
 
   /** Keep the existing tab content and right-side menu actions. */
@@ -188,7 +194,7 @@ struct Home {
         TabContent() {
           Library()
         }
-        .tabBar(this.RootTabLabel(0))
+        .tabBar(this.RootTabLabel(0, $r('sys.symbol.bookshelf')))
 
         TabContent() {
           MyBook({
@@ -203,12 +209,12 @@ struct Home {
             }
           })
         }
-        .tabBar(this.RootTabLabel(1))
+        .tabBar(this.RootTabLabel(1, $r('sys.symbol.bookmark_book_closed')))
 
         TabContent() {
           Settings()
         }
-        .tabBar(this.RootTabLabel(2))
+        .tabBar(this.RootTabLabel(2, $r('sys.symbol.gearshape')))
       }
       .height('100%')
       .width('100%')
