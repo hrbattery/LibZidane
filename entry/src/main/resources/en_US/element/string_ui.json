@@ -137,6 +137,18 @@
       "value": "Extension"
     },
     {
+      "name": "ui_search_selected_count",
+      "value": "%d selected"
+    },
+    {
+      "name": "ui_search_invalid_year_range",
+      "value": "The start year must not be later than the end year."
+    },
+    {
+      "name": "ui_search_options_unavailable",
+      "value": "No options available. Please try again later."
+    },
+    {
       "name": "ui_search_clear_filter",
       "value": "Clear filter"
     },

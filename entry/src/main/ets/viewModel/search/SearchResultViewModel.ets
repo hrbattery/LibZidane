@@ -43,7 +43,8 @@ export class SearchViewModel extends NetworkRequestViewModel {
 
   private _languageOptions: Record<string, string> = AppStorage.get("language_options") ?? {}
 
-  @Monitor('searchSortOrderIndex','searchFilterOption.exactMatch','searchFilterOption.startYear','searchFilterOption.endYear','searchFilterOption.selectedLanguages','searchFilterOption.selectedExtensions')
+  // A confirmed draft replaces the whole object, so its fields are submitted together.
+  @Monitor('searchSortOrderIndex', 'searchFilterOption')
   async onSearchParamChange(): Promise<void> {
     await this.loadDataSource();
   }
@@ -53,8 +54,9 @@ export class SearchViewModel extends NetworkRequestViewModel {
     return Constants.SEARCH_SORT_KEY[this.searchSortOrderIndex]["value"] as string
   }
 
+  /** Filter-only edits stay idle until a keyword is available to request results. */
   async loadDataSource(): Promise<void> {
-    this.isLoading = true;
+    this.isLoading = this.searchKeyword.length > 0;
     if (this.searchKeyword && this.searchKeyword !== '') {
       try {
         let searchResult = await getSearch({

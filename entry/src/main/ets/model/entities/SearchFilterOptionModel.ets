@@ -1,5 +1,4 @@
-import { Command } from "../../common/types/CommonTypes";
-
+/** Search values shared by the applied filters and each dialog's independent draft. */
 @ObservedV2
 export class SearchFilterOptions {
   @Trace exactMatch: boolean = false;
@@ -8,43 +7,29 @@ export class SearchFilterOptions {
   @Trace selectedLanguages: string[] = [];
   @Trace selectedExtensions: string[] = [];
 
-  private commands = Array<Command>(5)
-
-  setExactMatchCmd(value: boolean) {
-    this.commands[0] = () => {
-      this.exactMatch = value;
-    }
+  /** Copy arrays as well as scalar values so dismissing a draft cannot change applied filters. */
+  clone(): SearchFilterOptions {
+    const copy = new SearchFilterOptions();
+    copy.exactMatch = this.exactMatch;
+    copy.startYear = this.startYear;
+    copy.endYear = this.endYear;
+    copy.selectedLanguages = Array.from(this.selectedLanguages);
+    copy.selectedExtensions = Array.from(this.selectedExtensions);
+    return copy;
   }
 
-  setStartYearCmd(value: string | undefined) {
-    this.commands[1] = () => {
-      this.startYear = value;
-    }
+  /** Reset the current draft to an unrestricted search. */
+  clear(): void {
+    this.exactMatch = false;
+    this.startYear = undefined;
+    this.endYear = undefined;
+    this.selectedLanguages = [];
+    this.selectedExtensions = [];
   }
 
-  setEndYearCmd(value: string | undefined) {
-    this.commands[2] = () => {
-      this.endYear = value;
-    }
-  }
-
-  setSelectedLanguagesCmd(value: string[]) {
-    this.commands[3] = () => {
-      this.selectedLanguages = Array.from(value);
-    }
-  }
-
-  setSelectedExtensionsCmd(value: string[]) {
-    this.commands[4] = () => {
-      this.selectedExtensions = Array.from(value);
-    }
-  }
-
-  apply() {
-    for (const cmd of this.commands) {
-      if (cmd) {
-        cmd()
-      }
-    }
+  /** Either endpoint may be unlimited; a bounded range must be chronological. */
+  hasValidYearRange(): boolean {
+    return this.startYear === undefined || this.endYear === undefined ||
+      Number(this.startYear) <= Number(this.endYear);
   }
 }

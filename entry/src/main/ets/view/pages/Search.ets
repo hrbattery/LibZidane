@@ -1,12 +1,13 @@
 import { HdsNavDestination } from '@kit.UIDesignKit';
 import { NAVIGATION_STYLE, hdsMenus } from '../components/common/NavigationStyle';
-import { DialogHelper } from '@pura/harmony-dialog'
+import { DialogAction, DialogHelper } from '@pura/harmony-dialog'
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils'
 import { Constants } from '../../common/const/Constants'
 import { SearchViewModel } from '../../viewModel/search/SearchResultViewModel'
 import { SearchHistory } from '../components/search/SearchHistory'
 import { SearchOptionDialog } from '../components/search/SearchOptionDialog'
 import { SearchResults } from '../components/search/SearchResults'
+import { SearchFilterOptions } from '../../model/entities/SearchFilterOptionModel'
 
 @Builder
 export function SearchPageBuilder() {
@@ -47,29 +48,35 @@ struct SearchPage {
     }
   }
 
+  /** Edit a fresh draft; only a valid confirmation replaces the applied search parameters. */
   private handleSearchOptionsClick() {
+    const draft = this.viewModel.searchFilterOption.clone()
     DialogHelper.showCustomContentDialog({
-      contentBuilder: () => this.SearchOptionDialogBuilder(),
-      onAction: () => {
-        // 用命令模式来暂存更改，然后在onAction这里再决定是否要使用对应的更改
-        // 这样的话，传递过去的object也可以确定是只读的了
-        // 这样的话，不如将SearchOption设计成一个类，有对应的command和applyCommand方法
-        // 还可以抽象出类似的类，都可以用在这种需要暂存更改、但将apply更改的决定权交到另一个地方的场景了
-        this.viewModel.searchFilterOption.apply()
+      contentBuilder: () => this.SearchOptionDialogBuilder(draft),
+      actionCancel: false,
+      onAction: (action: DialogAction, dialogId: string) => {
+        if (action === DialogAction.TWO) {
+          if (!draft.hasValidYearRange()) {
+            ToastUtil.showToast($r('app.string.ui_search_invalid_year_range'))
+            return
+          }
+          this.viewModel.searchFilterOption = draft.clone()
+        }
+        DialogHelper.closeDialog(dialogId)
       },
       uiContext: this.getUIContext(),
+      maxWidth: 420,
+      maxHeight: '85%',
+      contentAreaPadding: { top: 0, bottom: 0, left: 16, right: 16 },
       title: $r("app.string.ui_search_menu_filter"),
       buttons: [$r("app.string.ui_common_cancel_btn"), $r("app.string.ui_common_confirm_btn")]
     })
   }
 
+  /** Let the content own its single outer scroll area without a percentage-height wrapper. */
   @Builder
-  SearchOptionDialogBuilder() {
-    Scroll() {
-      SearchOptionDialog({
-        options: this.viewModel.searchFilterOption
-      }).height("60%")
-    }
+  SearchOptionDialogBuilder(draft: SearchFilterOptions) {
+    SearchOptionDialog({ options: draft })
   }
 
   /** Keep the search field clear of the native back button and two menu buttons. */
@@ -131,7 +138,7 @@ struct SearchPage {
               await this.viewModel.onSubmitSearch(keyword)
             }
           })
-        } else {
+        } else if (this.viewModel.searchKeyword.length > 0) {
           // Search results section
           Column() {
             this.SearchResultAmount()

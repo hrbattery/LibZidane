@@ -1,4 +1,24 @@
-# Local bookshelf checks
+# Regression checks
+
+## Search filter checks
+
+Run `node --test tests/search-filters.host.test.cjs` for draft isolation, cancel and
+dismiss/reopen behavior, a single confirmed update, clearing filters, year-range
+validation, and idle loading with an empty keyword. The host runner executes the
+production model and action/loading methods with adapters for native APIs; it does
+not simulate ArkUI rendering or state observation.
+
+On a device, expand and collapse each filter section. Check that the dialog resizes
+smoothly, each arrow rotates independently, and selected values remain visible in
+the section summaries. Language and format lists should scroll internally first,
+then hand off to the outer form at their boundaries. The outer scrollbar stays
+hidden, and Clear filters remains above the scrolling form.
+
+Verify row and checkbox selection, reset of open year wheels, an invalid year range,
+cancel, outside/Back dismissal, and confirmation followed by reopening. With an
+empty keyword, confirming filters and dismissing the keyboard must not show a result
+list or a loading placeholder. Also check English/Chinese, light/dark mode, and
+narrow windows; host tests alone do not establish those visual behaviors.
 
 ## Online reader checks
 
