@@ -11,6 +11,7 @@ import { BookCover } from '../common/BookCover';
 
 @ComponentV2
 export struct LocalBooks {
+  @Consumer() floatingTabBarInset: number = 0;
   @Param active: boolean = false;
   @Local viewModel: LocalBooksViewModel = new LocalBooksViewModel();
   @Local menuBookKey: string = '';
@@ -189,6 +190,7 @@ export struct LocalBooks {
           startMargin: 10,
           endMargin: 10
         })
+        .contentEndOffset(this.floatingTabBarInset + windowUtil.mainWindowInfo.bottomInset)
         .lanes(new WidthBreakpointType(1, 2, 3, 4).getValue(windowUtil.mainWindowInfo.widthBp), 10)
         .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
         .width('100%')

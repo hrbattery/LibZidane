@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../../components/common/NavigationStyle';
 import { LogUtil as logger } from '@pura/harmony-utils';
 import { CustomApiViewModel } from '../../../viewModel/settings/CustomApiViewModel';
 
@@ -12,7 +14,7 @@ struct CustomApi {
   @Local viewModel: CustomApiViewModel = new CustomApiViewModel()
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column() {
         Column() {
           Text($r("app.string.ui_custom_api_declaimer"))
@@ -31,7 +33,7 @@ struct CustomApi {
       .padding({ top: 20, left: 20, right: 20 })
       .backgroundColor($r("sys.color.background_secondary"))
     }
-    .title($r("app.string.ui_setting_general_custom_api"))
+    .titleBar(destinationTitle($r("app.string.ui_setting_general_custom_api")))
   }
 
   @Builder

@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../components/common/NavigationStyle';
 import { OnlineReaderState, onlineReaderLibrary } from '../../model/entities/OnlineReaderState';
 import { prebuildWebCompController } from '../components/common/PrebuildWeb';
 import { prepareReaderWeb, releaseReaderWeb, setReaderWebActive } from '../components/reader/OnlineReaderWeb';
@@ -36,7 +38,7 @@ struct OnlineReader {
 
   /** Show native loading/error states around the retained online reader. */
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column() {
         if (this.nodeReady) {
           NodeContainer(this.node).width('100%').layoutWeight(1)
@@ -61,13 +63,12 @@ struct OnlineReader {
       .width('100%')
       .height('100%')
     }
-    .title(this.reader.title)
-    .menus([
+    .titleBar(destinationTitle(this.reader.title, [
       { value: $r('app.string.ui_placeholder_refresh_btn'), icon: $r('app.media.refresh'),
         action: () => this.reader.reload() },
       { value: $r('app.string.ui_reader_close'), icon: $r('app.media.xmark_circle'),
         action: () => this.closeReader() }
-    ])
+    ]))
     .onReady(context => {
       this.pathStack = context.pathStack;
       this.prepareNode();

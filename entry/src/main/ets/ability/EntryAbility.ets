@@ -1,4 +1,4 @@
-import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
+import { AbilityConstant, Configuration, UIAbility, Want } from '@kit.AbilityKit';
 import { window } from '@kit.ArkUI';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { DarkModeEnum, SettingsConstants } from '../common/const/SettingsConstants';
@@ -63,7 +63,13 @@ export default class EntryAbility extends UIAbility {
     await appInit(this.context)
   }
 
+  /** Refresh system-bar contrast after the application or system theme changes. */
+  onConfigurationUpdate(newConfig: Configuration): void {
+    windowUtil.updateSystemBars();
+  }
+
   onWindowStageDestroy(): void {
+    windowUtil.cancelListeners();
     // Main window is destroyed, release UI related resources
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
   }

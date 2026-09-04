@@ -1,3 +1,5 @@
+import { FLOATING_TAB_BAR_INSET } from '../common/NavigationStyle';
+import { windowUtil } from '../../../common/system/WindowUtil';
 import { SettingsConstants } from "../../../common/const/SettingsConstants";
 import { StorageConstants } from "../../../common/const/StorageConstants";
 import { preferencesUtils } from "../../../model/storage/PreferencesUtils";
@@ -19,89 +21,96 @@ export struct Settings {
     this.pathStack = this.queryNavigationInfo()?.pathStack;
   }
 
-  async build() {
-    Column() {
-      // 账户部分
-      Text($r("app.string.ui_setting_account"))
-        .fontSize(16)
-        .fontWeight(FontWeight.Bold)
-        .padding({ left: 16, top: 16, bottom: 16 })
-        .alignSelf(ItemAlign.Start)
-
+  /** Allow all settings to scroll clear of the floating navigation bar. */
+  build() {
+    Scroll() {
       Column() {
-        if (!this.appState.loginState) {
-          ItemCard({
-            text: $r("app.string.ui_setting_account_login"),
-            action: () => {
-              this.pathStack?.pushPathByName("Settings_Login", null)
-            }
-          })
-        } else {
-          ItemCard({
-            text: $r("app.string.ui_setting_account_donation"),
-            action: () => {
-              this.pathStack?.pushPathByName("Settings_Donation", null)
-            }
-          })
-        }
-      }
-      .backgroundColor($r("sys.color.comp_background_primary"))
-      .margin({ left: 16, right: 16 })
-      .borderRadius(20)
+        // 账户部分
+        Text($r("app.string.ui_setting_account"))
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+          .padding({ left: 16, top: 16, bottom: 16 })
+          .alignSelf(ItemAlign.Start)
 
-      // 通用部分
-      Text($r("app.string.ui_setting_general"))
-        .fontSize(16)
-        .fontWeight(FontWeight.Bold)
-        .padding({ left: 16, top: 16, bottom: 16 })
-        .alignSelf(ItemAlign.Start)
-
-      Column() {
-        LanguageSetting().borderRadius(20)
-        Divider()
-          .margin({ left: 8, right: 8})
-          .color(this.dividerColor)
-        DarkMode().borderRadius(20)
-        Divider()
-          .margin({ left: 8, right: 8})
-          .color(this.dividerColor)
-
-        ItemCard({
-          text: $r("app.string.ui_setting_general_about"),
-          action: () => {
-            this.pathStack?.pushPathByName("Settings_About", null)
-          }
-        })
-        Divider()
-          .margin({ left: 8, right: 8})
-          .color(this.dividerColor)
-        ItemCard({
-          text: $r("app.string.ui_setting_general_custom_api"),
-          action: () => {
-            this.pathStack?.pushPathByName("Settings_Custom_API", null)
-          }
-        })
-      }
-      .backgroundColor($r("sys.color.comp_background_primary"))
-      .margin({ left: 16, right: 16 })
-      .borderRadius(20)
-
-      // 登出按钮
-      if (this.appState.loginState) {
         Column() {
-          Button($r("app.string.ui_setting_logout"))
-            .width('100%')
-            .height(48)
-            .fontSize(16)
-            .onClick(async () => {
-              await preferencesUtils.delete(StorageConstants.DEFAULT_PREF, 'cookie')
-              this.appState.loginState = false
+          if (!this.appState.loginState) {
+            ItemCard({
+              text: $r("app.string.ui_setting_account_login"),
+              action: () => {
+                this.pathStack?.pushPathByName("Settings_Login", null)
+              }
             })
+          } else {
+            ItemCard({
+              text: $r("app.string.ui_setting_account_donation"),
+              action: () => {
+                this.pathStack?.pushPathByName("Settings_Donation", null)
+              }
+            })
+          }
         }
-        .margin(16)
+        .backgroundColor($r("sys.color.comp_background_primary"))
+        .margin({ left: 16, right: 16 })
+        .borderRadius(20)
+
+        // 通用部分
+        Text($r("app.string.ui_setting_general"))
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+          .padding({ left: 16, top: 16, bottom: 16 })
+          .alignSelf(ItemAlign.Start)
+
+        Column() {
+          LanguageSetting().borderRadius(20)
+          Divider()
+            .margin({ left: 8, right: 8})
+            .color(this.dividerColor)
+          DarkMode().borderRadius(20)
+          Divider()
+            .margin({ left: 8, right: 8})
+            .color(this.dividerColor)
+
+          ItemCard({
+            text: $r("app.string.ui_setting_general_about"),
+            action: () => {
+              this.pathStack?.pushPathByName("Settings_About", null)
+            }
+          })
+          Divider()
+            .margin({ left: 8, right: 8})
+            .color(this.dividerColor)
+          ItemCard({
+            text: $r("app.string.ui_setting_general_custom_api"),
+            action: () => {
+              this.pathStack?.pushPathByName("Settings_Custom_API", null)
+            }
+          })
+        }
+        .backgroundColor($r("sys.color.comp_background_primary"))
+        .margin({ left: 16, right: 16 })
+        .borderRadius(20)
+
+        // 登出按钮
+        if (this.appState.loginState) {
+          Column() {
+            Button($r("app.string.ui_setting_logout"))
+              .width('100%')
+              .height(48)
+              .fontSize(16)
+              .onClick(async () => {
+                await preferencesUtils.delete(StorageConstants.DEFAULT_PREF, 'cookie')
+                this.appState.loginState = false
+              })
+          }
+          .margin(16)
+        }
       }
+      .backgroundColor($r("sys.color.background_secondary"))
+      .width('100%')
     }
-    .backgroundColor($r("sys.color.background_secondary"))
+    .align(Alignment.Top)
+    .contentEndOffset(FLOATING_TAB_BAR_INSET + windowUtil.mainWindowInfo.bottomInset)
+    .background($r('sys.color.background_secondary'))
     .height('100%')
     .width('100%')
   }

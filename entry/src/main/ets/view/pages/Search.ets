@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { NAVIGATION_STYLE, hdsMenus } from '../components/common/NavigationStyle';
 import { DialogHelper } from '@pura/harmony-dialog'
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils'
 import { Constants } from '../../common/const/Constants'
@@ -70,6 +72,7 @@ struct SearchPage {
     }
   }
 
+  /** Keep the search field clear of the native back button and two menu buttons. */
   @Builder
   SearchInput() {
     Column() {
@@ -78,7 +81,7 @@ struct SearchPage {
         value: this.viewModel.searchKeyword
       })
         .defaultFocus(true)
-        .layoutWeight(1)
+        .height(40)
         .searchButton($r("app.string.ui_search_btn"))
         .onChange((value) => {
           if (!value) {
@@ -96,7 +99,10 @@ struct SearchPage {
           this.isSearchFocused = false
         })
     }
-    .margin({ left: 10, right: 10 })
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .padding({ left: 80, right: 136 })
+    .hitTestBehavior(HitTestMode.Transparent)
   }
 
   @Builder
@@ -115,7 +121,7 @@ struct SearchPage {
   }
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column() {
         if (this.isSearchFocused) {
           SearchHistory({
@@ -139,19 +145,26 @@ struct SearchPage {
       }
       .width("100%")
     }
-    .title(this.SearchInput())
-    .menus([
-      {
-        value: $r("app.string.ui_search_menu_sort"),
-        icon: $r("app.media.sort"),
-        action: () => this.handleSortClick()
-      },
-      {
-        value: $r("app.string.ui_search_menu_filter"),
-        icon: $r("app.media.slider_vertical_3"),
-        action: () => this.handleSearchOptionsClick()
+    .titleBar({
+      enableComponentSafeArea: true,
+      style: NAVIGATION_STYLE,
+      content: {
+        title: { mainTitle: '' },
+        stackBuilder: () => this.SearchInput(),
+        menu: { value: hdsMenus([
+          {
+            value: $r("app.string.ui_search_menu_sort"),
+            icon: $r("app.media.sort"),
+            action: () => this.handleSortClick()
+          },
+          {
+            value: $r("app.string.ui_search_menu_filter"),
+            icon: $r("app.media.slider_vertical_3"),
+            action: () => this.handleSearchOptionsClick()
+          }
+        ]) }
       }
-    ])
+    })
     .onReady((context: NavDestinationContext) => {
       let param = context.pathInfo.param as string;
       if (param && param !== "") {

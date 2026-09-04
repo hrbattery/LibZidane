@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../../components/common/NavigationStyle';
 import { DonationViewModel } from '../../../viewModel/settings/DonationsViewModel'
 import { i18n } from '@kit.LocalizationKit'
 import { common } from '@kit.AbilityKit'
@@ -54,7 +56,7 @@ struct Donation {
   }
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column() {
         Column() {
           InfoCard({
@@ -103,8 +105,7 @@ struct Donation {
       .height("100%")
       .width("100%")
     }
-    .title($r("app.string.ui_setting_account_donation"))
-    .menus(this.navMenu)
+    .titleBar(destinationTitle($r("app.string.ui_setting_account_donation"), this.navMenu))
   }
 }
 

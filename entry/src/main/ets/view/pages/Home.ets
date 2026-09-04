@@ -1,3 +1,5 @@
+import { HdsNavigation, HdsNavigationTitleMode, HdsTabs, HdsTabsController } from '@kit.UIDesignKit';
+import { NAVIGATION_STYLE, NAVIGATION_MATERIAL, hdsMenus } from '../components/common/NavigationStyle';
 import { Library } from '../components/library/Library';
 import { MyBook } from '../components/mybook/MyBook';
 import { LogUtil as logger } from "@pura/harmony-utils"
@@ -21,7 +23,7 @@ struct Home {
   @Local appState: AppState = PersistenceV2.connect(AppState, 'appState', () => new AppState())!;
   @Local index: number = 0;
   @Local tabCurrentIndex: number = 0;
-  @Local tabController: TabsController = new TabsController()
+  @Local tabController: HdsTabsController = new HdsTabsController()
   @Local titleMap: ResourceStr[] = [
     $r("app.string.ui_home_library_tab"),
     $r("app.string.ui_home_mybook_tab"),
@@ -45,6 +47,7 @@ struct Home {
           .width('100%')
           .height('100%')
           .backgroundColor('#40000000')
+          .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
           .onClick(() => this.showReaderSidebar(false))
           .transition(TransitionEffect.OPACITY)
         ReaderSidebar({
@@ -62,6 +65,8 @@ struct Home {
     }
     .width('100%')
     .height('100%')
+    // Background paints through the system safe areas; controls keep their safe layout.
+    .background($r('sys.color.background_primary'))
   }
 
   /** Use one third on tablets, one quarter on wide windows and a usable phone width. */
@@ -158,17 +163,32 @@ struct Home {
         .layoutWeight(1)
     }
     .height('100%')
+    .padding({ left: 8, right: this.navMenuItems.length * 48 + 40 })
+    .hitTestBehavior(HitTestMode.Transparent)
+  }
+
+  /** Native floating tabs retain the app's compact text labels. */
+  @Builder
+  RootTabLabel(index: number) {
+    Text(this.titleMap[index])
+      .fontSize(14)
+      .fontWeight(this.index === index ? FontWeight.Bold : FontWeight.Medium)
+      .fontColor(this.index === index ? $r('sys.color.font_emphasize') : $r('sys.color.font_secondary'))
+      .maxLines(1)
+      .height(48)
+      .width('100%')
+      .textAlign(TextAlign.Center)
   }
 
   /** Keep the existing tab content and right-side menu actions. */
   @Builder
   MainNavigation() {
-    Navigation(this.navPathStack) {
-      Tabs({ controller: this.tabController, index: this.tabCurrentIndex }) {
+    HdsNavigation(this.navPathStack) {
+      HdsTabs({ controller: this.tabController, index: this.tabCurrentIndex }) {
         TabContent() {
           Library()
         }
-        .tabBar($r("app.string.ui_home_library_tab"))
+        .tabBar(this.RootTabLabel(0))
 
         TabContent() {
           MyBook({
@@ -183,17 +203,22 @@ struct Home {
             }
           })
         }
-        .tabBar($r("app.string.ui_home_mybook_tab"))
+        .tabBar(this.RootTabLabel(1))
 
         TabContent() {
           Settings()
         }
-        .tabBar($r("app.string.ui_home_setting_tab"))
+        .tabBar(this.RootTabLabel(2))
       }
       .height('100%')
       .width('100%')
-      .edgeEffect(EdgeEffect.Spring)
       .barPosition(BarPosition.End)
+      .barOverlap(true)
+      .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
+      .barFloatingStyle({
+        barBottomMargin: 8 + windowUtil.mainWindowInfo.bottomInset,
+        systemMaterialEffect: NAVIGATION_MATERIAL
+      })
       .onAnimationStart((from, target) => {
         this.index = target;
         this.navMenuItems = this.getMenuItems();
@@ -205,9 +230,17 @@ struct Home {
       //   this.menuItems = this.getMenuItems();
       // })
     }
-    .menus(this.navMenuItems)
-    .title(this.HomeTitle())
-    .titleMode(NavigationTitleMode.Mini)
+    .titleBar({
+      enableComponentSafeArea: true,
+      style: NAVIGATION_STYLE,
+      content: {
+        title: { mainTitle: '' },
+        menu: { value: hdsMenus(this.navMenuItems) },
+        stackBuilder: () => this.HomeTitle()
+      }
+    })
+    .titleMode(HdsNavigationTitleMode.MINI)
+    .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.BOTTOM])
     .hideBackButton(true)
     .mode(NavigationMode.Stack)
     .width('100%')

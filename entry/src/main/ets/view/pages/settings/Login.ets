@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../../components/common/NavigationStyle';
 import { PersistenceV2, promptAction } from '@kit.ArkUI';
 import { LogUtil as logger, ToastUtil } from '@pura/harmony-utils';
 import { login } from '../../../model/api/LoginApi';
@@ -10,10 +12,10 @@ export function SettingsLoginBuilder() {
 
 @Builder
 function SettingLoginNav() {
-  NavDestination() {
+  HdsNavDestination() {
     SettingsLogin()
   }
-  .title($r("app.string.ui_login_title"))
+  .titleBar(destinationTitle($r("app.string.ui_login_title")))
 }
 
 @ComponentV2

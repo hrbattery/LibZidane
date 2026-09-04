@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../../components/common/NavigationStyle';
 import { bundleManager, common } from '@kit.AbilityKit';
 import { ToastUtil } from '@pura/harmony-utils';
 
@@ -14,7 +16,7 @@ struct AboutPage {
     bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT).versionName;
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column({ space: 20 }) {
         Image($r('app.media.lz_icon'))
           .borderRadius(20)
@@ -59,6 +61,6 @@ struct AboutPage {
       .height('100%')
       .padding(20)
     }
-    .title($r("app.string.ui_setting_general_about"))
+    .titleBar(destinationTitle($r("app.string.ui_setting_general_about")))
   }
 }

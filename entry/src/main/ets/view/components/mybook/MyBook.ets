@@ -1,3 +1,4 @@
+import { FLOATING_TAB_BAR_INSET } from '../common/NavigationStyle';
 import { Constants } from '../../../common/const/Constants'
 import { DownloadedBooks } from './DownloadedBooks'
 import { FavoriteBooks } from './FavoriteBooks'
@@ -6,6 +7,7 @@ import { LocalBooks } from './LocalBooks'
 @ComponentV2
 export struct MyBook {
   @Param active: boolean = false;
+  @Provider() floatingTabBarInset: number = FLOATING_TAB_BAR_INSET;
   @Local tabCurrentIndex: number = 0
   @Local favoritesEntriesAmount: number = 0;
   @Local downloadedEntriesAmount: number = 0;

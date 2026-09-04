@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../components/common/NavigationStyle';
 import { common } from '@kit.AbilityKit';
 import { BookDetailParam } from '../../model/entities/BookModel';
 import { BookDetailViewModel } from '../../viewModel/bookdetail/BookDetailViewModel';
@@ -56,7 +58,7 @@ struct BookDetailPage {
   }
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Scroll() {
         Column() {
           BookDetailHeader({
@@ -84,6 +86,6 @@ struct BookDetailPage {
       this.viewModel.hash = param.hash;
       await this.viewModel.loadPageData()
     })
-    .menus(this.navMenu)
+    .titleBar(destinationTitle('', this.navMenu))
   }
 }

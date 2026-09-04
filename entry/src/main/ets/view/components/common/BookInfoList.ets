@@ -7,6 +7,7 @@ import { BookInfoListItem } from './BookInfoListItem';
 
 @ComponentV2
 export struct BookInfoList {
+  @Consumer() floatingTabBarInset: number = 0;
   @Param bookDataSource: BookData[] = []
   @Param pagination: PaginationDataSource | undefined = undefined;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
@@ -50,6 +51,7 @@ export struct BookInfoList {
         })
         .key((item, index) => item === null ? index.toString() : `${index}:${item.title}:${item._isFavorite}`)
     }
+    .contentEndOffset(this.floatingTabBarInset > 0 ? this.floatingTabBarInset + this.windowInfo.bottomInset : 0)
     .divider({
       color: $r("sys.color.font_tertiary"),
       strokeWidth: "1px",

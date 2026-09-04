@@ -10,8 +10,24 @@ export struct ReaderSidebar {
   @Event onCloseBook: (session: OnlineReaderState) => void;
   @Event onDismiss: () => void;
 
-  /** Give the drawer a quiet surface and keep the header outside the scrolling books. */
+  /** Extend the drawer surface behind system bars while keeping its controls in the safe area. */
   build() {
+    Stack({ alignContent: Alignment.TopStart }) {
+      Row() {}
+        .width('100%')
+        .height('100%')
+        .backgroundColor($r('sys.color.background_secondary'))
+        .borderRadius({ topRight: 24, bottomRight: 24 })
+        .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
+        .shadow({ radius: 24, color: '#18000000', offsetX: 6, offsetY: 0 })
+      this.SidebarContent()
+    }
+    .height('100%')
+  }
+
+  /** Keep the header and scrollable books inside the system-bar safe boundaries. */
+  @Builder
+  SidebarContent() {
     Column() {
       this.Header()
       if (this.library.sessions.length === 0) {
@@ -32,10 +48,6 @@ export struct ReaderSidebar {
       }
     }
     .height('100%')
-    .backgroundColor($r('sys.color.background_secondary'))
-    .borderRadius({ topRight: 24, bottomRight: 24 })
-    .clip(true)
-    .shadow({ radius: 24, color: '#18000000', offsetX: 6, offsetY: 0 })
   }
 
   /** Keep the title, book count and dismiss control on one compact header. */

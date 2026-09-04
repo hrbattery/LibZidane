@@ -1,8 +1,10 @@
+import { FLOATING_TAB_BAR_INSET } from '../common/NavigationStyle';
 import { RecommendedBooks } from "./RecommendedBooks"
 import { MostPopularBooks } from "./MostPopularBooks"
 
 @ComponentV2
 export struct Library {
+  @Provider() floatingTabBarInset: number = FLOATING_TAB_BAR_INSET;
   @Local tabCurrentIndex: number = 0
 
   build() {

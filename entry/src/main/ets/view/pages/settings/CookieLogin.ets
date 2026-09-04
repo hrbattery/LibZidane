@@ -1,3 +1,5 @@
+import { HdsNavDestination } from '@kit.UIDesignKit';
+import { destinationTitle } from '../../components/common/NavigationStyle';
 import { PersistenceV2 } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 
@@ -57,7 +59,7 @@ export struct CookieLogin {
   }
 
   build() {
-    NavDestination() {
+    HdsNavDestination() {
       Column() {
         this.Bar()
         NodeContainer(getNWeb(this.baseUrl))
@@ -66,8 +68,7 @@ export struct CookieLogin {
       .height('100%')
       .width('100%')
     }
-    .menus(this.menus)
-    .title($r("app.string.ui_cookie_login"))
+    .titleBar(destinationTitle($r("app.string.ui_cookie_login"), this.menus))
   }
 
   getCookie(): boolean {

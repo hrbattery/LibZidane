@@ -1,5 +1,5 @@
 import { AppStorageV2, UIContext, window } from '@kit.ArkUI';
-import { BusinessError } from '@kit.BasicServicesKit';
+import { BusinessError, deviceInfo } from '@kit.BasicServicesKit';
 
 import { LogUtil as logger } from "@pura/harmony-utils"
 
@@ -10,6 +10,7 @@ export class WindowUtil {
   // public mainWindowInfo: WindowInfo = new WindowInfo();
   public mainWindowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
 
+  /** Initialize the window and keep system bars transparent over the page background. */
   init(mainWindow: window.Window) {
     this.mainWindow = mainWindow;
     try {
@@ -20,6 +21,30 @@ export class WindowUtil {
     }
     this.initWindowInfo();
     this.initWindowListeners();
+    this.updateSystemBars();
+  }
+
+  /** Match system-bar icons to the current app theme without moving controls into safe areas. */
+  updateSystemBars(): void {
+    const resources = this.uiContext?.getHostContext()?.resourceManager;
+    if (!this.mainWindow || !resources || deviceInfo.deviceType === '2in1') {
+      return;
+    }
+    try {
+      const foreground = resources.getColorSync($r('sys.color.font_primary').id);
+      const contentColor = '#' + (foreground >>> 0).toString(16).padStart(8, '0');
+      this.mainWindow.setWindowSystemBarProperties({
+        statusBarColor: '#00000000',
+        navigationBarColor: '#00000000',
+        statusBarContentColor: contentColor,
+        navigationBarContentColor: contentColor
+      }).catch((error: BusinessError) => {
+        logger.error(TAG, `Failed to update system bars. Code: ${error.code}, message: ${error.message}`);
+      });
+    } catch (error) {
+      const err = error as BusinessError;
+      logger.error(TAG, `Failed to read system-bar appearance. Code: ${err.code}, message: ${err.message}`);
+    }
   }
 
   /**
@@ -27,6 +52,12 @@ export class WindowUtil {
    */
   private initWindowListeners(): void {
     try {
+      this.mainWindow?.on('avoidAreaChange', (options: window.AvoidAreaOptions) => {
+        if (options.type === window.AvoidAreaType.TYPE_SYSTEM ||
+          options.type === window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR) {
+          this.updateBottomInset();
+        }
+      });
       this.mainWindow?.on('windowStatusChange', (statusType: window.WindowStatusType) => {
         this.mainWindowInfo.windowStatusType = statusType;
       });
@@ -34,10 +65,27 @@ export class WindowUtil {
         this.mainWindowInfo.windowSize = windowSize;
         this.mainWindowInfo.widthBp = this.uiContext!.getWindowWidthBreakpoint();
         this.mainWindowInfo.heightBp = this.uiContext!.getWindowHeightBreakpoint();
+        this.updateBottomInset();
       });
     } catch (error) {
       let err = error as BusinessError;
       logger.error(TAG, `Failed to update window info. Code: ${err.code}, message: ${err.message}`);
+    }
+  }
+
+  /** Reserve only the system gesture/bar height for floating controls, not for scroll content. */
+  private updateBottomInset(): void {
+    if (!this.mainWindow || !this.uiContext) {
+      return;
+    }
+    try {
+      const system = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+      const indicator = this.mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+      this.mainWindowInfo.bottomInset = this.uiContext.px2vp(
+        Math.max(system.bottomRect.height, indicator.bottomRect.height));
+    } catch (error) {
+      const err = error as BusinessError;
+      logger.error(TAG, `Failed to read bottom safe area. Code: ${err.code}, message: ${err.message}`);
     }
   }
 
@@ -57,6 +105,7 @@ export class WindowUtil {
       // First time get width/height breakpoint.
       this.mainWindowInfo.widthBp = this.uiContext!.getWindowWidthBreakpoint();
       this.mainWindowInfo.heightBp = this.uiContext!.getWindowHeightBreakpoint();
+      this.updateBottomInset();
     } catch (error) {
       let err = error as BusinessError;
       logger.error(TAG, `Failed to update window info. Code: ${err.code}, message: ${err.message}`);
@@ -67,6 +116,7 @@ export class WindowUtil {
     try {
       this.mainWindow?.off('windowStatusChange');
       this.mainWindow?.off('windowSizeChange');
+      this.mainWindow?.off('avoidAreaChange');
     } catch (error) {
       let err = error as BusinessError;
       logger.error(TAG, `Failed to off. Code: ${err.code}, message: ${err.message}`);
@@ -84,6 +134,9 @@ export class WindowInfo {
 
   // Window size.
   @Trace public windowSize: window.Size = { width: 0, height: 0 };
+
+  // Bottom system bar or gesture area in vp; content can render beneath it.
+  @Trace public bottomInset: number = 0;
 
   // Width/height breakpoint.
   @Trace public widthBp: WidthBreakpoint = WidthBreakpoint.WIDTH_XS;
