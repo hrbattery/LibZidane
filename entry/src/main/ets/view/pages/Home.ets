@@ -69,10 +69,10 @@ struct Home {
     .background($r('sys.color.background_primary'))
   }
 
-  /** Use one third on tablets, one quarter on wide windows and a usable phone width. */
+  /** Keep portrait proportions and cap wide-window covers with a compact single-column drawer. */
   @Computed
-  get readerSidebarWidth(): string {
-    return new WidthBreakpointType('82%', '33.333%', '33.333%', '25%')
+  get readerSidebarWidth(): Length {
+    return new WidthBreakpointType<Length>('82%', '33.333%', 240, 240)
       .getValue(windowUtil.mainWindowInfo.widthBp);
   }
 
