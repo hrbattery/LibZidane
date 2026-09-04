@@ -6,6 +6,7 @@ import { BookDetailViewModel } from '../../viewModel/bookdetail/BookDetailViewMo
 import { BookDetailDescription } from '../components/bookdetail/BookDetailDescription';
 import { BookDetailHeader } from '../components/bookdetail/BookDetailHeader';
 import { BookCoverWaterFlow } from '../components/common/BookCoverWaterFlow';
+import { windowUtil } from '../../common/system/WindowUtil';
 
 
 @Builder
@@ -57,6 +58,20 @@ struct BookDetailPage {
     }
   }
 
+  /** 复用首页的渐变配色并反转方向，固定遮盖底部边缘且不拦截手势。 */
+  @Builder
+  BottomFade() {
+    Row() {}
+      .width('100%')
+      .height(32)
+      .linearGradient({
+        direction: GradientDirection.Top,
+        colors: [[$r('app.color.book_list_top_fade'), 0], [$r('app.color.book_list_top_fade_transparent'), 1]]
+      })
+      .hitTestBehavior(HitTestMode.None)
+  }
+
+  /** 让书籍内容滚动至底部手势区，同时在滚动末尾为最后一行保留可见空间。 */
   build() {
     HdsNavDestination() {
       Scroll() {
@@ -79,6 +94,8 @@ struct BookDetailPage {
             .padding({ left: 5, right: 5 })
         }
       }
+      .contentEndOffset(windowUtil.mainWindowInfo.bottomInset)
+      .overlay(this.BottomFade(), { align: Alignment.Bottom })
     }
     .onReady(async (context: NavDestinationContext) => {
       let param = context.pathInfo.param as BookDetailParam;
@@ -87,5 +104,6 @@ struct BookDetailPage {
       await this.viewModel.loadPageData()
     })
     .titleBar(destinationTitle('', this.navMenu))
+    .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.BOTTOM])
   }
 }

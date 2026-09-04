@@ -11,6 +11,8 @@ export struct BookDetailDescription {
   @Local darkMode: WebDarkMode =
     preferencesUtils.getSync(StorageConstants.DEFAULT_PREF, StorageConstants.PREFKEY_DARK_MODE, WebDarkMode.Auto)
   @Consumer() showSkeleton: boolean = false
+  @Local selectedTab: number = 0
+  private tabChangeTimer: number = -1
 
   @Monitor("bookData")
   onBookDataLoad(): void {
@@ -20,11 +22,27 @@ export struct BookDetailDescription {
   }
 
   aboutToDisappear(): void {
+    clearTimeout(this.tabChangeTimer);
     disposeNWeb(this.bookData.description)
   }
 
+  /** 将切换延后到原生回调结束后执行，让索引和自适应布局在同一个动画闭包中更新。 */
+  private changeTab(index: number): boolean {
+    if (index === this.selectedTab) {
+      return true;
+    }
+    clearTimeout(this.tabChangeTimer);
+    this.tabChangeTimer = setTimeout(() => {
+      this.getUIContext().animateTo({ duration: 250, curve: Curve.EaseInOut }, () => {
+        this.selectedTab = index;
+      });
+    }, 0);
+    return false;
+  }
+
+  /** 保留 Tabs 的自然高度，通过索引切换触发布局动画，避免测量值回写造成循环布局。 */
   build() {
-    Tabs() {
+    Tabs({ index: this.selectedTab }) {
       TabContent() {
         if (this.showSkeleton) {
           Grid() {
@@ -90,6 +108,9 @@ export struct BookDetailDescription {
     }
     .height("auto")
     .barMode(BarMode.Fixed)
+    // 由 animateTo 统一控制布局过渡，避免原生翻页动画在闭包外再次调整高度。
+    .animationDuration(0)
+    .onContentWillChange((_currentIndex: number, comingIndex: number) => this.changeTab(comingIndex))
   }
 
   @Builder

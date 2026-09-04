@@ -1,4 +1,41 @@
-# Local bookshelf checks
+# Regression checks
+
+## Book detail tab animation
+
+On a device, open a book with different metadata and description heights. Verify
+that both tabs remain visible after loading, and that the recommendation section
+moves smoothly in both directions when tapping or horizontally swiping between
+them. Repeat quick alternating taps, then leave the page during a transition and
+reopen it. The final height must fit the selected content without growing blank
+space, clipping the tabs, or moving indefinitely. Repeat with a long description.
+Compilation alone does not verify this ArkUI layout animation.
+
+On the detail page, scroll the recommendations and confirm that covers can render
+behind the bottom gesture indicator without a fixed white strip. At the scroll
+end, the last row must still clear the gesture area. The title and back button
+must continue to avoid the top status bar.
+The fixed bottom fade should match the home list's colors in light and dark mode,
+remain still while scrolling, and let taps and scroll gestures pass through.
+
+## Search filter checks
+
+Run `node --test tests/search-filters.host.test.cjs` for draft isolation, cancel and
+dismiss/reopen behavior, a single confirmed update, clearing filters, year-range
+validation, and idle loading with an empty keyword. The host runner executes the
+production model and action/loading methods with adapters for native APIs; it does
+not simulate ArkUI rendering or state observation.
+
+On a device, expand and collapse each filter section. Check that the dialog resizes
+smoothly, each arrow rotates independently, and selected values remain visible in
+the section summaries. Language and format lists should scroll internally first,
+then hand off to the outer form at their boundaries. The outer scrollbar stays
+hidden, and Clear filters remains above the scrolling form.
+
+Verify row and checkbox selection, reset of open year wheels, an invalid year range,
+cancel, outside/Back dismissal, and confirmation followed by reopening. With an
+empty keyword, confirming filters and dismissing the keyboard must not show a result
+list or a loading placeholder. Also check English/Chinese, light/dark mode, and
+narrow windows; host tests alone do not establish those visual behaviors.
 
 ## Online reader checks
 
