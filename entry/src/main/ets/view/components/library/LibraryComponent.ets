@@ -1,3 +1,4 @@
+import { ListTopFade } from '../common/ListTopFade';
 import { LibraryComponentViewModel } from '../../../viewModel/library/LibraryComponentViewModel';
 
 import { BookCoverWaterFlow } from '../common/BookCoverWaterFlow';
@@ -73,6 +74,8 @@ export struct LibraryComponent {
         }).padding({ left: 5, right: 5 })
       }
     }
+    // Attach to Refresh so pulling its content does not move the top fade.
+    .overlay(ListTopFade(), { align: Alignment.Top })
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource()
       this.viewModel.isRefreshing = false

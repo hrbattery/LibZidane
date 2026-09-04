@@ -1,3 +1,4 @@
+import { ListTopFade } from '../common/ListTopFade';
 import { SearchViewModel } from '../../../viewModel/search/SearchResultViewModel';
 
 import { BookInfoList } from '../common/BookInfoList';
@@ -55,6 +56,8 @@ export struct SearchResults {
         this.NormalContent()
       }
     }
+    // Attach to Refresh so pulling its content does not move the top fade.
+    .overlay(ListTopFade(), { align: Alignment.Top })
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource()
       this.viewModel.isRefreshing = false

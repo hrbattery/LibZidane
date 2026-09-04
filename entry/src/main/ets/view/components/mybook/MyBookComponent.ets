@@ -1,3 +1,4 @@
+import { ListTopFade } from '../common/ListTopFade';
 import { MyBookComponentViewModel } from '../../../viewModel/mybook/MyBookComponentViewModel';
 
 import { BookInfoList } from '../common/BookInfoList';
@@ -85,6 +86,8 @@ export struct MyBookComponent {
         Footer(this.viewModel.isLoadingNew)
       }
     }
+    // Attach to Refresh so pulling its content does not move the top fade.
+    .overlay(ListTopFade(), { align: Alignment.Top })
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource(this.sortOrder)
       this.viewModel.isRefreshing = false

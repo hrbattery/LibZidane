@@ -3,6 +3,14 @@
     {
       "name": "start_window_background",
       "value": "#000000"
+    },
+    {
+      "name": "book_list_top_fade",
+      "value": "#FFFFFFFF"
+    },
+    {
+      "name": "book_list_top_fade_transparent",
+      "value": "#00FFFFFF"
     }
   ]
 }

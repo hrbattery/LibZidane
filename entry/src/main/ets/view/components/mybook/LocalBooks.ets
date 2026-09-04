@@ -1,3 +1,4 @@
+import { ListTopFade } from '../common/ListTopFade';
 import { common } from '@kit.AbilityKit';
 import { fileUri } from '@kit.CoreFileKit';
 import { i18n } from '@kit.LocalizationKit';
@@ -196,6 +197,8 @@ export struct LocalBooks {
         .width('100%')
         .height('100%')
       }
+      // Keep the fade fixed while the list moves during pull-to-refresh.
+      .overlay(ListTopFade(), { align: Alignment.Top })
       .onRefreshing(() => this.viewModel.refresh())
       .layoutWeight(1)
     }
