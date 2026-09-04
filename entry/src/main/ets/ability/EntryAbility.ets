@@ -8,6 +8,7 @@ import { appInit, initPreferences,
   setColorMode, setAppPreferLanguage } from '../common/system/AbilityUtil';
 import { windowUtil } from '../common/system/WindowUtil';
 import { preferencesUtils } from '../model/storage/PreferencesUtils';
+import { getLocalBookStore } from '../model/storage/LocalBookStore';
 
 const DOMAIN = 0x0000;
 
@@ -39,7 +40,14 @@ export default class EntryAbility extends UIAbility {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
+  /** Initialize the independent local shelf and load the main page. */
   async onWindowStageCreate(windowStage: window.WindowStage): Promise<void> {
+    try {
+      getLocalBookStore(this.context);
+    } catch (error) {
+      // The local shelf displays a retryable error; online pages remain available.
+      hilog.error(DOMAIN, 'LocalBooks', 'Initialize local shelf failed: %{public}s', String(error));
+    }
     // Main window is created, set main page for this ability
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
@@ -60,7 +68,13 @@ export default class EntryAbility extends UIAbility {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
   }
 
+  /** Recheck managed files when returning from an external reader or file picker. */
   onForeground(): void {
+    try {
+      getLocalBookStore(this.context).notifyChanged();
+    } catch (error) {
+      hilog.error(DOMAIN, 'LocalBooks', 'Refresh local shelf failed: %{public}s', String(error));
+    }
     // Ability has brought to foreground
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onForeground');
   }

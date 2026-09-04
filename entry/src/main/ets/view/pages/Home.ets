@@ -36,12 +36,14 @@ struct Home {
 
         TabContent() {
           MyBook({
+            active: this.index === 1,
             favoriteOrder: this.favoriteSortOrder,
             downloadedOrder: this.downloadedSortOrder,
 
             onMyBookTabIndexChange: (index: number) => {
               this.myBookTabIndex = index;
               this.sortMenuItems = this.getSortMenuItems()
+              this.navMenuItems = this.getMenuItems()
             }
           })
         }
@@ -109,7 +111,7 @@ struct Home {
           'action': () => this.gotoSearchPage()
         },
       ]
-    } else if (this.index === 1) {
+    } else if (this.index === 1 && this.myBookTabIndex !== 2) {
       return [
         {
           'value': $r("app.string.ui_home_menu_sort"),

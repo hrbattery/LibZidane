@@ -1,0 +1,80 @@
+{
+  "string": [
+    {
+      "name": "local_books_tab",
+      "value": "本地书架"
+    },
+    {
+      "name": "local_books_empty",
+      "value": "新下载的书会自动出现在这里。"
+    },
+    {
+      "name": "local_books_storage_hint",
+      "value": "书籍由本应用保管，卸载应用会删除文件。重要书籍请先导出。"
+    },
+    {
+      "name": "local_books_unavailable",
+      "value": "文件不可用"
+    },
+    {
+      "name": "local_books_load_failed",
+      "value": "无法读取本地书架，请刷新重试。"
+    },
+    {
+      "name": "local_books_open_failed",
+      "value": "无法打开文件"
+    },
+    {
+      "name": "local_books_reader_hint",
+      "value": "请确认已安装支持此格式的阅读器，也可以先导出文件。"
+    },
+    {
+      "name": "local_books_export",
+      "value": "导出"
+    },
+    {
+      "name": "local_books_exported",
+      "value": "文件已导出"
+    },
+    {
+      "name": "local_books_export_failed",
+      "value": "导出失败，应用内文件仍保留，请重试。"
+    },
+    {
+      "name": "local_books_delete",
+      "value": "删除"
+    },
+    {
+      "name": "local_books_delete_title",
+      "value": "删除本地书籍？"
+    },
+    {
+      "name": "local_books_delete_message",
+      "value": "将删除应用内文件和书架记录，已导出的副本及账号下载历史不受影响。"
+    },
+    {
+      "name": "local_books_deleted",
+      "value": "本地书籍已删除"
+    },
+    {
+      "name": "local_books_delete_failed",
+      "value": "删除失败，请刷新后重试。"
+    },
+    {
+      "name": "local_books_downloading",
+      "value": "此版本正在下载，请稍候。"
+    },
+    {
+      "name": "local_books_download_started",
+      "value": "开始下载，完成后将加入本地书架。"
+    },
+    {
+      "name": "local_books_download_complete",
+      "value": "已下载并加入本地书架"
+    },
+    {
+      "name": "local_books_save_failed",
+      "value": "下载或保存失败，请重试。"
+    }
+  ]
+}

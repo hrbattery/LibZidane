@@ -1,9 +1,11 @@
 import { Constants } from '../../../common/const/Constants'
 import { DownloadedBooks } from './DownloadedBooks'
 import { FavoriteBooks } from './FavoriteBooks'
+import { LocalBooks } from './LocalBooks'
 
 @ComponentV2
 export struct MyBook {
+  @Param active: boolean = false;
   @Local tabCurrentIndex: number = 0
   @Local favoritesEntriesAmount: number = 0;
   @Local downloadedEntriesAmount: number = 0;
@@ -56,6 +58,10 @@ export struct MyBook {
           this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''
         ))
         // .tabBar('已下载' + (this.downloadedEntriesAmount > 0 ? ` ( ${this.downloadedEntriesAmount} )` : ''))
+        TabContent() {
+          LocalBooks({ active: this.active && this.tabCurrentIndex === 2 })
+        }
+        .tabBar($r('app.string.local_books_tab'))
       }
       .barMode(BarMode.Fixed)
       .onChange((index: number) => {

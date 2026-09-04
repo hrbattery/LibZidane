@@ -110,7 +110,7 @@
     },
     {
       "name": "ui_mybook_downloaded_tab",
-      "value": "Downloaded%s"
+      "value": "Download history%s"
     },
     {
       "name": "ui_search_exact_match",

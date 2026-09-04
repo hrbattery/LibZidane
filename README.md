@@ -13,6 +13,8 @@ A simple replacement of Z-Library Android App for HarmonyOS.
 - [x] Book details (Multi formats)
 - [x] Search books
 - [x] Download books
+- [x] Local bookshelf for new downloads (available offline and after logout)
+- [x] Open local books in an external reader, export copies, and delete managed files
 - [x] i18n (zh-hans & en-us)
 - [x] Dark mode
 - [x] Custom Api

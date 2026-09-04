@@ -106,7 +106,7 @@
     },
     {
       "name": "ui_mybook_downloaded_tab",
-      "value": "已下载%s"
+      "value": "下载历史%s"
     },
     {
       "name": "ui_mybook_favorite_tab",

@@ -1,109 +1,168 @@
 import { common } from '@kit.AbilityKit';
-import { BusinessError, request } from '@kit.BasicServicesKit';
-import { fileUri, fileIo as fs, picker } from '@kit.CoreFileKit';
-import { path } from '@mysoft/path';
-import { DialogUtil, FileUtil, LogUtil, ToastUtil } from '@pura/harmony-utils';
-import { FullBookData } from '../../model/entities/BookModel';
+import { request } from '@kit.BasicServicesKit';
+import { url } from '@kit.ArkTS';
+import { fileIo as fs } from '@kit.CoreFileKit';
+import axios, { AxiosResponse } from '@ohos/axios';
+import { LogUtil, ToastUtil } from '@pura/harmony-utils';
+import { DialogAction, DialogHelper } from '@pura/harmony-dialog';
+import { LocalBookRecord, LocalBookSelection, localBookKey } from '../../model/entities/LocalBookRecord';
 import { DownloadFileData } from '../../model/entities/DownloadModel';
+import { getBookDownloadUrl } from '../../model/api/BookApi';
+import { getLocalBookStore, LocalBookStore } from '../../model/storage/LocalBookStore';
+import { openLocalBook, exportLocalBook } from '../system/LocalBookFileActions';
 import { notificationUtil } from '../system/NotificationUtil';
 import { filesize } from '../thirdparty/filesize/filesize';
 
-
 class FileDownload {
-  async downloadBook(context: common.UIAbilityContext, downloadData: DownloadFileData, bookData: FullBookData) {
-    const cachePath = path.join(context.cacheDir, downloadData.fileName)
-    const filesPath = await this.getDownloadPath(context, downloadData.fileName)
+  private cacheReady: boolean = false;
 
-    const NOTIF_FILE_DOWNLOADING_RESID: number = $r('app.string.notif_file_downloading').id
-    if (filesPath) {
-      if (await FileUtil.access(filesPath.path)) {
-        DialogUtil.showConfirmDialog({
-          title: $r("app.string.notif_file_existed_title"),
-          message: $r("app.string.notif_file_existed_message")
-        })
+  /** Reserve the selected version before fetching its URL and publish only committed books. */
+  public async downloadBook(context: common.UIAbilityContext, selection: LocalBookSelection): Promise<void> {
+    let store: LocalBookStore;
+    try {
+      store = getLocalBookStore(context);
+    } catch (error) {
+      LogUtil.error(`Local shelf initialization failed: ${error}`);
+      ToastUtil.showToast($r('app.string.local_books_save_failed'));
+      return;
+    }
+    if (!store.beginDownload(selection.id, selection.hash)) {
+      ToastUtil.showToast($r('app.string.local_books_downloading'));
+      return;
+    }
+    let cachePath = '';
+    try {
+      const existing = store.find(selection.id, selection.hash);
+      if (existing && store.isAvailable(existing)) {
+        await this.openExisting(context, existing);
         return;
       }
-      if (await FileUtil.access(cachePath)) {
-        await fs.unlink(cachePath)
-      }
+      cachePath = this.prepareCache(context, selection);
+      const download = await this.getDownloadData(selection);
+      ToastUtil.showToast($r('app.string.local_books_download_started'));
+      await this.transfer(context, download, cachePath, selection.id);
+      const record = store.commit(selection, cachePath, download.fileName);
+      const message = context.resourceManager.getStringSync($r('app.string.local_books_download_complete').id);
       try {
-        ToastUtil.showToast(context.resourceManager.getStringSync(
-          $r('app.string.notif_start_download').id,
-          downloadData.fileName
-        ))
-
-        const downloadTask: request.DownloadTask = await request.downloadFile(context, {
-          url: downloadData.downloadLink,
-          filePath: cachePath
-        })
-        downloadTask.on('complete', async () => {
-          await this.onComplete(context, cachePath, filesPath, bookData, downloadData);
-        })
-        downloadTask.on('progress', (receivedSize: number, totalSize: number) => {
-          const receiveSizeText: string = filesize(receivedSize)
-          const totalSizeText: string = filesize(totalSize)
-          const notificationString: string = context.resourceManager.getStringSync(
-            NOTIF_FILE_DOWNLOADING_RESID,
-            receiveSizeText,
-            totalSizeText
-          )
-          notificationUtil.download(
-            bookData.id,
-            notificationString,
-            // `正在下载 (${receiveSizeText} / ${totalSizeText})`,
-            downloadData.fileName,
-            (receivedSize / totalSize) * 100
-          )
-        })
-        downloadTask.on('fail', async () => {
-          await fs.unlink(cachePath)
-        })
-      } catch (err) {
-        this.onError(err, context, bookData, downloadData);
+        notificationUtil.publish(selection.id, message, record.fileName);
+        ToastUtil.showToast(message);
+      } catch (error) {
+        LogUtil.warn(`Book saved, but completion notification failed: ${error}`);
       }
+      // Covers are optional and must never turn a successful book download into a failure.
+      this.downloadCover(store, record, selection.cover);
+    } catch (error) {
+      LogUtil.error(`Book download/save failed: ${error}`);
+      const message = context.resourceManager.getStringSync($r('app.string.local_books_save_failed').id);
+      try {
+        notificationUtil.publish(selection.id, message, selection.title);
+      } catch (notificationError) {
+        LogUtil.warn(`Download failure notification unavailable: ${notificationError}`);
+      }
+      ToastUtil.showToast(message);
+    } finally {
+      try {
+        if (cachePath && fs.accessSync(cachePath)) {
+          fs.unlinkSync(cachePath);
+        }
+      } catch (error) {
+        LogUtil.error(`Download cache cleanup failed: ${error}`);
+      }
+      store.endDownload(selection.id, selection.hash);
     }
   }
 
-  private async getDownloadPath(context: common.UIAbilityContext, fileName: string): Promise<fileUri.FileUri | null> {
-    let uri: string = '';
-    const documentViewPicker = new picker.DocumentViewPicker(context);
-    const documentSaveOptions = new picker.DocumentSaveOptions();
-    documentSaveOptions.pickerMode = picker.DocumentPickerMode.DOWNLOAD;
+  /** Clean only our abandoned cache directory, once before this process starts downloading. */
+  private prepareCache(context: common.UIAbilityContext, selection: LocalBookSelection): string {
+    const directory = `${context.cacheDir}/local-books-downloads`;
+    if (!this.cacheReady) {
+      if (fs.accessSync(directory)) {
+        fs.rmdirSync(directory);
+      }
+      fs.mkdirSync(directory);
+      this.cacheReady = true;
+    }
+    if (!fs.accessSync(directory)) {
+      fs.mkdirSync(directory);
+    }
+    return `${directory}/${localBookKey(selection.id, selection.hash)}.part`;
+  }
 
+  /** Resolve the exact selected version; the remote filename is never a storage path. */
+  private async getDownloadData(selection: LocalBookSelection): Promise<DownloadFileData> {
+    const info = await getBookDownloadUrl(selection.id, selection.hash);
+    if (!info) {
+      throw new Error('No download URL was returned');
+    }
+    const params = new url.URLParams(url.URL.parseURL(info.downloadLink).search);
+    return { downloadLink: info.downloadLink,
+      fileName: params.get('filename') || `${selection.title}.${selection.extension}` };
+  }
+
+  /** Bridge system download events to one terminal promise; callers own cleanup and errors. */
+  private async transfer(context: common.UIAbilityContext, data: DownloadFileData,
+    cachePath: string, notificationId: number): Promise<void> {
+    const task = await request.downloadFile(context, { url: data.downloadLink, filePath: cachePath });
+    await new Promise<void>((resolve, reject) => {
+      const finish = (error?: Error): void => {
+        task.off('complete');
+        task.off('fail');
+        task.off('progress');
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      };
+      task.on('complete', () => finish());
+      task.on('fail', () => finish(new Error('System download failed')));
+      task.on('progress', (received: number, total: number) => {
+        const message = context.resourceManager.getStringSync($r('app.string.notif_file_downloading').id,
+          filesize(received), filesize(total));
+        notificationUtil.download(notificationId, message, data.fileName, total > 0 ? received / total * 100 : 0);
+      });
+    });
+  }
+
+  /** Reuse a local version; if no reader opens it, offer an explicit export action. */
+  private async openExisting(context: common.UIAbilityContext, record: LocalBookRecord): Promise<void> {
     try {
-      const documentSaveResult = await documentViewPicker.save(documentSaveOptions);
-      uri = documentSaveResult[0];
-      const testFilePath = new fileUri.FileUri(`${uri}/${fileName}`);
-      return testFilePath;
-    } catch (err) {
-      console.error(`Invoke documentViewPicker.save failed, code is ${err.code}, message is ${err.message}`);
+      await openLocalBook(context, record);
+    } catch {
+      DialogHelper.showAlertDialog({
+        title: $r('app.string.local_books_open_failed'),
+        content: $r('app.string.local_books_reader_hint'),
+        primaryButton: $r('app.string.ui_common_cancel_btn'),
+        secondaryButton: $r('app.string.local_books_export'),
+        onAction: async (action: DialogAction) => {
+          if (action === DialogAction.TWO) {
+            try {
+              if (await exportLocalBook(context, record)) {
+                ToastUtil.showToast($r('app.string.local_books_exported'));
+              }
+            } catch {
+              ToastUtil.showToast($r('app.string.local_books_export_failed'));
+            }
+          }
+        }
+      });
     }
-    ;
-    return null;
   }
 
-  private async onComplete(context: common.UIAbilityContext, cachePath: string, filesPath: fileUri.FileUri, bookData: FullBookData,
-    downloadData: DownloadFileData) {
-    await fs.moveFile(cachePath, filesPath.path);
-
-    const notificationString: string = context.resourceManager.getStringSync(
-      $r("app.string.notif_download_accomplish").id
-    )
-
-    // todo: 通知回调，可以点击跳转到下载文件目录处
-    notificationUtil.publish(bookData.id, notificationString, downloadData.fileName);
-    // relationStore.addPair(fileUri, bookData)
-    ToastUtil.showToast(`${notificationString}: ${downloadData.fileName}`);
-  }
-
-  private onError(err: BusinessError, context: common.UIAbilityContext, bookData: FullBookData, downloadData: DownloadFileData) {
-    const notificationString: string = context.resourceManager.getStringSync(
-      $r("app.string.notif_download_failed").id
-    )
-    ToastUtil.showToast($r("app.string.notif_download_error") + err.message);
-    notificationUtil.publish(bookData.id, notificationString, downloadData.fileName);
-    LogUtil.error($r("app.string.notif_download_error") + JSON.stringify(err));
+  /** Fetch a bounded optional cover without adding account cookies to image requests. */
+  private async downloadCover(store: LocalBookStore, record: LocalBookRecord, cover: string): Promise<void> {
+    if (!cover) {
+      return;
+    }
+    try {
+      const response: AxiosResponse<ArrayBuffer> = await axios.get<ArrayBuffer, AxiosResponse<ArrayBuffer>>(cover, {
+        responseType: 'array_buffer', timeout: 10000, maxContentLength: 5 * 1024 * 1024
+      });
+      store.saveCover(record, response.data);
+    } catch (error) {
+      LogUtil.warn(`Optional book cover was not saved: ${error}`);
+    }
   }
 }
 
-export const fileDownload = new FileDownload()
+export const fileDownload = new FileDownload();

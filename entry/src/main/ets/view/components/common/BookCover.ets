@@ -10,8 +10,17 @@ export struct BookCover {
   @Local imgRatio: number = 0.75;
   @Consumer() showSkeleton: boolean = false;
 
+  /** Reset the placeholder when a reused card receives a different cover source. */
+  @Monitor('coverData.cover')
+  onCoverChange(): void {
+    this.isLoaded = false;
+    this.loadError = false;
+    this.imgRatio = 0.75;
+  }
+
+  /** Keep the image in layout so its completion callback can replace the placeholder. */
   build() {
-    Row() {
+    Stack() {
       if (this.showSkeleton) {
         Column() {
           UISkeleton({
@@ -27,6 +36,24 @@ export struct BookCover {
           .width("100%")
           .aspectRatio(this.imgRatio)
       } else if (this.coverData) {
+        Image(this.coverData.cover)
+          .objectFit(ImageFit.Contain)
+          .onComplete(event => {
+            this.isLoaded = true
+            this.loadError = false
+            if (event && event.width > 0 && event.height > 0) {
+              this.imgRatio = event.width / event.height
+            }
+          })
+          .onError(() => {
+            this.loadError = true
+          })
+          .aspectRatio(this.imgRatio)
+          .constraintSize({
+            maxHeight: this.altHeight ?? Infinity
+          })
+          .width("100%")
+
         if (!this.isLoaded || this.loadError) {
           Text(this.coverData.title ?? $r("app.string.ui_common_loading"))
             .fontSize("14vp")
@@ -42,29 +69,8 @@ export struct BookCover {
             .wordBreak(WordBreak.BREAK_ALL)
             .transition(TransitionEffect.OPACITY.animation({duration: 500}))
         }
-
-        Image(this.coverData?.cover)
-          .objectFit(ImageFit.Contain)
-          .visibility(this.isLoaded && !this.loadError ? Visibility.Visible : Visibility.None)
-          .onComplete(event => {
-            this.isLoaded = true
-            this.loadError = false
-            if (event) {
-              this.imgRatio = event?.width / event?.height
-            }
-          })
-          .onError(() => {
-            this.loadError = true
-          })
-          .aspectRatio(this.imgRatio)
-          .constraintSize({
-            maxHeight: this.altHeight ?? Infinity
-          })
-          .transition(TransitionEffect.OPACITY.animation({duration: 500}))
-          .width("100%")
       }
     }
-    .justifyContent(FlexAlign.Center)
     .width("100%")
   }
 }

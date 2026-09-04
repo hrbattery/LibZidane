@@ -1,8 +1,5 @@
 import { common } from '@kit.AbilityKit'
-import { url } from '@kit.ArkTS'
-import { ToastUtil } from '@pura/harmony-utils'
 import { fileDownload } from '../../../common/request/FileDownload'
-import { getBookDownloadUrl } from '../../../model/api/BookApi'
 import { BookFormatType, FullBookData } from '../../../model/entities/BookModel'
 
 @ComponentV2
@@ -56,27 +53,17 @@ export struct BookFormatSheet {
     .height('40vp')
     .borderRadius(10)
     .onClick(async () => {
-      // todo: bg color
       if (this.mainBookData) {
         const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-
-        // query download url
-        const downloadInfo = await getBookDownloadUrl(item.id, item.hash)
-        if (!downloadInfo) {
-          ToastUtil.showToast($r("app.string.notif_download_get_url_failed"))
-          return
-        } else {
-          const decodedUrl = decodeURI(downloadInfo.downloadLink);
-          let searchParams = new url.URLParams(url.URL.parseURL(decodedUrl).search)
-          let fileName: string = searchParams.get("filename") ??
-            `${downloadInfo.description}.${downloadInfo.extension}`
-
-          this.onClose()
-          await fileDownload.downloadBook(context, {
-            downloadLink: downloadInfo.downloadLink,
-            fileName: fileName
-          }, this.mainBookData)
-        }
+        this.onClose()
+        await fileDownload.downloadBook(context, {
+          id: item.id,
+          hash: item.hash,
+          extension: item.extension,
+          title: this.mainBookData.title,
+          author: this.mainBookData.author,
+          cover: this.mainBookData.cover
+        })
       }
     })
   }

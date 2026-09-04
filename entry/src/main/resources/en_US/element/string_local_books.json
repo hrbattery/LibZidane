@@ -1,0 +1,80 @@
+{
+  "string": [
+    {
+      "name": "local_books_tab",
+      "value": "Local books"
+    },
+    {
+      "name": "local_books_empty",
+      "value": "New downloads will appear here automatically."
+    },
+    {
+      "name": "local_books_storage_hint",
+      "value": "Books are stored in this app and removed when it is uninstalled. Export books you want to keep."
+    },
+    {
+      "name": "local_books_unavailable",
+      "value": "File unavailable"
+    },
+    {
+      "name": "local_books_load_failed",
+      "value": "Could not read your local books. Refresh to retry."
+    },
+    {
+      "name": "local_books_open_failed",
+      "value": "Could not open file"
+    },
+    {
+      "name": "local_books_reader_hint",
+      "value": "Make sure a reader for this format is installed, or export the file."
+    },
+    {
+      "name": "local_books_export",
+      "value": "Export"
+    },
+    {
+      "name": "local_books_exported",
+      "value": "File exported"
+    },
+    {
+      "name": "local_books_export_failed",
+      "value": "Export failed. The original file is still in this app. Please retry."
+    },
+    {
+      "name": "local_books_delete",
+      "value": "Delete"
+    },
+    {
+      "name": "local_books_delete_title",
+      "value": "Delete local book?"
+    },
+    {
+      "name": "local_books_delete_message",
+      "value": "This deletes the file in this app and its shelf entry. Exported copies and account download history are unaffected."
+    },
+    {
+      "name": "local_books_deleted",
+      "value": "Local book deleted"
+    },
+    {
+      "name": "local_books_delete_failed",
+      "value": "Deletion failed. Refresh and retry."
+    },
+    {
+      "name": "local_books_downloading",
+      "value": "This version is already downloading. Please wait."
+    },
+    {
+      "name": "local_books_download_started",
+      "value": "Downloading. The book will be added to your local shelf when complete."
+    },
+    {
+      "name": "local_books_download_complete",
+      "value": "Downloaded and added to local books"
+    },
+    {
+      "name": "local_books_save_failed",
+      "value": "Download or save failed. Please retry."
+    }
+  ]
+}
