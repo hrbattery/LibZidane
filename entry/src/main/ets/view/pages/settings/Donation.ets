@@ -87,7 +87,7 @@ struct Donation {
                 })
             }
             .divider({
-              strokeWidth: "1px",
+              strokeWidth: "2px",
               color: $r("sys.color.font_tertiary"),
               startMargin: 8,
               endMargin: 8

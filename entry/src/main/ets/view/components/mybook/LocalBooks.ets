@@ -187,7 +187,7 @@ export struct LocalBooks {
         }
         .divider({
           color: $r('sys.color.font_tertiary'),
-          strokeWidth: '1px',
+          strokeWidth: '2px',
           startMargin: 10,
           endMargin: 10
         })

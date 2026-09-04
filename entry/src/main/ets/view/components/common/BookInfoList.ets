@@ -54,7 +54,7 @@ export struct BookInfoList {
     .contentEndOffset(this.floatingTabBarInset > 0 ? this.floatingTabBarInset + this.windowInfo.bottomInset : 0)
     .divider({
       color: $r("sys.color.font_tertiary"),
-      strokeWidth: "1px",
+      strokeWidth: "2px",
       startMargin: 10,
       endMargin: 10
     })
