@@ -3,6 +3,7 @@ import { windowUtil } from '../../../common/system/WindowUtil'
 import { BookFormatType, FullBookData } from '../../../model/entities/BookModel'
 import { BookCover } from '../common/BookCover'
 import { BookFormatSheet } from './BookFormatSheet'
+import { onlineReaderLibrary } from '../../../model/entities/OnlineReaderState'
 
 @ComponentV2
 export struct BookDetailHeader {
@@ -22,6 +23,17 @@ export struct BookDetailHeader {
 
   handleSelectFormatSheet(): void {
     this.isShowSelectFormatSheet = false;
+  }
+
+  /** Enter the reader immediately while a fresh signed link is loading. */
+  async openOnlineReader(): Promise<void> {
+    if (!this.bookData.readOnlineAvailable || !this.pathStack) {
+      return;
+    }
+    const loading = onlineReaderLibrary.open(this.bookData.id, this.bookData.hash,
+      this.bookData.title, this.bookData.cover);
+    this.pathStack.pushPathByName('OnlineReader', null);
+    await loading;
   }
 
   build() {
@@ -95,6 +107,12 @@ export struct BookDetailHeader {
           this.pathStack?.pushPathByName("Search", this.bookData.author)
         })
       this.BookSubInfos(this.bookData, 16, $r("sys.color.font_primary"))
+
+      if (this.bookData.readOnlineAvailable) {
+        Button($r('app.string.ui_reader_open'))
+          .width('90%')
+          .onClick(() => this.openOnlineReader())
+      }
 
       Button($r("app.string.ui_bookdetail_download_btn"))
         .width("90%")

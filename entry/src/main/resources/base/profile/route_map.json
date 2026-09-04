@@ -1,6 +1,11 @@
 {
   "routerMap": [
     {
+      "name": "OnlineReader",
+      "pageSourceFile": "src/main/ets/view/pages/OnlineReader.ets",
+      "buildFunction": "OnlineReaderBuilder"
+    },
+    {
       "name": "BookDetail",
       "pageSourceFile": "src/main/ets/view/pages/BookDetail.ets",
       "buildFunction": "BookDetailBuilder"

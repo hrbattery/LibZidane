@@ -32,7 +32,7 @@ export async function getMostPopular(): Promise<CoverDataSource[]> {
 export async function getBookInfo(bookId: number, hash: string): Promise<BookCommonDataSource | undefined> {
   // todo: switch language
   let response = await ReqInst.get<BookInfoResponse>(`/eapi/book/${bookId}/${hash}`);
-  logger.debug(response)
+  // Book details can contain signed reader URLs; do not log the response body.
   if (response.success) {
     return response.book;
   }

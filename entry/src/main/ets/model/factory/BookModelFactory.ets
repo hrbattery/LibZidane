@@ -76,7 +76,8 @@ export class FullBookDataFactory {
       href: data.href,
       dl: data.dl,
       description: data.description,
-      filesize: data.filesize
+      filesize: data.filesize,
+      readOnlineAvailable: data.readOnlineAvailable
     }
 
     param.date_download = FullBookDataFactory.getField(data, "date_download");

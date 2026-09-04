@@ -62,6 +62,7 @@ export class FullBookData extends BookData {
   @Trace description: string
   @Trace isbn10?: string[]
   @Trace isbn13?: string[]
+  @Trace readOnlineAvailable: boolean
 
   constructor(bookData: FullBookDataType) {
     super(bookData);
@@ -79,6 +80,7 @@ export class FullBookData extends BookData {
     this.description = bookData.description
     this.isbn10 = bookData.isbn10
     this.isbn13 = bookData.isbn13
+    this.readOnlineAvailable = bookData.readOnlineAvailable ?? false
   }
 }
 
@@ -115,7 +117,8 @@ export interface FullBookDataType extends BookDataType, BookFormatType {
   dl?: string,
   description: string,
   isbn10?: string[],
-  isbn13?: string[]
+  isbn13?: string[],
+  readOnlineAvailable?: boolean
 }
 
 export interface BookDetailParam {

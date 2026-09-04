@@ -1,0 +1,36 @@
+{
+  "string": [
+    {
+      "name": "ui_reader_open",
+      "value": "Read online"
+    },
+    {
+      "name": "ui_reader_continue",
+      "value": "Continue reading"
+    },
+    {
+      "name": "ui_reader_close",
+      "value": "Close reader"
+    },
+    {
+      "name": "ui_reader_load_failed",
+      "value": "Unable to load the reader. Use Refresh in the top right to try again."
+    },
+    {
+      "name": "ui_reader_unavailable",
+      "value": "Online reading is not currently available for this book."
+    },
+    {
+      "name": "ui_reader_sidebar_title",
+      "value": "Reading"
+    },
+    {
+      "name": "ui_reader_sidebar_hide",
+      "value": "Hide reading sidebar"
+    },
+    {
+      "name": "ui_reader_sidebar_empty",
+      "value": "No books in progress"
+    }
+  ]
+}

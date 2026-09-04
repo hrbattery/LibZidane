@@ -1,0 +1,36 @@
+{
+  "string": [
+    {
+      "name": "ui_reader_open",
+      "value": "在线阅读"
+    },
+    {
+      "name": "ui_reader_continue",
+      "value": "继续阅读"
+    },
+    {
+      "name": "ui_reader_close",
+      "value": "关闭阅读器"
+    },
+    {
+      "name": "ui_reader_load_failed",
+      "value": "阅读页面加载失败，请点击右上角刷新重试。"
+    },
+    {
+      "name": "ui_reader_unavailable",
+      "value": "这本书暂不支持在线阅读。"
+    },
+    {
+      "name": "ui_reader_sidebar_title",
+      "value": "正在阅读"
+    },
+    {
+      "name": "ui_reader_sidebar_hide",
+      "value": "收起阅读侧栏"
+    },
+    {
+      "name": "ui_reader_sidebar_empty",
+      "value": "暂无在读书籍"
+    }
+  ]
+}

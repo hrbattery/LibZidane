@@ -4,11 +4,21 @@ import { LogUtil as logger } from "@pura/harmony-utils"
 import { DialogHelper } from "@pura/harmony-dialog"
 import { Constants } from '../../common/const/Constants';
 import { Settings } from '../components/settings/Settings';
+import { PersistenceV2 } from '@kit.ArkUI';
+import { AppState } from '../../model/entities/AppState';
+import { OnlineReaderLibrary, OnlineReaderState, onlineReaderLibrary } from '../../model/entities/OnlineReaderState';
+import { ReaderSidebar } from '../components/reader/ReaderSidebar';
+import { windowUtil } from '../../common/system/WindowUtil';
+import { WidthBreakpointType } from '../../common/system/BreakpointUtil';
+import { releaseReaderWeb } from '../components/reader/OnlineReaderWeb';
 
 const TAG = "[Home] "
 @Entry
 @ComponentV2
 struct Home {
+  @Local readers: OnlineReaderLibrary = onlineReaderLibrary;
+  @Local readerSidebarVisible: boolean = false;
+  @Local appState: AppState = PersistenceV2.connect(AppState, 'appState', () => new AppState())!;
   @Local index: number = 0;
   @Local tabCurrentIndex: number = 0;
   @Local tabController: TabsController = new TabsController()
@@ -26,7 +36,127 @@ struct Home {
 
   navPathStack: NavPathStack = new NavPathStack()
 
+  /** Open the hidden reading drawer from the title button without intercepting system back gestures. */
   build() {
+    Stack({ alignContent: Alignment.TopStart }) {
+      this.MainNavigation()
+      if (this.readerSidebarVisible) {
+        Row() {}
+          .width('100%')
+          .height('100%')
+          .backgroundColor('#40000000')
+          .onClick(() => this.showReaderSidebar(false))
+          .transition(TransitionEffect.OPACITY)
+        ReaderSidebar({
+          library: this.readers,
+          onResume: session => this.resumeOnlineReader(session),
+          onCloseBook: session => this.closeOnlineReader(session),
+          onDismiss: () => this.showReaderSidebar(false)
+        })
+          .width(this.readerSidebarWidth)
+          .height('100%')
+          .transition(TransitionEffect.move(TransitionEdge.START))
+          .gesture(PanGesture({ direction: PanDirection.Left, distance: 24 })
+            .onActionEnd(() => this.showReaderSidebar(false)))
+      }
+    }
+    .width('100%')
+    .height('100%')
+  }
+
+  /** Use one third on tablets, one quarter on wide windows and a usable phone width. */
+  @Computed
+  get readerSidebarWidth(): string {
+    return new WidthBreakpointType('82%', '33.333%', '33.333%', '25%')
+      .getValue(windowUtil.mainWindowInfo.widthBp);
+  }
+
+  /** Animate opening and dismissal through the same drawer state. */
+  showReaderSidebar(visible: boolean): void {
+    this.getUIContext().animateTo({ duration: 200 }, () => {
+      this.readerSidebarVisible = visible;
+    });
+  }
+
+  /** Dismiss the drawer before the system back action exits the home page. */
+  onBackPress(): boolean {
+    if (this.readerSidebarVisible) {
+      this.showReaderSidebar(false);
+      return true;
+    }
+    return false;
+  }
+
+  /** Clear all account-bound reading sessions on logout. */
+  @Monitor('appState.loginState')
+  onReaderAccountChange(): void {
+    if (!this.appState.loginState) {
+      this.readers.closeAll();
+      releaseReaderWeb();
+      this.readerSidebarVisible = false;
+      this.navPathStack.removeByName('OnlineReader');
+    }
+  }
+
+  /** Release all retained web nodes when the main page is destroyed. */
+  aboutToDisappear(): void {
+    this.readers.closeAll();
+    releaseReaderWeb();
+  }
+
+  /** Close one listed book without affecting any other retained reader. */
+  closeOnlineReader(session: OnlineReaderState): void {
+    releaseReaderWeb(session.readerUrl);
+    this.readers.close(session);
+  }
+
+  /** Resume the selected session and leave the original navigation stack intact. */
+  resumeOnlineReader(session: OnlineReaderState): void {
+    this.readers.resume(session);
+    this.readerSidebarVisible = false;
+    this.navPathStack.pushPathByName('OnlineReader', null);
+  }
+
+  /** Place the drawer button before the root title; destinations retain their native back button. */
+  @Builder
+  HomeTitle() {
+    Row({ space: 8 }) {
+      Button() {
+        Stack() {
+          Image($r('app.media.reader_sidebar')).width(24).height(24)
+            .fillColor($r('sys.color.icon_primary'))
+          if (this.readers.sessions.length > 0) {
+            Text(`${this.readers.sessions.length}`)
+              .fontSize(10)
+              .fontColor(Color.White)
+              .backgroundColor($r('sys.color.comp_background_emphasize'))
+              .constraintSize({ minWidth: 14 })
+              .height(14)
+              .padding({ left: 2, right: 2 })
+              .textAlign(TextAlign.Center)
+              .borderRadius(7)
+              .offset({ x: 12, y: -10 })
+          }
+        }
+        .width(40).height(40)
+      }
+      .width(44).height(44)
+      .backgroundColor(Color.Transparent)
+      .accessibilityText($r('app.string.ui_reader_sidebar_title'))
+      .onClick(() => this.showReaderSidebar(true))
+      Text(this.titleMap[this.index])
+        .fontSize(24)
+        .fontWeight(FontWeight.Bold)
+        .maxLines(1)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .layoutWeight(1)
+    }
+    .height('100%')
+  }
+
+  /** Keep the existing tab content and right-side menu actions. */
+  @Builder
+  MainNavigation() {
     Navigation(this.navPathStack) {
       Tabs({ controller: this.tabController, index: this.tabCurrentIndex }) {
         TabContent() {
@@ -70,10 +200,17 @@ struct Home {
       // })
     }
     .menus(this.navMenuItems)
-    .title(this.titleMap[this.index])
+    .title(this.HomeTitle())
     .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
     .mode(NavigationMode.Stack)
+    .width('100%')
+    .height('100%')
+    .onNavBarStateChange(visible => {
+      if (!visible) {
+        this.readerSidebarVisible = false;
+      }
+    })
   }
 
   // @Builder ToolBar() {
