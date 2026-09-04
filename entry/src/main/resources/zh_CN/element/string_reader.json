@@ -22,7 +22,7 @@
     },
     {
       "name": "ui_reader_sidebar_title",
-      "value": "正在阅读"
+      "value": "最近在读"
     },
     {
       "name": "ui_reader_sidebar_hide",
@@ -30,7 +30,7 @@
     },
     {
       "name": "ui_reader_sidebar_empty",
-      "value": "暂无在读书籍"
+      "value": "暂无最近在读书籍"
     }
   ]
 }

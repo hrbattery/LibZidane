@@ -6,7 +6,7 @@ const ts = require(process.env.ARKTS_TYPESCRIPT_PATH ||
   '/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js');
 
 /** Execute production session logic with controllable requests and no live account. */
-function environment() {
+function environment(disk = new Map()) {
   const requests = [];
   const source = fs.readFileSync(path.join(__dirname,
     '../entry/src/main/ets/model/entities/OnlineReaderState.ets'), 'utf8');
@@ -19,10 +19,17 @@ function environment() {
     if (name === '../api/BookApi') return {
       getBookInfo: (id, hash) => new Promise((resolve, reject) => requests.push({ id, hash, resolve, reject }))
     };
+    if (name === '../storage/PreferencesUtils') return { preferencesUtils: {
+      getSync: (field, key, fallback) => structuredClone(disk.get(`${field}:${key}`) ?? fallback),
+      putSync: (field, key, value) => disk.set(`${field}:${key}`, structuredClone(value))
+    } };
+    if (name === '../../common/const/StorageConstants') return { StorageConstants: {
+      DEFAULT_PREF: 'default_pref', PREFKEY_RECENT_READING_BOOKS: 'recent_reading_books'
+    } };
     throw new Error(`Unexpected import ${name}`);
   }, exports, value => value, () => {});
   return { state: new exports.OnlineReaderState(), library: new exports.OnlineReaderLibrary(),
-    requests, valid: exports.isOnlineReaderUrl };
+    requests, disk, valid: exports.isOnlineReaderUrl };
 }
 
 const book = (address = 'https://reader.example/read/book?signature=AbC%2F123') =>
@@ -161,4 +168,103 @@ test('logout clears every session and invalidates all unfinished requests', asyn
   await Promise.all([first, second]);
   assert.equal(library.sessions.length, 0);
   assert.ok(sessions.every(session => session.readerUrl === '' && !session.loading));
+});
+
+test('cold restart restores only book metadata and order without loading any web page', async () => {
+  const firstRun = environment();
+  const first = firstRun.library.open(1, 'a', 'First', 'https://example.test/first.jpg');
+  firstRun.requests[0].resolve(book());
+  await first;
+  const second = firstRun.library.open(2, 'b', 'Second');
+  firstRun.requests[1].resolve(book('https://reader.example/second?secret=token'));
+  await second;
+  await firstRun.library.open(1, 'a', 'First');
+  const records = [...firstRun.disk.values()][0].map(JSON.parse);
+  assert.deepEqual(records, [
+    { bookId: 1, hash: 'a', title: 'First', cover: 'https://example.test/first.jpg' },
+    { bookId: 2, hash: 'b', title: 'Second', cover: '' }
+  ]);
+  const nextRun = environment(firstRun.disk);
+  nextRun.library.restore();
+  nextRun.library.restore();
+  assert.deepEqual(nextRun.library.sessions.map(s => s.bookId), [1, 2]);
+  assert.equal(nextRun.library.sessions[0].cover, records[0].cover);
+  assert.ok(nextRun.library.sessions.every(s => s.readerUrl === '' && !s.loading));
+  assert.equal(nextRun.library.current.bookId, 0);
+  assert.equal(nextRun.requests.length, 0);
+});
+
+test('a restored card fetches a fresh URL only on selection and coalesces repeated selections', async () => {
+  const firstRun = environment();
+  const opening = firstRun.library.open(1, 'a', 'First');
+  firstRun.requests[0].resolve(book('https://reader.example/expired'));
+  await opening;
+  const nextRun = environment(firstRun.disk);
+  nextRun.library.restore();
+  const session = nextRun.library.sessions[0];
+  const resuming = nextRun.library.resume(session);
+  await nextRun.library.resume(session);
+  assert.equal(nextRun.requests.length, 1);
+  assert.equal(nextRun.library.current, session);
+  assert.equal(session.loading, true);
+  nextRun.requests[0].resolve(book('https://reader.example/fresh'));
+  await resuming;
+  assert.equal(session.readerUrl, 'https://reader.example/fresh');
+});
+
+test('detail-page open reuses a restored record and loads it instead of duplicating it', async () => {
+  const firstRun = environment();
+  const pending = firstRun.library.open(1, 'a', 'Book');
+  firstRun.library.release();
+  firstRun.requests[0].resolve(book());
+  await pending;
+  const nextRun = environment(firstRun.disk);
+  const reopening = nextRun.library.open(1, 'a', 'Book');
+  assert.equal(nextRun.library.sessions.length, 1);
+  assert.equal(nextRun.requests.length, 1);
+  nextRun.requests[0].resolve(book());
+  await reopening;
+  assert.equal(nextRun.library.current.readerUrl, book().readOnlineUrl);
+});
+
+test('closing a book persists its removal even when an earlier request finishes later', async () => {
+  const { library, disk, requests } = environment();
+  const first = library.open(1, 'a', 'First');
+  const firstSession = library.current;
+  const second = library.open(2, 'b', 'Second');
+  library.close(firstSession);
+  requests.forEach(request => request.resolve(book()));
+  await Promise.all([first, second]);
+  const nextRun = environment(disk);
+  nextRun.library.restore();
+  assert.deepEqual(nextRun.library.sessions.map(s => s.bookId), [2]);
+});
+
+test('Home destruction retains history but logout deletes it from storage', async () => {
+  const { library, disk, requests } = environment();
+  const opening = library.open(1, 'a', 'Book');
+  const session = library.current;
+  library.release();
+  requests[0].resolve(book());
+  await opening;
+  assert.equal(session.readerUrl, '');
+  assert.equal(library.sessions.length, 0);
+  library.restore();
+  assert.equal(library.sessions[0].bookId, 1);
+  library.closeAll();
+  const nextRun = environment(disk);
+  nextRun.library.restore();
+  assert.equal(nextRun.library.sessions.length, 0);
+});
+
+test('invalid and duplicate saved records do not hide the remaining recent books', () => {
+  const record = { bookId: 7, hash: 'h', title: 'Book', cover: '' };
+  const disk = new Map([['default_pref:recent_reading_books', [
+    '{broken', 'null', JSON.stringify({ ...record, bookId: -1 }),
+    JSON.stringify(record), JSON.stringify(record)
+  ]]]);
+  const { library, requests } = environment(disk);
+  library.restore();
+  assert.deepEqual(library.sessions.map(s => s.bookId), [7]);
+  assert.equal(requests.length, 0);
 });

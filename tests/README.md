@@ -3,18 +3,21 @@
 ## Online reader checks
 
 Run `node --test tests/online-reader.host.test.cjs` for signed-link validation,
-same-book resume, fresh-link retry, independent books, closing one book and late responses after close.
+same-book resume, fresh-link retry, independent books, persisted metadata/order,
+cold restore, removal and late responses after close.
 These checks do not load the remote web reader.
 
 On a device, open two available books from their detail pages, then return home. Open
-Reading from the button before the home title. Edge swipes remain system Back gestures.
+Recent reads from the button before the home title. Edge swipes remain system Back gestures.
 Check both books are listed, resume each, and confirm closing one preserves the other.
 Also check tapping outside, swiping left and system Back dismiss the sidebar, while
 detail pages retain their normal back button. Tablets use approximately one third of
 the window width and wide windows one quarter; phones use a wider drawer.
-Verify the same web page and reading position remain after resume. Logging out ends
-all sessions. Reading state is retained only during the current app process;
-restoration after restarting depends on the website.
+Verify the same web page and reading position remain after resume within one process.
+Force-stop and relaunch: the book list and order should remain, with pages loading only
+when selected. Close a card and restart again: it must stay removed. Logging out clears
+both active sessions and recent history. Signed reader URLs are never persisted;
+restoration of the actual reading position after restarting still depends on the website.
 
 Run the host regression suite with Node.js 18 or newer:
 

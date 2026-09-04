@@ -5,6 +5,9 @@ export class StorageConstants {
    */
   static readonly DEFAULT_PREF: string = "default_pref"
 
+  /** Book metadata in most-recent reading order; excludes signed reader URLs. */
+  static readonly PREFKEY_RECENT_READING_BOOKS: string = 'recent_reading_books';
+
   // Preferences keys
   /**
    * PREFKEY_DARK_MODE

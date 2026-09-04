@@ -98,9 +98,14 @@ struct Home {
     }
   }
 
-  /** Release all retained web nodes when the main page is destroyed. */
+  /** Restore recent book metadata after the app has initialized its preferences. */
+  aboutToAppear(): void {
+    this.readers.restore();
+  }
+
+  /** Release web pages while keeping recent books available after a restart. */
   aboutToDisappear(): void {
-    this.readers.closeAll();
+    this.readers.release();
     releaseReaderWeb();
   }
 
@@ -111,10 +116,11 @@ struct Home {
   }
 
   /** Resume the selected session and leave the original navigation stack intact. */
-  resumeOnlineReader(session: OnlineReaderState): void {
-    this.readers.resume(session);
+  async resumeOnlineReader(session: OnlineReaderState): Promise<void> {
+    const loading = this.readers.resume(session);
     this.readerSidebarVisible = false;
     this.navPathStack.pushPathByName('OnlineReader', null);
+    await loading;
   }
 
   /** Place the drawer button before the root title; destinations retain their native back button. */

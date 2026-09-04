@@ -1,5 +1,15 @@
 import { url } from '@kit.ArkTS';
 import { getBookInfo } from '../api/BookApi';
+import { preferencesUtils } from '../storage/PreferencesUtils';
+import { StorageConstants } from '../../common/const/StorageConstants';
+
+/** Only stable book metadata is written to local preferences. */
+interface RecentReadingBook {
+  bookId: number;
+  hash: string;
+  title: string;
+  cover: string;
+}
 
 /** Validate without rewriting the case-sensitive signed reader address. */
 export function isOnlineReaderUrl(value: string): boolean {
@@ -86,33 +96,83 @@ export class OnlineReaderState {
   }
 }
 
-/** Keep each unfinished book independently, ordered by most recent selection. */
+/** Persist recent books while retaining open web sessions independently in memory. */
 @ObservedV2
 export class OnlineReaderLibrary {
   @Trace sessions: OnlineReaderState[] = [];
   @Trace current: OnlineReaderState = new OnlineReaderState();
+  private restored: boolean = false;
+
+  /** Restore metadata once after preferences initialize, without opening any remote reader. */
+  restore(): void {
+    if (this.restored) {
+      return;
+    }
+    const entries = preferencesUtils.getSync<string[]>(StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_RECENT_READING_BOOKS, []);
+    const sessions: OnlineReaderState[] = [];
+    for (const entry of entries) {
+      try {
+        const record = JSON.parse(entry) as RecentReadingBook;
+        if (!record || !Number.isInteger(record.bookId) || record.bookId <= 0 ||
+          typeof record.hash !== 'string' || record.hash === '' ||
+          typeof record.title !== 'string' || typeof record.cover !== 'string' ||
+          sessions.some(session => session.bookId === record.bookId && session.hash === record.hash)) {
+          continue;
+        }
+        const session = new OnlineReaderState();
+        session.bookId = record.bookId;
+        session.hash = record.hash;
+        session.title = record.title;
+        session.cover = record.cover;
+        sessions.push(session);
+      } catch {
+        // A damaged record must not prevent other recent books from appearing.
+      }
+    }
+    this.sessions = sessions;
+    this.restored = true;
+  }
+
+  /** Flush each user change immediately; never serialize web state or temporary signed URLs. */
+  private save(): void {
+    const entries = this.sessions.map((session: OnlineReaderState): string => {
+      const record: RecentReadingBook = {
+        bookId: session.bookId, hash: session.hash, title: session.title, cover: session.cover
+      };
+      return JSON.stringify(record);
+    });
+    preferencesUtils.putSync(StorageConstants.DEFAULT_PREF,
+      StorageConstants.PREFKEY_RECENT_READING_BOOKS, entries);
+  }
 
   /** Select a retained session, creating and loading it only on first open. */
   async open(bookId: number, hash: string, title: string, cover: string = ''): Promise<void> {
+    this.restore();
     let session = this.sessions.find(item => item.bookId === bookId && item.hash === hash);
     if (session) {
-      this.resume(session);
+      await this.resume(session);
       return;
     }
     session = new OnlineReaderState();
     const loading = session.open(bookId, hash, title, cover);
     this.sessions = [session, ...this.sessions];
     this.current = session;
+    this.save();
     await loading;
   }
 
-  /** Bring a listed book to the front without replacing its URL or web node. */
-  resume(session: OnlineReaderState): void {
+  /** Reuse a live page, or fetch a fresh link when selecting a restored book. */
+  async resume(session: OnlineReaderState): Promise<void> {
     if (!this.sessions.includes(session)) {
       return;
     }
     this.sessions = [session, ...this.sessions.filter(item => item !== session)];
     this.current = session;
+    this.save();
+    if (session.readerUrl === '' && !session.loading) {
+      await session.reload();
+    }
   }
 
   /** Close only the selected book; other unfinished books remain available. */
@@ -122,13 +182,21 @@ export class OnlineReaderLibrary {
       this.current = new OnlineReaderState();
     }
     session.close();
+    this.save();
   }
 
-  /** Invalidate all account-bound sessions on logout or app destruction. */
+  /** Remove account-bound history and invalidate outstanding requests on logout. */
   closeAll(): void {
+    this.release();
+    this.save();
+  }
+
+  /** Release memory on Home destruction without deleting the persisted reading list. */
+  release(): void {
     this.sessions.forEach(session => session.close());
     this.sessions = [];
     this.current = new OnlineReaderState();
+    this.restored = false;
   }
 }
 

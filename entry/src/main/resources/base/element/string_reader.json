@@ -22,7 +22,7 @@
     },
     {
       "name": "ui_reader_sidebar_title",
-      "value": "Reading"
+      "value": "Recent reads"
     },
     {
       "name": "ui_reader_sidebar_hide",
@@ -30,7 +30,7 @@
     },
     {
       "name": "ui_reader_sidebar_empty",
-      "value": "No books in progress"
+      "value": "No recent reads"
     }
   ]
 }

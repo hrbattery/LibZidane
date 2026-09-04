@@ -138,8 +138,8 @@ export struct ReaderSidebar {
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
       }
       .width(40).height(40)
-      // The 28vp circle protrudes 6vp; its 40vp touch target stays easy to hit.
-      .offset({ x: 12, y: -12 })
+      // The 28vp circle protrudes 8vp; its 40vp touch target stays easy to hit.
+      .offset({ x: 14, y: -14 })
       .backgroundColor(Color.Transparent)
       .clip(false)
       .accessibilityText($r('app.string.ui_reader_close'))
