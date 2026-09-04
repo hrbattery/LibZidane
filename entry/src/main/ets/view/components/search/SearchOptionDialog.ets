@@ -1,284 +1,180 @@
 import { SearchFilterOptions } from '../../../model/entities/SearchFilterOptionModel';
-import { ExtensionSelector, generateYearRange, LanguageSelector, YearPicker } from './SearchOptionBuilders';
+import { generateYearRange, SearchFilterHeader, SearchMultiSelect, YearPicker } from './SearchOptionBuilders';
 import { common } from '@kit.AbilityKit';
 
-/**
- * 搜索选项对话框组件
- * 提供多种搜索筛选条件的自定义对话框
- */
+/** Search filter form. The owner supplies an isolated draft and decides whether to commit it. */
 @ComponentV2
 export struct SearchOptionDialog {
-  /**
-   * 当前筛选条件
-   */
-  @Param @Require options: SearchFilterOptions
-  @Local exactMatch: boolean = this.options.exactMatch;
-  @Local startYear: string | undefined = this.options.startYear;
-  @Local endYear: string | undefined = this.options.endYear;
-  @Local selectedLanguages: string[] = Array.from(this.options.selectedLanguages);
-  @Local selectedExtensions: string[] = Array.from(this.options.selectedExtensions);
-
-  // 展开/收起状态变量 - 默认收起
+  @Param @Require options: SearchFilterOptions;
   @Local isYearExpanded: boolean = false;
   @Local isLanguageExpanded: boolean = false;
   @Local isExtensionExpanded: boolean = false;
+  @Local years: string[] = [];
 
-
-  @Monitor('exactMatch')
-  syncExactMatch() {
-    this.options.setExactMatchCmd(this.exactMatch)
+  /** Generate the picker labels once per opening, including the localized unlimited entry. */
+  aboutToAppear(): void {
+    this.years = generateYearRange(this.getUIContext().getHostContext() as common.UIAbilityContext);
   }
 
-  @Monitor('startYear')
-  syncStartYear() {
-    this.options.setStartYearCmd(this.startYear)
+  /** Describe the selected range even while its controls are collapsed. */
+  private yearSummary(): ResourceStr {
+    if (!this.options.startYear && !this.options.endYear) {
+      return $r('app.string.ui_yearpicker_unlimited');
+    }
+    return `${this.options.startYear ?? this.years[0]} – ${this.options.endYear ?? this.years[0]}`;
   }
 
-  @Monitor('endYear')
-  syncEndYear() {
-    this.options.setEndYearCmd(this.endYear)
+  /** Show a single selection by name and summarize multiple selections without widening the dialog. */
+  private selectionSummary(items: string[]): ResourceStr {
+    if (items.length === 0) {
+      return $r('app.string.ui_yearpicker_unlimited');
+    }
+    return items.length === 1 ? items[0] : $r('app.string.ui_search_selected_count', items.length);
   }
 
-  @Monitor('selectedLanguages.length')
-  syncSelectedLanguages() {
-    this.options.setSelectedLanguagesCmd(this.selectedLanguages)
+  /** Read localized language names from the current app option cache. */
+  private getLanguageOptions(): string[] {
+    const languages: Record<string, string> = AppStorage.get<Record<string, string>>('language_options') ?? {};
+    return Object.keys(languages);
   }
 
-  @Monitor('selectedExtensions.length')
-  syncSelectedExtensions() {
-    this.options.setSelectedExtensionsCmd(this.selectedExtensions)
-  }
-
-  /**
-   * 切换语言选择
-   * @param language 语言名称
-   */
-  private toggleLanguage(language: string, value: boolean): void {
-    const index = this.selectedLanguages.indexOf(language);
-    if (index > -1 && value === false) {
-      this.selectedLanguages.splice(index, 1);
-    } else if (index === -1 && value === true) {
-      this.selectedLanguages.push(language);
+  /** Update only the draft; list rows and checkboxes use the same selection path. */
+  private toggleSelection(items: string[], item: string, selected: boolean): void {
+    const index = items.indexOf(item);
+    if (selected && index === -1) {
+      items.push(item);
+    } else if (!selected && index !== -1) {
+      items.splice(index, 1);
     }
   }
 
-  /**
-   * 切换扩展名选择
-   * @param extension 扩展名
-   */
-  private toggleExtension(extension: string, value: boolean): void {
-    const index = this.selectedExtensions.indexOf(extension);
-    if (index > -1 && value === false) {
-      this.selectedExtensions.splice(index, 1);
-    } else if (index === -1 && value === true) {
-      this.selectedExtensions.push(extension);
-    }
-  }
-
-  /**
-   * 清空所有筛选条件
-   */
-  private clearAllFilters(): void {
-    this.exactMatch = false;
-    this.startYear = undefined;
-    this.endYear = undefined;
-    this.selectedLanguages.splice(0, this.selectedLanguages.length);
-    this.selectedExtensions.splice(0, this.selectedExtensions.length);
-  }
-
-  private getLanguageOptions() {
-    const languageOptions: Record<string, string> = AppStorage.get<Record<string, string>>("language_options") ?? {};
-    return Object.keys(languageOptions);
-  }
-
-  private getExtensionOptions() {
-    return AppStorage.get<string[]>("extension_options") ?? []
-  }
-
-  build(): void {
-    Scroll() {
-      Column({ space: 18 }) {
-        // 完全匹配选项
-        Row() {
-          Text($r("app.string.ui_search_exact_match"))
-            .fontWeight(FontWeight.Medium)
-            .fontSize(16)
-            .flexGrow(1)
-          Toggle({
-            type: ToggleType.Switch,
-            isOn: this.exactMatch
+  /** Equal-width year wheels leave room for localized labels and report invalid ranges inline. */
+  @Builder
+  YearRange() {
+    Column({ space: 8 }) {
+      Row({ space: 12 }) {
+        Column({ space: 4 }) {
+          Text($r('app.string.ui_search_published_year_from'))
+            .fontSize(14)
+            .fontColor($r('sys.color.font_secondary'))
+          YearPicker({
+            years: this.years,
+            currentValue: this.options.startYear,
+            onValueChange: (year: string | undefined) => this.options.startYear = year
           })
-            .onChange((isOn: boolean) => {
-              this.exactMatch = isOn;
+        }.layoutWeight(1)
+        Column({ space: 4 }) {
+          Text($r('app.string.ui_search_published_year_to'))
+            .fontSize(14)
+            .fontColor($r('sys.color.font_secondary'))
+          YearPicker({
+            years: this.years,
+            currentValue: this.options.endYear,
+            onValueChange: (year: string | undefined) => this.options.endYear = year
+          })
+        }.layoutWeight(1)
+      }.width('100%')
+      if (!this.options.hasValidYearRange()) {
+        Text($r('app.string.ui_search_invalid_year_range'))
+          .fontSize(12)
+          .fontColor($r('sys.color.font_emphasize'))
+          .width('100%')
+      }
+    }
+    .padding({ left: 12, right: 12, bottom: 12 })
+    .transition(TransitionEffect.OPACITY)
+  }
+
+  /** Keep the reset action visible; only the form body and the two long option lists scroll. */
+  build(): void {
+    Column({ space: 8 }) {
+      Button($r('app.string.ui_search_clear_filter'))
+        .buttonStyle(ButtonStyleMode.TEXTUAL)
+        .fontSize(14)
+        .height(32)
+        .alignSelf(ItemAlign.End)
+        .onClick(() => this.options.clear())
+      Scroll() {
+        Column({ space: 8 }) {
+          Row({ space: 12 }) {
+            Text($r('app.string.ui_search_exact_match'))
+              .fontWeight(FontWeight.Medium)
+              .fontSize(16)
+              .fontColor($r('sys.color.font_primary'))
+              .layoutWeight(1)
+            Toggle({ type: ToggleType.Switch, isOn: this.options.exactMatch })
+              .onChange((isOn: boolean) => this.options.exactMatch = isOn)
+          }
+          .width('100%')
+          .padding(12)
+          .borderRadius(12)
+          .backgroundColor($r('sys.color.comp_background_primary'))
+
+          Column() {
+            SearchFilterHeader({
+              title: $r('app.string.ui_search_published_year'),
+              summary: this.yearSummary(),
+              expanded: this.isYearExpanded,
+              onToggle: () => this.isYearExpanded = !this.isYearExpanded
             })
+            if (this.isYearExpanded) {
+              this.YearRange()
+            }
+          }
+          .width('100%')
+          .borderRadius(12)
+          .backgroundColor($r('sys.color.comp_background_primary'))
+
+          Column() {
+            SearchFilterHeader({
+              title: $r('app.string.ui_search_language'),
+              summary: this.selectionSummary(this.options.selectedLanguages),
+              expanded: this.isLanguageExpanded,
+              onToggle: () => this.isLanguageExpanded = !this.isLanguageExpanded
+            })
+            if (this.isLanguageExpanded) {
+              SearchMultiSelect({
+                items: this.getLanguageOptions(),
+                selectedItems: this.options.selectedLanguages,
+                onToggle: (item: string, selected: boolean) =>
+                  this.toggleSelection(this.options.selectedLanguages, item, selected)
+              })
+            }
+          }
+          .width('100%')
+          .borderRadius(12)
+          .backgroundColor($r('sys.color.comp_background_primary'))
+
+          Column() {
+            SearchFilterHeader({
+              title: $r('app.string.ui_search_extension'),
+              summary: this.selectionSummary(this.options.selectedExtensions),
+              expanded: this.isExtensionExpanded,
+              onToggle: () => this.isExtensionExpanded = !this.isExtensionExpanded
+            })
+            if (this.isExtensionExpanded) {
+              SearchMultiSelect({
+                items: AppStorage.get<string[]>('extension_options') ?? [],
+                selectedItems: this.options.selectedExtensions,
+                onToggle: (item: string, selected: boolean) =>
+                  this.toggleSelection(this.options.selectedExtensions, item, selected)
+              })
+            }
+          }
+          .width('100%')
+          .borderRadius(12)
+          .backgroundColor($r('sys.color.comp_background_primary'))
         }
         .width('100%')
-        .padding({
-          top: 12,
-          bottom: 12,
-          left: 16,
-          right: 16
-        })
-        .borderRadius(10)
-
-        // 年份范围选择
-        // 出版年份标题 - 可点击展开/收起
-        Column({ space: 18 }) {
-          Row() {
-            Text($r("app.string.ui_search_published_year"))
-              .fontSize(16)
-              .fontWeight(FontWeight.Medium)
-              .flexGrow(1)
-              .textAlign(TextAlign.Start);
-            // 展开/收起图标
-            Text() {
-              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
-            }.fontSize(16)
-          }
-          .width('100%')
-          .padding({
-            top: 12,
-            bottom: 12,
-            left: 16,
-            right: 16
-          })
-          .borderRadius(10)
-          .onClick(() => {
-            this.isYearExpanded = !this.isYearExpanded;
-          });
-
-          // 年份范围选择器 - 条件显示
-          if (this.isYearExpanded) {
-            Row() {
-              // 开始年份选择
-              Column() {
-                Text($r("app.string.ui_search_published_year_from"))
-                  .fontSize(14)
-                  .fontWeight(FontWeight.Medium)
-                  .margin({ bottom: 8 });
-                YearPicker({
-                  years: generateYearRange(this.getUIContext().getHostContext() as common.UIAbilityContext),
-                  currentValue: this.startYear,
-                  onValueChange: (year: string | undefined) => {
-                    this.startYear = year;
-                  }
-                });
-              }
-              .flexShrink(1)
-              .width('40%');
-
-              Text('-')
-                .fontSize(18)
-                .margin({ left: 10, right: 10 })
-                .alignSelf(ItemAlign.Center)
-                .fontWeight(FontWeight.Medium)
-                .flexShrink(1)
-
-              // 结束年份选择
-              Column() {
-                Text($r("app.string.ui_search_published_year_to"))
-                  .fontSize(14)
-                  .fontWeight(FontWeight.Medium)
-                  .margin({ bottom: 8 });
-                YearPicker({
-                  years: generateYearRange(this.getUIContext().getHostContext() as common.UIAbilityContext),
-                  currentValue: this.endYear,
-                  onValueChange: (year: string | undefined) => {
-                    this.endYear = year;
-                  }
-                });
-              }
-              .flexShrink(1)
-              .width('40%');
-            }
-            .width('100%')
-            .justifyContent(FlexAlign.SpaceBetween)
-          }
-        }
-
-        // 语言选择
-        Column({ space: 18 }) {
-          // 语言标题 - 可点击展开/收起
-          Row() {
-            Text($r("app.string.ui_search_language"))
-              .fontSize(16)
-              .fontWeight(FontWeight.Medium)
-              .flexGrow(1)
-              .textAlign(TextAlign.Start);
-            Text() {
-              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
-            }.fontSize(16)
-          }
-          .width('100%')
-          .padding({
-            top: 12,
-            bottom: 12,
-            left: 16,
-            right: 16
-          })
-          .borderRadius(10)
-          .onClick(() => {
-            this.isLanguageExpanded = !this.isLanguageExpanded;
-          });
-
-          // 语言选择器 - 条件显示
-          if (this.isLanguageExpanded) {
-            LanguageSelector({
-              selectedLanguages: this.selectedLanguages,
-              onToggleLanguage: (lang, value) => this.toggleLanguage(lang, value),
-              languages: this.getLanguageOptions()
-            });
-          }
-        }
-
-        Column({ space: 18 }) {
-          // 文件格式标题 - 可点击展开/收起
-          Row() {
-            Text($r("app.string.ui_search_extension"))
-              .fontSize(16)
-              .fontWeight(FontWeight.Medium)
-              .flexGrow(1)
-              .textAlign(TextAlign.Start);
-            Text() {
-              SymbolSpan(this.isYearExpanded ? $r("sys.symbol.chevron_down") : $r("sys.symbol.chevron_right"))
-            }.fontSize(16)
-          }
-          .width('100%')
-          .padding({
-            top: 12,
-            bottom: 12,
-            left: 16,
-            right: 16
-          })
-          .borderRadius(10)
-          .onClick(() => {
-            this.isExtensionExpanded = !this.isExtensionExpanded;
-          });
-
-          // 文件格式选择器 - 条件显示
-          if (this.isExtensionExpanded) {
-            ExtensionSelector({
-              selectedExtensions: this.selectedExtensions,
-              onToggleExtension: (ext, value) => this.toggleExtension(ext, value),
-              extensions: this.getExtensionOptions()
-            })
-              .width('100%')
-          }
-        }
-
-        Button($r("app.string.ui_search_clear_filter"))
-          .onClick(() => this.clearAllFilters())
-          .width("60%")
+        .padding({ bottom: 8 })
       }
       .width('100%')
-      .padding({
-        top: 20,
-        bottom: 20,
-        left: 24,
-        right: 24
-      })
-      .width('100%')
-      .borderRadius(20)
+      .constraintSize({ maxHeight: 440 })
+      .scrollBar(BarState.Off)
+      .nestedScroll({ scrollForward: NestedScrollMode.SELF_FIRST, scrollBackward: NestedScrollMode.SELF_FIRST })
+      .edgeEffect(EdgeEffect.None)
+      .flexShrink(1)
     }
+    .width('100%')
   }
 }

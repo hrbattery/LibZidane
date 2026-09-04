@@ -137,6 +137,18 @@
       "value": "语言"
     },
     {
+      "name": "ui_search_selected_count",
+      "value": "已选 %d 项"
+    },
+    {
+      "name": "ui_search_invalid_year_range",
+      "value": "开始年份不能晚于结束年份。"
+    },
+    {
+      "name": "ui_search_options_unavailable",
+      "value": "暂无可用选项，请稍后重试。"
+    },
+    {
       "name": "ui_search_clear_filter",
       "value": "清空条件"
     },
