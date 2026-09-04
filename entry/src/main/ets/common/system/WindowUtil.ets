@@ -33,9 +33,12 @@ export class WindowUtil {
     try {
       const foreground = resources.getColorSync($r('sys.color.font_primary').id);
       const contentColor = '#' + (foreground >>> 0).toString(16).padStart(8, '0');
+      // The window API accepts ARGB strings rather than ResourceColor values.
+      const background = resources.getColorSync($r('app.color.system_bar_background').id);
+      const backgroundColor = '#' + (background >>> 0).toString(16).padStart(8, '0');
       this.mainWindow.setWindowSystemBarProperties({
-        statusBarColor: '#00000000',
-        navigationBarColor: '#00000000',
+        statusBarColor: backgroundColor,
+        navigationBarColor: backgroundColor,
         statusBarContentColor: contentColor,
         navigationBarContentColor: contentColor
       }).catch((error: BusinessError) => {

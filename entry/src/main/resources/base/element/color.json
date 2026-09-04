@@ -11,6 +11,30 @@
     {
       "name": "book_list_top_fade_transparent",
       "value": "#00FFFFFF"
+    },
+    {
+      "name": "reader_sidebar_mask",
+      "value": "#40000000"
+    },
+    {
+      "name": "reader_sidebar_shadow",
+      "value": "#18000000"
+    },
+    {
+      "name": "reader_cover_shadow",
+      "value": "#20000000"
+    },
+    {
+      "name": "reader_close_icon",
+      "value": "#99000000"
+    },
+    {
+      "name": "reader_close_shadow",
+      "value": "#33000000"
+    },
+    {
+      "name": "system_bar_background",
+      "value": "#00000000"
     }
   ]
 }

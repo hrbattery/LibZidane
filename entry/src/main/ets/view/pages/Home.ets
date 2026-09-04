@@ -46,7 +46,7 @@ struct Home {
         Row() {}
           .width('100%')
           .height('100%')
-          .backgroundColor('#40000000')
+          .backgroundColor($r('app.color.reader_sidebar_mask'))
           .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
           .onClick(() => this.showReaderSidebar(false))
           .transition(TransitionEffect.OPACITY)
@@ -139,7 +139,7 @@ struct Home {
           if (this.readers.sessions.length > 0) {
             Text(`${this.readers.sessions.length}`)
               .fontSize(10)
-              .fontColor(Color.White)
+              .fontColor($r('sys.color.font_on_primary'))
               .backgroundColor($r('sys.color.comp_background_emphasize'))
               .constraintSize({ minWidth: 14 })
               .height(14)

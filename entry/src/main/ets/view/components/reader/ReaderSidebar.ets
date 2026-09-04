@@ -19,7 +19,7 @@ export struct ReaderSidebar {
         .backgroundColor($r('sys.color.background_secondary'))
         .borderRadius({ topRight: 24, bottomRight: 24 })
         .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
-        .shadow({ radius: 24, color: '#18000000', offsetX: 6, offsetY: 0 })
+        .shadow({ radius: 24, color: $r('app.color.reader_sidebar_shadow'), offsetX: 6, offsetY: 0 })
       this.SidebarContent()
     }
     .height('100%')
@@ -122,7 +122,7 @@ export struct ReaderSidebar {
             .width('100%')
             .borderRadius(10)
             .clip(true)
-            .shadow({ radius: 10, color: '#20000000', offsetX: 0, offsetY: 4 })
+            .shadow({ radius: 10, color: $r('app.color.reader_cover_shadow'), offsetX: 0, offsetY: 4 })
           Text(session.title)
             .width('100%')
             .fontSize(14)
@@ -142,12 +142,13 @@ export struct ReaderSidebar {
       Button() {
         Stack() {
           Image($r('app.media.reader_close')).width(14).height(14)
-            .fillColor('#99000000')
+            .fillColor($r('app.color.reader_close_icon'))
         }
         .width(28).height(28)
-        .backgroundColor(Color.White)
+        // Keep the requested pure-white close button in both color modes.
+        .backgroundColor($r('sys.color.white'))
         .borderRadius(14)
-        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
+        .shadow({ radius: 6, color: $r('app.color.reader_close_shadow'), offsetX: 0, offsetY: 2 })
       }
       .width(40).height(40)
       // The 28vp circle protrudes 8vp; its 40vp touch target stays easy to hit.
