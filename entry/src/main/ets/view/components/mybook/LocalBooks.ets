@@ -15,6 +15,8 @@ export struct LocalBooks {
   @Consumer() floatingTabBarInset: number = 0;
   @Param active: boolean = false;
   @Local viewModel: LocalBooksViewModel = new LocalBooksViewModel();
+  @Local topFadeOffset: number = 0;
+  private scroller: Scroller = new Scroller();
   @Local menuBookKey: string = '';
   @Provider() showSkeleton: boolean = false;
 
@@ -160,7 +162,7 @@ export struct LocalBooks {
           .padding(12)
       }
       Refresh({ refreshing: $$this.viewModel.isRefreshing }) {
-        List() {
+        List({ scroller: this.scroller }) {
           if (this.viewModel.entries.length === 0 && !this.viewModel.isLoadFailed) {
             ListItem() {
               Text($r('app.string.local_books_empty'))
@@ -189,6 +191,7 @@ export struct LocalBooks {
           startMargin: 10,
           endMargin: 10
         })
+        .onDidScroll(() => { this.topFadeOffset = this.scroller.currentOffset().yOffset; })
         .contentEndOffset(this.floatingTabBarInset + windowUtil.mainWindowInfo.bottomInset)
         .lanes(new WidthBreakpointType(1, 2, 3, 4).getValue(windowUtil.mainWindowInfo.widthBp), 10)
         .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
@@ -196,7 +199,7 @@ export struct LocalBooks {
         .height('100%')
       }
       // Keep the fade fixed while the list moves during pull-to-refresh.
-      .overlay(ListTopFade(), { align: Alignment.Top })
+      .overlay(ListTopFade(this.topFadeOffset), { align: Alignment.Top })
       .onRefreshing(() => this.viewModel.refresh())
       .layoutWeight(1)
     }

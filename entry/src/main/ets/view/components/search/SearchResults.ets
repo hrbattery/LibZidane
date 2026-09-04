@@ -7,6 +7,7 @@ import { ErrorStatePlaceholder } from '../common/ErrorStatePlaceholder';
 
 @ComponentV2
 export struct SearchResults {
+  @Local topFadeOffset: number = 0;
   /**
    * view model of component
    */
@@ -57,7 +58,7 @@ export struct SearchResults {
       }
     }
     // Attach to Refresh so pulling its content does not move the top fade.
-    .overlay(ListTopFade(), { align: Alignment.Top })
+    .overlay(ListTopFade(this.showNormal ? this.topFadeOffset : 0), { align: Alignment.Top })
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource()
       this.viewModel.isRefreshing = false
@@ -67,6 +68,7 @@ export struct SearchResults {
   @Builder
   NormalContent() {
     BookInfoList({
+      onScrollOffsetChange: offset => { this.topFadeOffset = offset; },
       bookDataSource: this.viewModel.bookDataSource,
       pagination: this.viewModel.pagination,
       onLoadNewData: () => this.viewModel.loadNewData()

@@ -16,6 +16,8 @@ export struct BookCoverWaterFlow {
   @Param coverDataSource: CoverData[] = []
   @Consumer() showSkeleton: boolean = true;
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
+  @Event onScrollOffsetChange: (offset: number) => void = () => {};
+  private scroller: Scroller = new Scroller();
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -36,7 +38,7 @@ export struct BookCoverWaterFlow {
 
   /** Render responsive covers while the enclosing refresh container owns fixed decorations. */
   build() {
-    WaterFlow() {
+    WaterFlow({ scroller: this.scroller }) {
       Repeat(this.showSkeleton ? Array(20).fill(null) as CoverData[] : this.coverDataSource)
         .each((ri) => {
           BookCover({ coverData: ri.item })
@@ -53,6 +55,9 @@ export struct BookCoverWaterFlow {
         })
         .key((item, index) => item === null ? index.toString() : `${index}:${item.title}`)
     }
+    .onDidScroll(() => this.onScrollOffsetChange(this.scroller.currentOffset().yOffset))
+    .onAppear(() => this.onScrollOffsetChange(0))
+    .onDisAppear(() => this.onScrollOffsetChange(0))
     .contentEndOffset(this.floatingTabBarInset > 0 ? this.floatingTabBarInset + this.windowInfo.bottomInset : 0)
     .columnsTemplate(`repeat(${new WidthBreakpointType(3, 4, 6, 8).getValue(this.windowInfo.widthBp)}, 1fr)`)
     .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })

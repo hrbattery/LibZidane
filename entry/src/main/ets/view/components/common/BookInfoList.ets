@@ -13,6 +13,8 @@ export struct BookInfoList {
   @Local windowInfo: WindowInfo = AppStorageV2.connect(WindowInfo, "mainWindowInfo", () => new WindowInfo())!
   @Event onLoadNewData: () => Promise<void> = async () => {}
   @Consumer() showSkeleton: boolean = true;
+  @Event onScrollOffsetChange: (offset: number) => void = () => {};
+  private scroller: Scroller = new Scroller();
   pathStack: NavPathStack | undefined = undefined;
 
   /**
@@ -34,7 +36,7 @@ export struct BookInfoList {
   }
 
   build() {
-    List() {
+    List({ scroller: this.scroller }) {
       Repeat(this.showSkeleton ? (Array(20).fill(null) as BookData[]) : this.bookDataSource)
         .each((ri) => {
           ListItem() {
@@ -51,6 +53,9 @@ export struct BookInfoList {
         })
         .key((item, index) => item === null ? index.toString() : `${index}:${item.title}:${item._isFavorite}`)
     }
+    .onDidScroll(() => this.onScrollOffsetChange(this.scroller.currentOffset().yOffset))
+    .onAppear(() => this.onScrollOffsetChange(0))
+    .onDisAppear(() => this.onScrollOffsetChange(0))
     .contentEndOffset(this.floatingTabBarInset > 0 ? this.floatingTabBarInset + this.windowInfo.bottomInset : 0)
     .divider({
       color: $r("sys.color.font_tertiary"),

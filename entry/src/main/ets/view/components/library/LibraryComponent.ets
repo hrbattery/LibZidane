@@ -8,6 +8,7 @@ import { LogoutStatePlaceholder } from '../common/LogoutStatePlaceholder';
 
 @ComponentV2
 export struct LibraryComponent {
+  @Local topFadeOffset: number = 0;
   /**
    * view model of component
    */
@@ -52,6 +53,7 @@ export struct LibraryComponent {
     Refresh({ refreshing: $$this.viewModel.isRefreshing }) {
       if (this.showNormal) {
         BookCoverWaterFlow({
+          onScrollOffsetChange: offset => { this.topFadeOffset = offset; },
           coverDataSource: this.viewModel.coverDataSource
         }).padding({ left: 5, right: 5 })
       } else if (this.showLogoutPlaceholder) {
@@ -70,12 +72,13 @@ export struct LibraryComponent {
         EmptyContentPlaceholder()
       } else {
         BookCoverWaterFlow({
+          onScrollOffsetChange: offset => { this.topFadeOffset = offset; },
           coverDataSource: this.viewModel.coverDataSource
         }).padding({ left: 5, right: 5 })
       }
     }
     // Attach to Refresh so pulling its content does not move the top fade.
-    .overlay(ListTopFade(), { align: Alignment.Top })
+    .overlay(ListTopFade(this.showNormal ? this.topFadeOffset : 0), { align: Alignment.Top })
     .onRefreshing(async () => {
       await this.viewModel.loadDataSource()
       this.viewModel.isRefreshing = false
